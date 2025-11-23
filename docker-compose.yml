@@ -1,0 +1,45 @@
+services:
+  vfdpro_db:
+    image: mysql:8.0
+    container_name: vfdpro_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: mydb_user
+      MYSQL_PASSWORD: mydb_password
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3308:3306"
+    volumes:
+      - vfdpro_mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  vfdpro_web:
+    build: .
+    container_name: vfdpro_web
+    restart: unless-stopped
+    depends_on:
+      vfdpro_db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: mydb
+      DB_USER: mydb_user
+      DB_PASSWORD: mydb_password
+      DB_HOST: vfdpro_db
+      DB_PORT: "3306"
+    volumes:
+      - .:/code
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  vfdpro_mysql_data:
