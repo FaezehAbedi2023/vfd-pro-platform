@@ -1,9 +1,13 @@
 from datetime import date
-
 from django.db.models import Q
 from django.shortcuts import render
-
 from .models import ClientTransaction
+from django.http import HttpResponse
+from io import BytesIO
+import openpyxl
+import os
+
+from .vfd_collect_report_data import get_metrics_from_database, get_derived_metrics
 
 
 def portfolio_view(request):
@@ -111,3 +115,45 @@ def portfolio_view(request):
     }
 
     return render(request, "transactions/portfolio.html", context)
+
+
+def download_vfd_report(request):
+    # config از همون environment هایی میاد که تو docker-compose تعریف کردی
+    config = {
+        "user": os.environ.get("DB_USER"),
+        "password": os.environ.get("DB_PASSWORD"),
+        "host": os.environ.get("DB_HOST"),
+        "port": int(os.environ.get("DB_PORT")),   # "3306" -> 3306
+        "database": os.environ.get("DB_NAME"),
+    }
+
+    # فعلاً برای تست:
+    client_id = 9312   # بعداً می‌تونی از URL یا فرم بگیری
+
+    # ۱) گرفتن متریک‌ها از دیتابیس
+    metrics = get_metrics_from_database(config, client_id)
+    metrics = get_derived_metrics(metrics)
+
+    # ۲) ساختن فایل Excel
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "VFD Report"
+
+    # هدر
+    ws.append(["Metric Name", "Value"])
+
+    # پر کردن دیتای دیکشنری metrics
+    for key, value in metrics.items():
+        ws.append([key, str(value)])
+
+    # ۳) ذخیره در حافظه و برگرداندن به عنوان فایل دانلودی
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    response = HttpResponse(
+        output.getvalue(),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = 'attachment; filename="VFD_Report.xlsx"'
+    return response
