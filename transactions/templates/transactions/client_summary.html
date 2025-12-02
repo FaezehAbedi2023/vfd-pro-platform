@@ -1,0 +1,770 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client Summary - {{ client_name }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-body: #f3f4f6;
+      --bg-card: #ffffff;
+      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius-lg: 16px;
+
+      --brand-dark: #14532d;
+      --brand-main: #15803d;
+      --brand-light: #22c55e;
+
+      --accent-blue-dark: #1d4ed8;
+      --accent-blue-light: #38bdf8;
+
+      --text-muted: #6b7280;
+      --border-subtle: #e5e7eb;
+
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --danger-bg: #fee2e2;
+      --danger-text: #991b1b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+    }
+
+    .page-container {
+      max-width: 1320px;
+      margin: 32px auto 40px;
+      padding: 0 16px;
+    }
+
+    /* ====== Header ====== */
+    .page-header-card {
+      background-color: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .page-header-title h3 {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .page-header-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .page-header-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: #ecfdf3;
+      color: var(--brand-main);
+      border: 1px solid #bbf7d0;
+      white-space: nowrap;
+    }
+
+    /* ====== Generic cards ====== */
+    .card-kpi {
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: none;
+      overflow: hidden;
+      background-color: var(--bg-card);
+    }
+
+    .card-header-gradient {
+      background: linear-gradient(90deg, var(--brand-dark), var(--brand-light));
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-header-gradient h5 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .card-header-subtitle {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .card-body-clean {
+      padding: 16px 18px;
+    }
+
+    /* ====== KPI Tables ====== */
+    .kpi-table {
+      margin-bottom: 0;
+    }
+
+    .kpi-table thead th {
+      background-color: #f9fafb;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      border-bottom-color: var(--border-subtle);
+    }
+
+    .kpi-table tbody td {
+      font-size: 0.9rem;
+      vertical-align: middle;
+      border-top-color: var(--border-subtle);
+    }
+
+    .kpi-label {
+      background-color: #f9fafb;
+      font-weight: 500;
+      color: #111827;
+      width: 38%;
+    }
+
+    .kpi-var-positive {
+      background-color: var(--success-bg) !important;
+      color: var(--success-text) !important;
+      font-weight: 600;
+    }
+
+    .kpi-var-negative {
+      background-color: var(--danger-bg) !important;
+      color: var(--danger-text) !important;
+      font-weight: 600;
+    }
+
+    .kpi-var-neutral {
+      background-color: #f9fafb !important;
+      color: #4b5563 !important;
+      font-weight: 500;
+    }
+
+    /* ====== Analysis description panel (left column) ====== */
+    .analysis-panel {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      background-color: #d9f2c4;
+    }
+
+    .analysis-panel-header {
+      background-color: #22a316;
+      color: #fff;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .analysis-panel-body {
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #111827;
+      background-color: #d9f2c4;
+    }
+
+    /* ====== Scores ====== */
+    .score-card {
+      background-color: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 12px 18px;
+      margin-bottom: 18px;
+    }
+
+    .score-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .score-helper {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .badge-score {
+      font-size: 2.1rem;
+      font-weight: 700;
+      padding: 10px 0;
+      border-radius: 14px;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .badge-opportunity {
+      background-color: #ecfdf3;
+      color: var(--brand-main);
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge-suitability {
+      background-color: #fefce8;
+      color: #854d0e;
+      border: 1px solid #facc15;
+    }
+
+    .badge-readiness {
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    /* ====== Section headings (Sales Trend) ====== */
+    h4.section-heading {
+      margin-top: 36px;
+      margin-bottom: 14px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #111827;
+    }
+
+    h4.section-heading::before {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--brand-main), var(--brand-light));
+    }
+
+    /* ====== Check icons & matrix tables ====== */
+    .check-yes {
+      color: var(--success-text);
+      font-size: 28px;
+    }
+
+    .check-no {
+      color: var(--danger-text);
+      font-size: 28px;
+    }
+
+    .matrix-table {
+      table-layout: fixed;    /* عرض بین ستون‌ها تقسیم می‌شود */
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    .matrix-table thead th {
+      font-size: 0.78rem;
+      text-transform: none;
+      font-weight: 600;
+      color: #374151;
+      border-bottom-color: var(--border-subtle);
+      white-space: normal;    /* اجازه شکستن به چند خط */
+      word-wrap: break-word;
+      padding: 8px 6px;
+    }
+
+    .matrix-table td {
+      padding: 10px 6px;
+      border-top-color: var(--border-subtle);
+    }
+
+    /* ====== Chart Card & Wrapper ====== */
+    .chart-card {
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      background-color: var(--bg-card);
+    }
+
+    .chart-card .card-body {
+      padding: 18px 18px 20px;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 320px;
+    }
+
+    @media (max-width: 768px) {
+      .chart-wrapper {
+        height: 240px;
+      }
+    }
+
+    /* ====== Responsive tweaks ====== */
+    @media (max-width: 991.98px) {
+      .page-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .kpi-label {
+        width: 45%;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .page-container {
+        padding: 0 10px;
+      }
+
+      .page-header-card {
+        padding: 14px 16px;
+      }
+
+      .score-card {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="page-container">
+
+  <!-- ====== Header ====== -->
+  <div class="page-header-card">
+    <div class="page-header-title">
+      <h3>{{ client_name }}</h3>
+      <div class="page-header-meta">
+        Client ID: {{ client_id }}
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="page-header-pill">
+        Last 12 months overview
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 1) SUITABILITY ROW                                       -->
+  <!-- ========================================================= -->
+  <div class="row g-4 mb-4">
+
+    <!-- Left: description box -->
+    <div class="col-md-2">
+      <div class="analysis-panel">
+        <div class="analysis-panel-header">Suitability Analysis</div>
+        <div class="analysis-panel-body">
+          Can we get the data we need to produce meaningful reporting / models?
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle: suitability data -->
+    <div class="col-md-8">
+      <div class="card card-kpi">
+        <div class="card-body card-body-clean">
+
+          <table class="table text-center matrix-table mb-3">
+            <thead>
+            <tr>
+              {% for r in suitability_top_rows %}
+                <th>{{ r.label }}</th>
+              {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              {% for r in suitability_top_rows %}
+                <td>
+                  {% if r.value %}
+                    <span class="check-yes">✔</span>
+                  {% else %}
+                    <span class="check-no">✖</span>
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+            </tbody>
+          </table>
+
+          <table class="table text-center matrix-table mt-3 mb-0">
+            <thead>
+            <tr>
+              {% for r in suitability_bottom_rows %}
+                <th>{{ r.label }}</th>
+              {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              {% for r in suitability_bottom_rows %}
+                <td>
+                  {% if r.value %}
+                    <span class="check-yes">✔</span>
+                  {% else %}
+                    <span class="check-no">✖</span>
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: suitability score -->
+    <div class="col-md-2">
+      <div class="score-card">
+        <div class="score-label">Suitability Score</div>
+        <div class="score-helper">Fit with our offering and approach</div>
+        <div class="badge-score badge-suitability">
+          {% if suitability_score is not None %}{{ suitability_score }}%{% else %}N/A{% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 2) OPPORTUNITY ROW                                       -->
+  <!-- ========================================================= -->
+  <div class="row g-4 mb-4">
+
+    <!-- Left: description box -->
+    <div class="col-md-2">
+      <div class="analysis-panel">
+        <div class="analysis-panel-header">Opportunity Analysis</div>
+        <div class="analysis-panel-body">
+          Is there anything in the recent performance data that indicates a
+          significant risk or opportunity around profit or working capital?
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle: KPI & Working Capital cards -->
+    <div class="col-md-8">
+
+      <!-- Main KPI card -->
+      <div class="card card-kpi mb-4">
+        <div class="card-header-gradient">
+          <div>
+            <h5 class="mb-0">Performance – Last 12 Months</h5>
+            <div class="card-header-subtitle">Key profitability and margin metrics</div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-sm kpi-table">
+            <thead>
+            <tr>
+              <th></th>
+              <th class="text-end">TY</th>
+              <th class="text-end">LY</th>
+              <th class="text-end">Var</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in left_rows %}
+              <tr>
+                <td class="kpi-label">{{ row.label }}</td>
+                <td class="text-end">
+                  {% if row.ty is not None %}
+                    {{ row.ty|floatformat:1 }}{% if row.is_percentage %}%{% endif %}
+                  {% else %}-{% endif %}
+                </td>
+                <td class="text-end">
+                  {% if row.ly is not None %}
+                    {{ row.ly|floatformat:1 }}{% if row.is_percentage %}%{% endif %}
+                  {% else %}-{% endif %}
+                </td>
+                <td class="text-end {{ row.var_class }}">
+                  {% if row.var is not None %}
+                    {{ row.var|floatformat:1 }}{% if row.is_percentage %}%{% endif %}
+                  {% else %}-{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Working capital card -->
+      <div class="card card-kpi">
+        <div class="card-header-gradient"
+             style="background:linear-gradient(90deg,var(--accent-blue-dark),var(--accent-blue-light));">
+          <div>
+            <h5 class="mb-0">Working Capital</h5>
+            <div class="card-header-subtitle">Liquidity and cash cycle indicators</div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-sm kpi-table">
+            <thead>
+            <tr>
+              <th></th>
+              <th class="text-end">TY</th>
+              <th class="text-end">LY</th>
+              <th class="text-end">Var</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in right_rows %}
+              <tr>
+                <td class="kpi-label">{{ row.label }}</td>
+                <td class="text-end">
+                  {% if row.ty is not None %}
+                    {{ row.ty|floatformat:1 }}
+                  {% else %}-{% endif %}
+                </td>
+                <td class="text-end">
+                  {% if row.ly is not None %}
+                    {{ row.ly|floatformat:1 }}
+                  {% else %}-{% endif %}
+                </td>
+                <td class="text-end {{ row.var_class }}">
+                  {% if row.var is not None %}
+                    {{ row.var|floatformat:1 }}
+                  {% else %}-{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: opportunity score -->
+    <div class="col-md-2">
+      <div class="score-card">
+        <div class="score-label">Opportunity Score</div>
+        <div class="score-helper">Relative size of value at stake</div>
+        <div class="badge-score badge-opportunity">
+          {{ opportunity_score }}%
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 3) READINESS ROW                                         -->
+  <!-- ========================================================= -->
+  <div class="row g-4 mb-4">
+
+    <!-- Left: description box -->
+    <div class="col-md-2">
+      <div class="analysis-panel">
+        <div class="analysis-panel-header">Readiness Analysis</div>
+        <div class="analysis-panel-body">
+          Based on their current position, is the client practically in a
+          position to engage and follow through on recommendations?
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle: readiness data -->
+    <div class="col-md-8">
+      <div class="card card-kpi">
+        <div class="card-body card-body-clean">
+
+          <table class="table text-center matrix-table mb-3">
+            <thead>
+            <tr>
+              {% for r in readiness_top_rows %}
+                <th>{{ r.label }}</th>
+              {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              {% for r in readiness_top_rows %}
+                <td>
+                  {% if r.value %}
+                    <span class="check-yes">✔</span>
+                  {% else %}
+                    <span class="check-no">✖</span>
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+            </tbody>
+          </table>
+
+          <table class="table text-center matrix-table mt-3 mb-0">
+            <thead>
+            <tr>
+              {% for r in readiness_bottom_rows %}
+                <th>{{ r.label }}</th>
+              {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              {% for r in readiness_bottom_rows %}
+                <td>
+                  {% if r.value %}
+                    <span class="check-yes">✔</span>
+                  {% else %}
+                    <span class="check-no">✖</span>
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: readiness score -->
+    <div class="col-md-2">
+      <div class="score-card mb-0">
+        <div class="score-label">Readiness Score</div>
+        <div class="score-helper">Ability and appetite to execute</div>
+        <div class="badge-score badge-readiness">
+          {% if readiness_score is not None %}{{ readiness_score }}%{% else %}N/A{% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- SALES TREND                                              -->
+  <!-- ========================================================= -->
+  <h4 class="section-heading">Sales Trend (Last 12 Months)</h4>
+  <div class="card chart-card mb-5">
+    <div class="card-body">
+      <div class="chart-wrapper">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>  <!-- end .page-container -->
+
+
+<!-- ========= JSON data for chart (Django json_script) ========= -->
+{{ sales_trend|json_script:"sales-data" }}
+
+<!-- ========= Chart.js Script ========= -->
+<script>
+  const salesDataElement = document.getElementById("sales-data");
+  const salesData = salesDataElement
+      ? JSON.parse(salesDataElement.textContent)
+      : [];
+
+  const labels = salesData.map(x => x.offset);
+  const monthly = salesData.map(x => x.sales_month);
+  const rolling = salesData.map(x => x.rolling_12 || x.sales_rolling_12_months);
+
+  const ctx = document.getElementById("salesChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Sales",
+          data: monthly,
+          backgroundColor: "#16a34a",
+          borderRadius: 4,
+          maxBarThickness: 34
+        },
+        {
+          type: "line",
+          label: "Rolling 12 Months",
+          data: rolling,
+          borderColor: "#22c55e",
+          borderWidth: 3,
+          pointRadius: 3,
+          pointHoverRadius: 4,
+          tension: 0.25,
+          yAxisID: "y1"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { size: 12 },
+            maxRotation: 0
+          },
+          grid: { display: false }
+        },
+        y: {
+          ticks: {
+            font: { size: 12 },
+            callback: value => Number(value).toLocaleString()
+          },
+          grid: { color: "rgba(148, 163, 184, 0.15)" }
+        },
+        y1: {
+          position: "right",
+          ticks: {
+            font: { size: 12 },
+            callback: value => Number(value).toLocaleString()
+          },
+          grid: { drawOnChartArea: false }
+        }
+      },
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            boxWidth: 10,
+            font: { size: 12 }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function (ctx) {
+              const label = ctx.dataset.label || "";
+              const value = Number(ctx.parsed.y).toLocaleString();
+              return `${label}: ${value}`;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
