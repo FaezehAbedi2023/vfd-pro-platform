@@ -33,8 +33,23 @@ class ClientTransaction(models.Model):
     sync_timestamp = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False                 # جدول جدید نسازه
-        db_table = 'client_transaction' # اسم جدول واقعی در MySQL
+        
+        managed = False                 
+        db_table = 'client_transaction' 
 
     def __str__(self):
         return f"{self.id} - {self.description or ''}"
+
+
+class OpportunityCriteria(models.Model):
+
+    client_id = models.IntegerField()
+    kpi_state = models.JSONField(default=dict, blank=True)
+    opportunity_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "opportunity_criteria"
+
+    def __str__(self):
+        return f"Criteria for Client {self.client_id}"
