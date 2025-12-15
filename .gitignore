@@ -5,3 +5,5 @@ __pycache__/
 *.pyc
 *.pyd
 *.dll
+*.log
+sp_debug.log
