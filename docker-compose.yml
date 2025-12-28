@@ -10,9 +10,11 @@ services:
       MYSQL_ROOT_PASSWORD: root123
     ports:
       - "3308:3306"
+    # command: --local-infile=1
     volumes:
       - vfdpro_mysql_data:/var/lib/mysql
       - ./docker/mysql-init:/docker-entrypoint-initdb.d
+      # - "G:/Southampton Uni/VFD Pro_Reports/CAAM/Query:/import:ro"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
