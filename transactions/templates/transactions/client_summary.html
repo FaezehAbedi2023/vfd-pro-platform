@@ -352,6 +352,157 @@
         text-align: center;
       }
     }
+
+    /* Header configuration button */
+    .config-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 8px 12px;
+      border-radius: 999px;
+
+      border: 1px solid #25a35a;
+      /* سبز هم‌خوان با UI */
+      background: #eaf8f0;
+      /* سبز خیلی روشن */
+      color: #157a3e;
+
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 1;
+
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    .config-btn:hover {
+      background: #dff3e8;
+      box-shadow: 0 6px 18px rgba(21, 122, 62, .18);
+      transform: translateY(-1px);
+    }
+
+    .config-btn:active {
+      transform: translateY(0px);
+      box-shadow: 0 3px 10px rgba(21, 122, 62, .14);
+    }
+
+    .config-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 163, 90, .25);
+    }
+
+    .config-btn__icon {
+      font-size: 14px;
+      display: inline-flex;
+    }
+
+    .config-btn__text {
+      white-space: nowrap;
+    }
+
+    /* ===== KPI strip under header ===== */
+    .kpi-strip {
+      display: flex;
+      gap: 16px;
+      /* فاصله بین باکس‌ها */
+      align-items: stretch;
+      flex-wrap: wrap;
+      /* تو موبایل/صفحه کوچیک میره خط بعد */
+      margin: 8px 0 22px;
+      /* فاصله از هدر و بخش بعد */
+    }
+
+    .kpi-box {
+      flex: 1 1 170px;
+      /* حداقل عرض هر باکس */
+      min-width: 170px;
+      max-width: 220px;
+      /* نذار خیلی کش بیاد */
+      background: var(--bg-card);
+      border-radius: 14px;
+      box-shadow: var(--shadow-soft);
+      padding: 14px 14px 12px;
+      /* بزرگ‌تر */
+      border: 1px solid var(--border-subtle);
+    }
+
+    .kpi-box .kpi-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+      white-space: nowrap;
+    }
+
+    .kpi-box .kpi-value {
+      font-size: 1.55rem;
+      /* عدد بزرگ‌تر */
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .kpi-box .kpi-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* رنگ‌ها مثل کارت‌های امتیاز */
+    .kpi-box.suitability {
+      background: #fefce8;
+      border-color: #facc15;
+      color: #854d0e;
+    }
+
+    .kpi-box.opportunity {
+      background: #ecfdf3;
+      border-color: #bbf7d0;
+      color: var(--brand-main);
+    }
+
+    .kpi-box.readiness {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .kpi-box.iht {
+      background: #ffe4e6;
+      border-color: #fb7185;
+      color: #9f1239;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .kpi-strip {
+        gap: 12px;
+      }
+
+      .kpi-box {
+        flex: 1 1 46%;
+        max-width: none;
+      }
+    }
+
+    .criteria-target-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 4px 0 10px;
+
+    }
+
+    .criteria-target-row label {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .criteria-target-row input {
+      width: 120px;
+
+    }
   </style>
 </head>
 
@@ -367,11 +518,62 @@
         </div>
       </div>
       <div class="d-flex align-items-center gap-2">
+
+        <!-- NEW: Configuration button in header -->
+        <button type="button" class="config-btn" data-bs-toggle="modal" data-bs-target="#opportunityCriteriaModal">
+          <span class="config-btn__icon">⚙</span>
+          <span class="config-btn__text">Configuration</span>
+        </button>
+
+
         <div class="page-header-pill">
           Last 12 months overview
         </div>
       </div>
     </div>
+
+    <!-- ====== New design ====== -->
+    <div class="kpi-strip">
+      <div class="kpi-box suitability">
+        <div class="kpi-title">Suitability Score</div>
+        <div class="kpi-value">{% if suitability_score is not None %}{{ suitability_score }}%{% else %}—{% endif %}
+        </div>
+      </div>
+
+      <div class="kpi-box opportunity">
+        <div class="kpi-title">Opportunity Score</div>
+        <div class="kpi-value">{{ opportunity_score }}%</div>
+      </div>
+
+      <div class="kpi-box readiness">
+        <div class="kpi-title">Readiness Score</div>
+        <div class="kpi-value">{% if readiness_score is not None %}{{ readiness_score }}%{% else %}—{% endif %}</div>
+      </div>
+
+      <div class="kpi-box">
+        <div class="kpi-title">Target for Discussion?</div>
+        <div class="kpi-value">{{ target_for_discussion }}</div>
+      </div>
+
+
+      <div class="kpi-box">
+        <div class="kpi-title">R&amp;D Opportunity?</div>
+        <div class="kpi-value">{{ rd_flag }}</div>
+      </div>
+
+      <div class="kpi-box">
+        <div class="kpi-title">Utilities</div>
+        <div class="kpi-value">{{ utilities_flag }}</div>
+      </div>
+
+      <div class="kpi-box iht">
+        <div class="kpi-title">Potential IHT Risk</div>
+        <div class="kpi-value">{% if iht_flag %}{{ iht_flag }}{% else %}No{% endif %}</div>
+      </div>
+    </div>
+
+
+
 
     <!-- 1) SUITABILITY ROW -->
     <div class="row g-4 mb-4">
@@ -560,10 +762,10 @@
       <div class="col-md-2">
         <div class="score-card position-relative">
           <!-- Criteria button moved here -->
-          <button type="button" class="btn btn-sm btn-outline-success position-absolute top-0 end-0 mt-2 me-2"
+          <!-- <button type="button" class="btn btn-sm btn-outline-success position-absolute top-0 end-0 mt-2 me-2"
             data-bs-toggle="modal" data-bs-target="#opportunityCriteriaModal">
             ⚙
-          </button>
+          </button> -->
 
           <div class="score-label">Opportunity Score</div>
           <div class="score-helper">Relative size of value at stake</div>
@@ -675,164 +877,322 @@
         <form method="post" action="">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="opportunityCriteriaLabel">Opportunity Criteria (vs Last Year)</h5>
+            <h5 class="modal-title" id="opportunityCriteriaLabel">Setting</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
           <div class="modal-body">
 
             <!-- Tabs -->
+            <!-- OUTER TABS -->
             <ul class="nav nav-tabs mb-3" role="tablist">
               <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="perf-tab" data-bs-toggle="tab" data-bs-target="#perf-criteria"
-                  type="button" role="tab">
-                  Performance
+                <button class="nav-link active" id="outer-suitability-tab" data-bs-toggle="tab"
+                  data-bs-target="#outer-suitability" type="button" role="tab" aria-controls="outer-suitability"
+                  aria-selected="true">
+                  Suitability
                 </button>
               </li>
+
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="wc-tab" data-bs-toggle="tab" data-bs-target="#wc-criteria" type="button"
-                  role="tab">
-                  Working Capital
+                <button class="nav-link" id="outer-opportunity-tab" data-bs-toggle="tab"
+                  data-bs-target="#outer-opportunity" type="button" role="tab" aria-controls="outer-opportunity"
+                  aria-selected="false">
+                  Opportunity
                 </button>
               </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-iht-tab" data-bs-toggle="tab" data-bs-target="#outer-iht"
+                  type="button" role="tab" aria-controls="outer-iht" aria-selected="false">
+                  IHT
+                </button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-readiness-tab" data-bs-toggle="tab" data-bs-target="#outer-readiness"
+                  type="button" role="tab" aria-controls="outer-readiness" aria-selected="false">
+                  Readiness
+                </button>
+              </li>
+
+
             </ul>
+
 
             <div class="tab-content">
 
-              <!-- ===================== PERFORMANCE TAB ===================== -->
-              <div class="tab-pane fade show active" id="perf-criteria" role="tabpanel">
+              <!-- ===================== SUITABILITY TAB (NEW) ===================== -->
+              <!-- OUTER PANE: SUITABILITY -->
+              <div class="tab-pane fade show active" id="outer-suitability" role="tabpanel"
+                aria-labelledby="outer-suitability-tab">
 
-                <!-- Global Time Period (Only Performance) -->
-                <div class="d-flex align-items-end justify-content-between mb-3">
-                  <div class="fw-semibold">Performance Settings</div>
-
-                  <div style="min-width:220px;">
-                    <label class="form-label mb-1 small text-muted">Time period</label>
-                    <select id="global_period" class="form-select form-select-sm">
-                      <option value="12" selected>Last 12 months</option>
-                      <option value="6">Last 6 months</option>
-                      <option value="3">Last 3 months</option>
-                    </select>
-                  </div>
+                <!-- Target (Suitability) - add ABOVE the grid/table -->
+                <div class="criteria-target-row">
+                  <label for="target_suitability" class="form-label small text-muted">
+                    Target for Suitability (%)
+                  </label>
+                  <input type="number" class="form-control form-control-sm" id="target_suitability"
+                    name="target_suitability" min="0" max="100" step="10" value="{{ target_suitability|default:50 }}">
                 </div>
 
 
-
-                <!-- Group 1: Revenue / GM / Overheads -->
-                <div class="table-responsive mb-4">
+                <div class="table-responsive">
                   <table class="table table-sm align-middle">
                     <thead class="table-light">
                       <tr>
-                        <th rowspan="2" style="width:80px;">Enable</th>
-                        <th rowspan="2">Criterion</th>
-                        <th colspan="2" class="text-center">Rule</th>
-                        <th colspan="6" class="text-center">Actuals </th>
-                      </tr>
-                      <tr>
-                        <!-- <th style="width:150px;">Time Period</th> -->
-                        <th style="width:80px;">Dir</th>
-                        <th style="width:110px;">Threshold</th>
-                        <th style="width:110px;">Last 12 months</th>
-                        <th style="width:110px;">Last 6 months</th>
-                        <th style="width:110px;">Last 3 months</th>
-                        <th style="width:90px;">Flag</th>
-                        <th style="width:130px;">Profit Impact</th>
-                        <!-- <th style="width:140px;">Valuation Impact</th> -->
-
-                        <th style="width:140px;">
-                          <div class="d-flex flex-column gap-1">
-                            <span>Valuation Impact</span>
-                            <div class="input-group input-group-sm">
-                              <input id="val_adj" name="val_adj" type="number" class="form-control" step="1" min="0"
-                                max="9" value="3" />
-
-                            </div>
-                          </div>
-                        </th>
-
-
-
+                        <th style="width:110px;">Enable</th>
+                        <th>Field</th>
+                        <th style="width:160px;">Value</th>
+                        <th style="width:90px;" class="text-center">Status</th>
                       </tr>
                     </thead>
-                    <tbody>
 
-                      <!-- Revenue -->
+                    <tbody>
+                      {% for r in suitability_config_rows %}
                       <tr>
                         <td>
-                          <select name="rev_enabled" id="rev_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.revenue %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
+                          <select name="{{ r.key }}_enabled" class="form-select form-select-sm">
+                            <option value="Yes" {% if r.enabled %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if not r.enabled %}selected{% endif %}>No</option>
                           </select>
                         </td>
-                        <td>Revenue</td>
-                        <!-- <td>
+
+                        <td>{{ r.label }}</td>
+
+                        <td>
+                          <input type="text" class="form-control form-control-sm" value="{{ r.display_value }}"
+                            disabled>
+                        </td>
+
+                        <td class="text-center">
+                          {% if r.status %}
+                          <span class="check-yes">✔</span>
+                          {% else %}
+                          <span class="check-no">✖</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4" class="text-muted">
+                    <tbody>
+                      {% for r in suitability_config_rows %}
+                      <tr>
+                        <!-- Enable -->
+                        <td style="width:110px;">
+                          <select name="{{ r.key }}_enabled" class="form-select form-select-sm">
+                            <option value="Yes" {% if r.enabled %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if not r.enabled %}selected{% endif %}>No</option>
+                          </select>
+                        </td>
+
+                        <!-- Field -->
+                        <td>{{ r.label }}</td>
+
+                        <!-- Value -->
+                        <td style="width:160px;">
+                          <input type="text" class="form-control form-control-sm" value="{{ r.display_value }}"
+                            disabled>
+                        </td>
+
+                        <!-- Status -->
+                        <td style="width:90px;" class="text-center">
+                          {% if r.status %}
+                          <span class="check-yes">✔</span>
+                          {% else %}
+                          <span class="check-no">✖</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4" class="text-muted">
+                          No suitability rows (suitability_config_rows is empty)
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+
+                    </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+              </div><!-- /#outer-suitability -->
+              <!-- OUTER PANE: OPPORTUNITY -->
+              <div class="tab-pane fade" id="outer-opportunity" role="tabpanel" aria-labelledby="outer-opportunity-tab">
+                <!-- Target (OPPORTUNITY) -->
+                <div class="criteria-target-row">
+                  <label for="target_opportunity" class="form-label small text-muted">
+                    Target for Opportunity (%)
+                  </label>
+                  <input type="number" class="form-control form-control-sm" id="target_opportunity"
+                    name="target_opportunity" min="0" max="100" step="10" value="{{ target_opportunity|default:50 }}">
+                </div>
+
+                <!-- INNER TABS (ONLY INSIDE OPPORTUNITY) -->
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="inner-perf-tab" data-bs-toggle="tab"
+                      data-bs-target="#inner-perf" type="button" role="tab" aria-controls="inner-perf"
+                      aria-selected="true">
+                      Performance
+                    </button>
+                  </li>
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="inner-wc-tab" data-bs-toggle="tab" data-bs-target="#inner-wc"
+                      type="button" role="tab" aria-controls="inner-wc" aria-selected="false">
+                      Working Capital
+                    </button>
+                  </li>
+                </ul>
+
+
+                <!-- ===================== PERFORMANCE TAB ===================== -->
+
+                <div class="tab-content">
+
+                  <!-- INNER PANE: PERFORMANCE -->
+                  <div class="tab-pane fade show active" id="inner-perf" role="tabpanel"
+                    aria-labelledby="inner-perf-tab">
+
+                    <!-- <div class="tab-pane fade show active" id="perf-criteria" role="tabpanel"> -->
+
+                    <!-- Global Time Period (Only Performance) -->
+                    <div class="d-flex align-items-end justify-content-between mb-3">
+                      <div class="fw-semibold">Performance Settings</div>
+
+                      <div style="min-width:220px;">
+                        <label class="form-label mb-1 small text-muted">Time period</label>
+                        <select id="global_period" class="form-select form-select-sm">
+                          <option value="12" selected>Last 12 months</option>
+                          <option value="6">Last 6 months</option>
+                          <option value="3">Last 3 months</option>
+                        </select>
+                      </div>
+                    </div>
+
+
+
+                    <!-- Group 1: Revenue / GM / Overheads -->
+                    <div class="table-responsive mb-4">
+                      <table class="table table-sm align-middle">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="2" class="text-center">Rule</th>
+                            <th colspan="6" class="text-center">Actuals </th>
+                          </tr>
+                          <tr>
+                            <!-- <th style="width:150px;">Time Period</th> -->
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Threshold</th>
+                            <th style="width:110px;">Last 12 months</th>
+                            <th style="width:110px;">Last 6 months</th>
+                            <th style="width:110px;">Last 3 months</th>
+                            <th style="width:90px;">Flag</th>
+                            <th style="width:130px;">Profit Impact</th>
+                            <!-- <th style="width:140px;">Valuation Impact</th> -->
+
+                            <th style="width:140px;">
+                              <div class="d-flex flex-column gap-1">
+                                <span>Valuation Impact</span>
+                                <div class="input-group input-group-sm">
+                                  <input id="val_adj" name="val_adj" type="number" class="form-control" step="1" min="0"
+                                    max="9" value="3" />
+
+                                </div>
+                              </div>
+                            </th>
+
+
+
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          <!-- Revenue -->
+                          <tr>
+                            <td>
+                              <select name="rev_enabled" id="rev_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.revenue %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
+                            </td>
+                            <td>Revenue</td>
+                            <!-- <td>
                           <select id="rev_period" name="rev_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
                             <option value="3">Last 3 months</option>
                           </select>
                         </td> -->
-                        <td>
-                          <select id="rev_dir" name="rev_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+" selected>+</option>
-                            <option value="-">-</option>
-                          </select>
-                        </td>
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <input id="rev_threshold" type="number" step="0.01" name="rev_threshold"
-                              class="form-control" value="15.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
+                            <td>
+                              <select id="rev_dir" name="rev_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+" selected>+</option>
+                                <option value="-">-</option>
+                              </select>
+                            </td>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="rev_threshold" type="number" step="0.01" name="rev_threshold"
+                                  class="form-control" value="15.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
-                        <!-- Actuals (disabled) -->
-                        <td>
-                          <input id="rev_last_12" type="text" class="form-control form-control-sm"
-                            value="{{ rev_last_12 }}" disabled>
-                        </td>
-                        <td>
-                          <input id="rev_last_6" type="text" class="form-control form-control-sm"
-                            value="{{ rev_last_6 }}" disabled>
-                        </td>
-                        <td>
-                          <input id="rev_last_3" type="text" class="form-control form-control-sm"
-                            value="{{ rev_last_3 }}" disabled>
-                        </td>
-                        <td>
-                          {% with k=kpi_state.revenue %}
-                          <input name="rev_flag" id="rev_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
-                        </td>
-                        <td>
-                          <input id="rev_profit_impact" type="text" class="form-control form-control-sm"
-                            value="{{ rev_profit_impact }}" disabled>
-                        </td>
-                        <td>
-                          <input id="rev_val_impact" type="text" class="form-control form-control-sm"
-                            value="{{ rev_val_impact }}" disabled>
-                        </td>
-                      </tr>
+                            <!-- Actuals (disabled) -->
+                            <td>
+                              <input id="rev_last_12" type="text" class="form-control form-control-sm"
+                                value="{{ rev_last_12 }}" disabled>
+                            </td>
+                            <td>
+                              <input id="rev_last_6" type="text" class="form-control form-control-sm"
+                                value="{{ rev_last_6 }}" disabled>
+                            </td>
+                            <td>
+                              <input id="rev_last_3" type="text" class="form-control form-control-sm"
+                                value="{{ rev_last_3 }}" disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.revenue %}
+                              <input name="rev_flag" id="rev_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
+                            </td>
+                            <td>
+                              <input id="rev_profit_impact" type="text" class="form-control form-control-sm"
+                                value="{{ rev_profit_impact }}" disabled>
+                            </td>
+                            <td>
+                              <input id="rev_val_impact" type="text" class="form-control form-control-sm"
+                                value="{{ rev_val_impact }}" disabled>
+                            </td>
+                          </tr>
 
 
-                      <!-- Gross Margin -->
-                      <tr>
-                        <td>
-                          <select name="gm_enabled" id="gm_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.gm %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
-                        </td>
+                          <!-- Gross Margin -->
+                          <tr>
+                            <td>
+                              <select name="gm_enabled" id="gm_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.gm %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
+                            </td>
 
-                        <td>Gross Margin %</td>
+                            <td>Gross Margin %</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="gm_period" name="gm_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
@@ -840,76 +1200,76 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="gm_dir" name="gm_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+" selected>+</option>
-                            <option value="-">-</option>
+                            <td>
+                              <select id="gm_dir" name="gm_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+" selected>+</option>
+                                <option value="-">-</option>
 
 
-                          </select>
-                        </td>
+                              </select>
+                            </td>
 
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <!-- پیشنهاد: 10.00 به معنای 10 واحد درصد -->
-                            <input id="gm_threshold" type="number" step="0.01" name="gm_threshold" class="form-control"
-                              value="10.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <!-- پیشنهاد: 10.00 به معنای 10 واحد درصد -->
+                                <input id="gm_threshold" type="number" step="0.01" name="gm_threshold"
+                                  class="form-control" value="10.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
-                        <!-- Output fields (disabled, فقط نمایش) -->
-                        <td>
-                          <input id="gm_last_12" type="text" class="form-control form-control-sm"
-                            value="{{ gm_last_12 }}" disabled>
-                        </td>
+                            <!-- Output fields (disabled, فقط نمایش) -->
+                            <td>
+                              <input id="gm_last_12" type="text" class="form-control form-control-sm"
+                                value="{{ gm_last_12 }}" disabled>
+                            </td>
 
-                        <td>
-                          <input id="gm_last_6" type="text" class="form-control form-control-sm" value="{{ gm_last_6 }}"
-                            disabled>
-                        </td>
+                            <td>
+                              <input id="gm_last_6" type="text" class="form-control form-control-sm"
+                                value="{{ gm_last_6 }}" disabled>
+                            </td>
 
-                        <td>
-                          <input id="gm_last_3" type="text" class="form-control form-control-sm" value="{{ gm_last_3 }}"
-                            disabled>
-                        </td>
+                            <td>
+                              <input id="gm_last_3" type="text" class="form-control form-control-sm"
+                                value="{{ gm_last_3 }}" disabled>
+                            </td>
 
-                        <td>
-                          {% with k=kpi_state.gm %}
-                          <input name="gm_flag" id="gm_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
-                        </td>
+                            <td>
+                              {% with k=kpi_state.gm %}
+                              <input name="gm_flag" id="gm_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
+                            </td>
 
-                        <td>
-                          <input id="gm_profit_impact" type="text" class="form-control form-control-sm"
-                            value="{{ gm_profit_impact }}" disabled>
-                        </td>
+                            <td>
+                              <input id="gm_profit_impact" type="text" class="form-control form-control-sm"
+                                value="{{ gm_profit_impact }}" disabled>
+                            </td>
 
-                        <td>
-                          <input id="gm_val_impact" type="text" class="form-control form-control-sm"
-                            value="{{ gm_val_impact }}" disabled>
-                        </td>
-                      </tr>
+                            <td>
+                              <input id="gm_val_impact" type="text" class="form-control form-control-sm"
+                                value="{{ gm_val_impact }}" disabled>
+                            </td>
+                          </tr>
 
 
-                      <!-- Overhead £ -->
+                          <!-- Overhead £ -->
 
-                      <tr>
-                        <td>
-                          <select name="oh_val_enabled" id="oh_val_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.oh_val %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                          <tr>
+                            <td>
+                              <select name="oh_val_enabled" id="oh_val_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.oh_val %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
 
-                        </td>
+                            </td>
 
-                        <td>Overhead £</td>
+                            <td>Overhead £</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="oh_val_period" name="oh_val_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
@@ -917,73 +1277,73 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="oh_val_dir" name="oh_val_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+">+</option>
-                            <option value="-" selected>-</option>
+                            <td>
+                              <select id="oh_val_dir" name="oh_val_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+">+</option>
+                                <option value="-" selected>-</option>
 
-                          </select>
-                        </td>
+                              </select>
+                            </td>
 
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <input id="oh_val_threshold" type="number" step="0.01" name="oh_val_threshold"
-                              class="form-control" value="10.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="oh_val_threshold" type="number" step="0.01" name="oh_val_threshold"
+                                  class="form-control" value="10.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
 
-                        <td>
-                          <input id="oh_val_last_12" type="text" class="form-control form-control-sm"
-                            value="{{ oh_val_last_12 }}" disabled>
-                        </td>
+                            <td>
+                              <input id="oh_val_last_12" type="text" class="form-control form-control-sm"
+                                value="{{ oh_val_last_12 }}" disabled>
+                            </td>
 
-                        <td>
-                          <input id="oh_val_last_6" type="text" class="form-control form-control-sm"
-                            value="{{ oh_val_last_6 }}" disabled>
-                        </td>
+                            <td>
+                              <input id="oh_val_last_6" type="text" class="form-control form-control-sm"
+                                value="{{ oh_val_last_6 }}" disabled>
+                            </td>
 
-                        <td>
-                          <input id="oh_val_last_3" type="text" class="form-control form-control-sm"
-                            value="{{ oh_val_last_3 }}" disabled>
-                        </td>
+                            <td>
+                              <input id="oh_val_last_3" type="text" class="form-control form-control-sm"
+                                value="{{ oh_val_last_3 }}" disabled>
+                            </td>
 
-                        <td>
-                          {% with k=kpi_state.oh_val %}
-                          <input name="oh_val_flag" id="oh_val_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <td>
+                              {% with k=kpi_state.oh_val %}
+                              <input name="oh_val_flag" id="oh_val_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        </td>
+                            </td>
 
-                        <td>
-                          <input id="oh_val_profit_impact" type="text" class="form-control form-control-sm"
-                            value="{{ oh_val_profit_impact }}" disabled>
-                        </td>
+                            <td>
+                              <input id="oh_val_profit_impact" type="text" class="form-control form-control-sm"
+                                value="{{ oh_val_profit_impact }}" disabled>
+                            </td>
 
-                        <td>
-                          <input id="oh_val_val_impact" type="text" class="form-control form-control-sm"
-                            value="{{ oh_val_val_impact }}" disabled>
-                        </td>
-                      </tr>
+                            <td>
+                              <input id="oh_val_val_impact" type="text" class="form-control form-control-sm"
+                                value="{{ oh_val_val_impact }}" disabled>
+                            </td>
+                          </tr>
 
-                      <!-- Overhead % -->
-                      <tr>
-                        <td>
-                          <select name="oh_pct_enabled" id="oh_pct_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.oh_pct %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                          <!-- Overhead % -->
+                          <tr>
+                            <td>
+                              <select name="oh_pct_enabled" id="oh_pct_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.oh_pct %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
 
-                        </td>
+                            </td>
 
-                        <td>Overhead %</td>
+                            <td>Overhead %</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="oh_pct_period" name="oh_pct_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
@@ -991,102 +1351,102 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="oh_pct_dir" name="oh_pct_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+">+</option>
-                            <option value="-" selected>-</option>
+                            <td>
+                              <select id="oh_pct_dir" name="oh_pct_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+">+</option>
+                                <option value="-" selected>-</option>
 
-                          </select>
-                        </td>
+                              </select>
+                            </td>
 
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <input id="oh_pct_threshold" type="number" step="0.01" name="oh_pct_threshold"
-                              class="form-control" value="10.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
-
-
-                        <td>
-                          <input id="oh_pct_last_12" type="text" class="form-control form-control-sm"
-                            value="{{ oh_pct_last_12 }}" disabled>
-                        </td>
-
-                        <td>
-                          <input id="oh_pct_last_6" type="text" class="form-control form-control-sm"
-                            value="{{ oh_pct_last_6 }}" disabled>
-                        </td>
-
-                        <td>
-                          <input id="oh_pct_last_3" type="text" class="form-control form-control-sm"
-                            value="{{ oh_pct_last_3 }}" disabled>
-                        </td>
-
-                        <td>
-                          {% with k=kpi_state.oh_pct %}
-                          <input name="oh_pct_flag" id="oh_pct_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
-
-                        </td>
-
-                        <td>
-                          <input id="oh_pct_profit_impact" type="text" class="form-control form-control-sm"
-                            value="{{ oh_pct_profit_impact }}" disabled>
-                        </td>
-
-                        <td>
-                          <input id="oh_pct_val_impact" type="text" class="form-control form-control-sm"
-                            value="{{ oh_pct_val_impact }}" disabled>
-                        </td>
-                      </tr>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="oh_pct_threshold" type="number" step="0.01" name="oh_pct_threshold"
+                                  class="form-control" value="10.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
 
-                    </tbody>
-                  </table>
-                </div>
+                            <td>
+                              <input id="oh_pct_last_12" type="text" class="form-control form-control-sm"
+                                value="{{ oh_pct_last_12 }}" disabled>
+                            </td>
 
-                <!-- Group 2: EBITDA -->
-                <div class="table-responsive mb-4">
-                  <table class="table table-sm align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th rowspan="2" style="width:80px;">Enable</th>
-                        <th rowspan="2">Criterion</th>
-                        <th colspan="2" class="text-center">Rule</th>
-                        <th colspan="7" class="text-center">Actuals</th>
-                      </tr>
-                      <tr>
-                        <!-- <th style="width:155px;">Time Period</th> -->
-                        <th style="width:80px;">Dir</th>
-                        <th style="width:110px;">Threshold</th>
-                        <th style="width:110px;">EBITDA TY</th>
-                        <th style="width:110px;">EBITDA LY</th>
-                        <th style="width:90px;">Var %</th>
-                        <th style="width:110px;">Var £</th>
-                        <th style="width:90px;">Flag</th>
-                        <!-- <th style="width:130px;">EBITDA Impact</th>
-                        <th style="width:140px;">Valuation Impact</th> -->
-                      </tr>
-                    </thead>
-                    <tbody>
+                            <td>
+                              <input id="oh_pct_last_6" type="text" class="form-control form-control-sm"
+                                value="{{ oh_pct_last_6 }}" disabled>
+                            </td>
 
-                      <tr>
-                        <td>
-                          <select name="ebitda_enabled" id="ebitda_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.ebitda %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                            <td>
+                              <input id="oh_pct_last_3" type="text" class="form-control form-control-sm"
+                                value="{{ oh_pct_last_3 }}" disabled>
+                            </td>
 
-                        </td>
+                            <td>
+                              {% with k=kpi_state.oh_pct %}
+                              <input name="oh_pct_flag" id="oh_pct_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        <td>EBITDA £</td>
+                            </td>
 
-                        <!-- <td>
+                            <td>
+                              <input id="oh_pct_profit_impact" type="text" class="form-control form-control-sm"
+                                value="{{ oh_pct_profit_impact }}" disabled>
+                            </td>
+
+                            <td>
+                              <input id="oh_pct_val_impact" type="text" class="form-control form-control-sm"
+                                value="{{ oh_pct_val_impact }}" disabled>
+                            </td>
+                          </tr>
+
+
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- Group 2: EBITDA -->
+                    <div class="table-responsive mb-4">
+                      <table class="table table-sm align-middle">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="2" class="text-center">Rule</th>
+                            <th colspan="7" class="text-center">Actuals</th>
+                          </tr>
+                          <tr>
+                            <!-- <th style="width:155px;">Time Period</th> -->
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Threshold</th>
+                            <th style="width:110px;">EBITDA TY</th>
+                            <th style="width:110px;">EBITDA LY</th>
+                            <th style="width:90px;">Var %</th>
+                            <th style="width:110px;">Var £</th>
+                            <th style="width:90px;">Flag</th>
+                            <th style="width:130px;">EBITDA Impact</th>
+                            <!-- <th style="width:140px;">Valuation Impact</th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          <tr>
+                            <td>
+                              <select name="ebitda_enabled" id="ebitda_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.ebitda %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
+
+                            </td>
+
+                            <td>EBITDA £</td>
+
+                            <!-- <td>
                           <select id="ebitda_period" name="ebitda_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
@@ -1094,243 +1454,247 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="ebitda_dir" name="ebitda_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+" selected>+</option>
-                            <option value="-">-</option>
+                            <td>
+                              <select id="ebitda_dir" name="ebitda_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+" selected>+</option>
+                                <option value="-">-</option>
 
-                          </select>
-                        </td>
+                              </select>
+                            </td>
 
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <input id="ebitda_threshold" type="number" step="0.01" name="ebitda_threshold"
-                              class="form-control" value="10.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="ebitda_threshold" type="number" step="0.01" name="ebitda_threshold"
+                                  class="form-control" value="10.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
-                        <!-- Actuals (خروجی SP) -->
-                        <td>
-                          <input id="ebitda_ty" type="text" class="form-control form-control-sm" value="{{ ebitda_ty }}"
-                            disabled>
-                        </td>
-                        <td>
-                          <input id="ebitda_ly" type="text" class="form-control form-control-sm" value="{{ ebitda_ly }}"
-                            disabled>
-                        </td>
-                        <td>
-                          <input id="ebitda_var_pct" type="text" class="form-control form-control-sm"
-                            value="{{ ebitda_var_pct }}" disabled>
-                        </td>
-                        <td>
-                          <input id="ebitda_var_val" type="text" class="form-control form-control-sm"
-                            value="{{ ebitda_var_val }}" disabled>
-                        </td>
-                        <td>
-                          {% with k=kpi_state.ebitda %}
-                          <input name="ebitda_flag" id="ebitda_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <!-- Actuals (خروجی SP) -->
+                            <td>
+                              <input id="ebitda_ty" type="text" class="form-control form-control-sm"
+                                value="{{ ebitda_ty }}" disabled>
+                            </td>
+                            <td>
+                              <input id="ebitda_ly" type="text" class="form-control form-control-sm"
+                                value="{{ ebitda_ly }}" disabled>
+                            </td>
+                            <td>
+                              <input id="ebitda_var_pct" type="text" class="form-control form-control-sm"
+                                value="{{ ebitda_var_pct }}" disabled>
+                            </td>
+                            <td>
+                              <input id="ebitda_var_val" type="text" class="form-control form-control-sm"
+                                value="{{ ebitda_var_val }}" disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.ebitda %}
+                              <input name="ebitda_flag" id="ebitda_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        </td>
-                        <!-- <td>
-                          <input id="ebitda_impact" type="text" class="form-control form-control-sm"
-                            value="{{ ebitda_impact }}" disabled>
-                        </td> -->
-                        <!-- <td>
+                            </td>
+                            <td>
+                              <input id="ebitda_impact" type="text" class="form-control form-control-sm"
+                                value="{{ ebitda_impact }}" disabled>
+                            </td>
+                            <!-- <td>
                           <input id="ebitda_val_impact" type="text" class="form-control form-control-sm"
                             value="{{ ebitda_val_impact }}" disabled>
                         </td> -->
-                      </tr>
+                          </tr>
 
-                    </tbody>
-                  </table>
-                </div>
+                        </tbody>
+                      </table>
+                    </div>
 
-                <!-- Group 3: New Customers / Retention -->
-                <div class="table-responsive">
-                  <table class="table table-sm align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th rowspan="2" style="width:80px;">Enable</th>
-                        <th rowspan="2">Criterion</th>
-                        <th colspan="2" class="text-center">Rule</th>
-                        <th colspan="4" class="text-center">Actuals </th>
-                      </tr>
-                      <tr>
-                        <!-- <th style="width:150px;">Time Period</th> -->
-                        <th style="width:80px;">Dir</th>
-                        <th style="width:110px;">Threshold</th>
-                        <th style="width:110px;">TY</th>
-                        <th style="width:110px;">LY</th>
-                        <th style="width:90px;">Var %</th>
-                        <th style="width:90px;">Flag</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                    <!-- Group 3: New Customers / Retention -->
+                    <div class="table-responsive">
+                      <table class="table table-sm align-middle">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="2" class="text-center">Rule</th>
+                            <th colspan="4" class="text-center">Actuals </th>
+                          </tr>
+                          <tr>
+                            <!-- <th style="width:150px;">Time Period</th> -->
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Threshold</th>
+                            <th style="width:110px;">TY</th>
+                            <th style="width:110px;">LY</th>
+                            <th style="width:90px;">Var %</th>
+                            <th style="width:90px;">Flag</th>
+                          </tr>
+                        </thead>
+                        <tbody>
 
-                      <!-- New Customers -->
-                      <tr>
-                        <td>
-                          <select name="newcust_enabled" id="newcust_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.newcust %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                          <!-- New Customers -->
+                          <tr>
+                            <td>
+                              <select name="newcust_enabled" id="newcust_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.newcust %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
 
-                        </td>
-                        <td>New Customers</td>
-                        <!-- <td>
+                            </td>
+                            <td>New Customers</td>
+                            <!-- <td>
                           <select id="newcust_period" name="newcust_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
                             <option value="3">Last 3 months</option>
                           </select>
                         </td> -->
-                        <td>
-                          <select id="newcust_dir" name="newcust_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+" selected>+</option>
-                            <option value="-">-</option>
+                            <td>
+                              <select id="newcust_dir" name="newcust_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+" selected>+</option>
+                                <option value="-">-</option>
 
-                          </select>
-                        </td>
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <input id="newcust_threshold" type="number" step="0.01" name="newcust_threshold"
-                              class="form-control" value="10.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
+                              </select>
+                            </td>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="newcust_threshold" type="number" step="0.01" name="newcust_threshold"
+                                  class="form-control" value="10.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
-                        <td>
-                          <input id="newcust_ty" type="text" class="form-control form-control-sm"
-                            value="{{ newcust_ty }}" disabled>
-                        </td>
-                        <td>
-                          <input id="newcust_ly" type="text" class="form-control form-control-sm"
-                            value="{{ newcust_ly }}" disabled>
-                        </td>
-                        <td>
-                          <input id="newcust_var_pct" type="text" class="form-control form-control-sm"
-                            value="{{ newcust_var_pct }}" disabled>
-                        </td>
-                        <td>
-                          {% with k=kpi_state.newcust %}
-                          <input name="newcust_flag" id="newcust_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <td>
+                              <input id="newcust_ty" type="text" class="form-control form-control-sm"
+                                value="{{ newcust_ty }}" disabled>
+                            </td>
+                            <td>
+                              <input id="newcust_ly" type="text" class="form-control form-control-sm"
+                                value="{{ newcust_ly }}" disabled>
+                            </td>
+                            <td>
+                              <input id="newcust_var_pct" type="text" class="form-control form-control-sm"
+                                value="{{ newcust_var_pct }}" disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.newcust %}
+                              <input name="newcust_flag" id="newcust_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        </td>
-                      </tr>
+                            </td>
+                          </tr>
 
 
-                      <!-- Client Retention -->
-                      <tr>
-                        <td>
-                          <select name="retention_enabled" id="retention_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.retention %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                          <!-- Client Retention -->
+                          <tr>
+                            <td>
+                              <select name="retention_enabled" id="retention_enabled"
+                                class="form-select form-select-sm">
+                                {% with k=kpi_state.retention %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
 
-                        </td>
-                        <td>Client Retention</td>
-                        <!-- <td>
+                            </td>
+                            <td>Client Retention</td>
+                            <!-- <td>
                           <select id="retention_period" name="retention_period" class="form-select form-select-sm">
                             <option value="12" selected>Last 12 months</option>
                             <option value="6">Last 6 months</option>
                             <option value="3">Last 3 months</option>
                           </select>
                         </td> -->
-                        <td>
-                          <select id="retention_dir" name="retention_dir" class="form-select form-select-sm">
-                            <option value="+/-">+/-</option>
-                            <option value="+" selected>+</option>
-                            <option value="-">-</option>
+                            <td>
+                              <select id="retention_dir" name="retention_dir" class="form-select form-select-sm">
+                                <option value="+/-">+/-</option>
+                                <option value="+" selected>+</option>
+                                <option value="-">-</option>
 
-                          </select>
-                        </td>
-                        <td>
-                          <div class="input-group input-group-sm">
-                            <input id="retention_threshold" type="number" step="0.01" name="retention_threshold"
-                              class="form-control" value="10.00">
-                            <span class="input-group-text">%</span>
-                          </div>
-                        </td>
+                              </select>
+                            </td>
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="retention_threshold" type="number" step="0.01" name="retention_threshold"
+                                  class="form-control" value="10.00">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
 
-                        <td>
-                          <input id="retention_ty" type="text" class="form-control form-control-sm"
-                            value="{{ retention_ty }}" disabled>
-                        </td>
-                        <td>
-                          <input id="retention_ly" type="text" class="form-control form-control-sm"
-                            value="{{ retention_ly }}" disabled>
-                        </td>
-                        <td>
-                          <input id="retention_var_pct" type="text" class="form-control form-control-sm"
-                            value="{{ retention_var_pct }}" disabled>
-                        </td>
-                        <td>
-                          {% with k=kpi_state.retention %}
-                          <input name="retention_flag" id="retention_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <td>
+                              <input id="retention_ty" type="text" class="form-control form-control-sm"
+                                value="{{ retention_ty }}" disabled>
+                            </td>
+                            <td>
+                              <input id="retention_ly" type="text" class="form-control form-control-sm"
+                                value="{{ retention_ly }}" disabled>
+                            </td>
+                            <td>
+                              <input id="retention_var_pct" type="text" class="form-control form-control-sm"
+                                value="{{ retention_var_pct }}" disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.retention %}
+                              <input name="retention_flag" id="retention_flag" readonly
+                                class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        </td>
-                      </tr>
+                            </td>
+                          </tr>
 
 
-                    </tbody>
-                  </table>
-                </div>
+                        </tbody>
+                      </table>
+                    </div>
 
-              </div>
+                    <!-- </div> -->
+                  </div>
+                  <!-- ===================== WORKING CAPITAL TAB ===================== -->
 
-              <!-- ===================== WORKING CAPITAL TAB ===================== -->
-              <div class="tab-pane fade" id="wc-criteria" role="tabpanel">
+                  <div class="tab-pane fade" id="inner-wc" role="tabpanel" aria-labelledby="inner-wc-tab">
+                    <!-- <div class="tab-pane fade" id="wc-criteria" role="tabpanel"> -->
 
-                <div class="table-responsive">
-                  <table class="table table-sm align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th rowspan="2" style="width:80px;">Enable</th>
-                        <th rowspan="2">Criterion</th>
-                        <th colspan="3" class="text-center">Rule</th>
-                        <th colspan="5" class="text-center">Actuals </th>
-                      </tr>
-                      <tr>
-                        <!-- <th style="width:150px;">Time Period</th> -->
-                        <th style="width:80px;">Dir</th>
-                        <th style="width:110px;">Var</th>
-                        <th style="width:110px;">TY</th>
-                        <th style="width:110px;">LY</th>
-                        <th style="width:90px;">Var %</th>
-                        <th style="width:90px;">Var</th>
-                        <th style="width:90px;">Flag</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                    <div class="table-responsive">
+                      <table class="table table-sm align-middle">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="3" class="text-center">Rule</th>
+                            <th colspan="5" class="text-center">Actuals </th>
+                          </tr>
+                          <tr>
+                            <!-- <th style="width:150px;">Time Period</th> -->
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Var</th>
+                            <th style="width:110px;">TY</th>
+                            <th style="width:110px;">LY</th>
+                            <th style="width:90px;">Var %</th>
+                            <th style="width:90px;">Var</th>
+                            <th style="width:90px;">Flag</th>
+                          </tr>
+                        </thead>
+                        <tbody>
 
-                      <!-- Cash Position -->
-                      <tr>
-                        <td>
-                          <select name="cash_enabled" id="cash_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.cash %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                          <!-- Cash Position -->
+                          <tr>
+                            <td>
+                              <select name="cash_enabled" id="cash_enabled" class="form-select form-select-sm">
+                                {% with k=kpi_state.cash %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
 
-                        </td>
+                            </td>
 
-                        <td>Cash Position</td>
+                            <td>Cash Position</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="cash_period" name="cash_period" class="form-select form-select-sm">
                             <option value="var" selected>Var %</option>
                             <option value="12">Last 12 months</option>
@@ -1339,47 +1703,50 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="cash_dir" name="cash_dir" class="form-select form-select-sm">
-                            <option value="-">-</option>
-                            <option value="+" selected>+</option>
-                            <option value="+/-">+/-</option>
-                          </select>
-                        </td>
+                            <td>
+                              <select id="cash_dir" name="cash_dir" class="form-select form-select-sm">
+                                <option value="-">-</option>
+                                <option value="+" selected>+</option>
+                                <option value="+/-">+/-</option>
+                              </select>
+                            </td>
 
-                        <td>
-                          <input id="cash_threshold" type="number" step="0.01" name="cash_threshold"
-                            class="form-control form-select-sm" value="10.00">
-                        </td>
+                            <td>
+                              <input id="cash_threshold" type="number" step="0.01" name="cash_threshold"
+                                class="form-control form-select-sm" value="10.00">
+                            </td>
 
-                        <td><input id="cash_ty" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="cash_ly" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="cash_var_pct" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="cash_var_val" type="text" class="form-control form-control-sm" disabled></td>
-                        <td>
-                          {% with k=kpi_state.cash %}
-                          <input name="cash_flag" id="cash_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <td><input id="cash_ty" type="text" class="form-control form-control-sm" disabled></td>
+                            <td><input id="cash_ly" type="text" class="form-control form-control-sm" disabled></td>
+                            <td><input id="cash_var_pct" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="cash_var_val" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.cash %}
+                              <input name="cash_flag" id="cash_flag" readonly class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        </td>
-                      </tr>
+                            </td>
+                          </tr>
 
-                      <!-- Debtor Days -->
-                      <tr>
-                        <td>
-                          <select name="debtordays_enabled" id="debtordays_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.debtordays %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
+                          <!-- Debtor Days -->
+                          <tr>
+                            <td>
+                              <select name="debtordays_enabled" id="debtordays_enabled"
+                                class="form-select form-select-sm">
+                                {% with k=kpi_state.debtordays %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
 
-                        </td>
+                            </td>
 
-                        <td>Debtor Days</td>
+                            <td>Debtor Days</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="debtordays_period" name="debtordays_period" class="form-select form-select-sm">
                             <option value="var" selected>Var</option>
                             <option value="12">Last 12 months</option>
@@ -1388,51 +1755,55 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="debtordays_dir" name="debtordays_dir" class="form-select form-select-sm">
-                            <option value="+">+</option>
-                            <option value="-" selected>-</option>
-                            <option value="+/-">+/-</option>
-                          </select>
-                        </td>
+                            <td>
+                              <select id="debtordays_dir" name="debtordays_dir" class="form-select form-select-sm">
+                                <option value="+">+</option>
+                                <option value="-" selected>-</option>
+                                <option value="+/-">+/-</option>
+                              </select>
+                            </td>
 
-                        <td>
-                          <input id="debtordays_threshold" type="number" step="1" name="debtordays_threshold"
-                            class="form-control" value="1">
-                        </td>
+                            <td>
+                              <input id="debtordays_threshold" type="number" step="1" name="debtordays_threshold"
+                                class="form-control" value="1">
+                            </td>
 
-                        <td><input id="debtordays_ty" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="debtordays_ly" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="debtordays_var_pct" type="text" class="form-control form-control-sm" disabled>
-                        </td>
-                        <td><input id="debtordays_var_val" type="text" class="form-control form-control-sm" disabled>
-                        </td>
-                        <td>
-                          {% with k=kpi_state.debtordays %}
-                          <input name="debtordays_flag" id="debtordays_flag" readonly
-                            class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <td><input id="debtordays_ty" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="debtordays_ly" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="debtordays_var_pct" type="text" class="form-control form-control-sm"
+                                disabled>
+                            </td>
+                            <td><input id="debtordays_var_val" type="text" class="form-control form-control-sm"
+                                disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.debtordays %}
+                              <input name="debtordays_flag" id="debtordays_flag" readonly
+                                class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
 
-                        </td>
-                      </tr>
+                            </td>
+                          </tr>
 
-                      <!-- Creditor Days -->
-                      <tr>
-                        <td>
-                          <select id="creditordays_enabled" name="creditordays_enabled"
-                            class="form-select form-select-sm">
-                            {% with k=kpi_state.creditordays %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
-                        </td>
+                          <!-- Creditor Days -->
+                          <tr>
+                            <td>
+                              <select id="creditordays_enabled" name="creditordays_enabled"
+                                class="form-select form-select-sm">
+                                {% with k=kpi_state.creditordays %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
+                            </td>
 
-                        <td>Creditor Days</td>
+                            <td>Creditor Days</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="creditordays_period" name="creditordays_period"
                             class="form-select form-select-sm">
                             <option value="var" selected>Var</option>
@@ -1442,49 +1813,54 @@
                           </select>
                         </td> -->
 
-                        <td>
-                          <select id="creditordays_dir" name="creditordays_dir" class="form-select form-select-sm">
-                            <option value="-">-</option>
-                            <option value="+" selected>+</option>
-                            <option value="+/-">+/-</option>
-                          </select>
-                        </td>
+                            <td>
+                              <select id="creditordays_dir" name="creditordays_dir" class="form-select form-select-sm">
+                                <option value="-">-</option>
+                                <option value="+" selected>+</option>
+                                <option value="+/-">+/-</option>
+                              </select>
+                            </td>
 
-                        <td>
-                          <input id="creditordays_threshold" type="number" step="1" name="creditordays_threshold"
-                            class="form-control" value="1">
-                        </td>
+                            <td>
+                              <input id="creditordays_threshold" type="number" step="1" name="creditordays_threshold"
+                                class="form-control" value="1">
+                            </td>
 
-                        <td><input id="creditordays_ty" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="creditordays_ly" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="creditordays_var_pct" type="text" class="form-control form-control-sm" disabled>
-                        </td>
-                        <td><input id="creditordays_var_val" type="text" class="form-control form-control-sm" disabled>
-                        </td>
-                        <td>
-                          {% with k=kpi_state.creditordays %}
-                          <input name="creditordays_flag" id="creditordays_flag" readonly
-                            class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
+                            <td><input id="creditordays_ty" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="creditordays_ly" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="creditordays_var_pct" type="text" class="form-control form-control-sm"
+                                disabled>
+                            </td>
+                            <td><input id="creditordays_var_val" type="text" class="form-control form-control-sm"
+                                disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.creditordays %}
+                              <input name="creditordays_flag" id="creditordays_flag" readonly
+                                class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
 
-                        </td>
-                      </tr>
+                            </td>
+                          </tr>
 
-                      <!-- Stock Days -->
-                      <tr>
-                        <td>
-                          <select id="stockdays_enabled" name="stockdays_enabled" class="form-select form-select-sm">
-                            {% with k=kpi_state.stockdays %}
-                            <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                            {% endwith %}
-                          </select>
-                        </td>
+                          <!-- Stock Days -->
+                          <tr>
+                            <td>
+                              <select id="stockdays_enabled" name="stockdays_enabled"
+                                class="form-select form-select-sm">
+                                {% with k=kpi_state.stockdays %}
+                                <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
+                                {% endwith %}
+                              </select>
+                            </td>
 
-                        <td>Stock Days</td>
+                            <td>Stock Days</td>
 
-                        <!-- <td>
+                            <!-- <td>
                           <select id="stockdays_period" name="stockdays_period" class="form-select form-select-sm">
                             <option value="var" selected>Var</option>
                             <option value="12">Last 12 months</option>
@@ -1493,31 +1869,128 @@
                           </select>
                         </td> -->
 
+                            <td>
+                              <select id="stockdays_dir" name="stockdays_dir" class="form-select form-select-sm">
+                                <option value="-" selected>-</option>
+                                <option value="+">+</option>
+                                <option value="+/-">+/-</option>
+                              </select>
+                            </td>
+
+                            <td>
+                              <input id="stockdays_threshold" type="number" step="1" name="stockdays_threshold"
+                                class="form-control" value="1">
+                            </td>
+
+                            <td><input id="stockdays_ty" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="stockdays_ly" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="stockdays_var_pct" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td><input id="stockdays_var_val" type="text" class="form-control form-control-sm" disabled>
+                            </td>
+                            <td>
+                              {% with k=kpi_state.stockdays %}
+                              <input name="stockdays_flag" id="stockdays_flag" readonly
+                                class="form-control form-control-sm"
+                                value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
+                              {% endwith %}
+
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- </div> -->
+                  </div>
+
+
+
+                </div>
+              </div>
+
+              <!-- OUTER PANE: IHT -->
+              <div class="tab-pane fade" id="outer-iht" role="tabpanel" aria-labelledby="outer-iht-tab">
+
+                <div class="d-flex align-items-end justify-content-between mb-3">
+                  <div class="fw-semibold">IHT Settings</div>
+                  <div class="small text-muted">
+                    Flag if (EBITDA TY × Multiple) ≥ Threshold
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width:110px;">Enable</th>
+                        <th>Metric</th>
+                        <th style="width:220px;">Value</th>
+                        <th style="width:140px;">Result</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <!-- Enable -->
                         <td>
-                          <select id="stockdays_dir" name="stockdays_dir" class="form-select form-select-sm">
-                            <option value="-" selected>-</option>
-                            <option value="+">+</option>
-                            <option value="+/-">+/-</option>
+                          <select name="iht_enabled" id="iht_enabled" class="form-select form-select-sm">
+                            <option value="Yes" {% if iht_enabled %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if not iht_enabled %}selected{% endif %}>No</option>
                           </select>
                         </td>
 
+                        <!-- Metric -->
+                        <td>EBITDA (TY)</td>
+
+                        <!-- Value -->
                         <td>
-                          <input id="stockdays_threshold" type="number" step="1" name="stockdays_threshold"
-                            class="form-control" value="1">
+                          <input type="text" id="iht_ebitda_ty" class="form-control form-control-sm"
+                            value="{{ iht_ebitda_ty }}" disabled>
                         </td>
 
-                        <td><input id="stockdays_ty" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="stockdays_ly" type="text" class="form-control form-control-sm" disabled></td>
-                        <td><input id="stockdays_var_pct" type="text" class="form-control form-control-sm" disabled>
+                        <!-- Result -->
+                        <td class="text-muted small">Used in calculation</td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>Multiple</td>
+                        <td>
+                          <!-- همون multiple که الان داری: val_adj -->
+                          <input type="number" id="iht_multiple" class="form-control form-control-sm"
+                            value="{{ iht_multiple }}" disabled>
+                          <div class="form-text">Uses the same Multiple as Opportunity (read-only).</div>
                         </td>
-                        <td><input id="stockdays_var_val" type="text" class="form-control form-control-sm" disabled>
+                        <td></td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>Valuation Threshold</td>
+                        <td>
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text">£</span>
+                            <input type="number" name="iht_threshold" id="iht_threshold" class="form-control"
+                              step="10000" min="0" value="{{ iht_threshold }}">
+                          </div>
+                        </td>
+                        <td class="text-muted small">Default 900,000</td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>Estimated Business Value</td>
+                        <td>
+                          <input type="text" id="iht_est_value" class="form-control form-control-sm"
+                            value="{{ iht_est_value }}" disabled>
                         </td>
                         <td>
-                          {% with k=kpi_state.stockdays %}
-                          <input name="stockdays_flag" id="stockdays_flag" readonly class="form-control form-control-sm"
-                            value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                          {% endwith %}
-
+                          <input type="text" name="iht_flag" id="iht_flag" class="form-control form-control-sm"
+                            value="{{ iht_flag }}" readonly>
                         </td>
                       </tr>
 
@@ -1526,6 +1999,100 @@
                 </div>
 
               </div>
+
+              <!-- OUTER PANE: Readiness -->
+              <div class="tab-pane fade" id="outer-readiness" role="tabpanel" aria-labelledby="outer-readiness-tab">
+
+                <!-- Target (Readiness) -->
+                <div class="criteria-target-row">
+                  <label for="target_readiness" class="form-label small text-muted">
+                    Target for Readiness (%)
+                  </label>
+                  <input type="number" class="form-control form-control-sm" id="target_readiness"
+                    name="target_readiness" min="0" max="100" step="10" value="{{ target_readiness|default:25 }}">
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width:110px;">Enable</th>
+                        <th>Field</th>
+                        <th style="width:140px;" class="text-end">TY</th>
+                        <th style="width:140px;" class="text-end">LY</th>
+                        <th style="width:140px;" class="text-end">Vs</th>
+                        <th style="width:220px;" class="text-center">Status</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for r in readiness_config_rows %}
+                      <tr>
+                        <!-- Enable -->
+
+                        <td>
+                          <select class="form-select form-select-sm" name="{{ r.enabled_name }}">
+                            <option value="Yes" {% if r.enabled %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if not r.enabled %}selected{% endif %}>No</option>
+                          </select>
+
+                        </td>
+
+                        <!-- Field -->
+                        <!-- <td class="fw-medium">{{ r.label }}</td> -->
+                        <td>
+                          <strong>{{ r.field }}</strong><br>
+                          <small class="text-muted">{{ r.status_label }}</small>
+                        </td>
+
+                        <!-- TY -->
+                        <td class="text-end">
+                          {% if r.ty is not None %}{{ r.ty|floatformat:1 }}{% else %}-{% endif %}
+                        </td>
+
+                        <!-- LY -->
+                        <td class="text-end">
+                          {% if r.ly is not None %}{{ r.ly|floatformat:1 }}{% else %}-{% endif %}
+                        </td>
+
+                        <!-- Vs -->
+                        <td class="text-end">
+                          {% if r.vs is not None %}{{ r.vs|floatformat:1 }}{% else %}-{% endif %}
+                        </td>
+
+                        <!-- Status (آخرین ستون) -->
+                        <!-- <td class="text-center">
+                          <div class="d-flex justify-content-center gap-3 flex-wrap">
+                            {% for c in r.checks %}
+                            <div class="d-flex align-items-center gap-1">
+                              {% if c.value %}
+                              <span class="check-yes">✔</span>
+                              {% else %}
+                              <span class="check-no">✖</span>
+                              {% endif %}
+                              <small class="text-muted">{{ c.label }}</small>
+                            </div>
+                            {% endfor %}
+                          </div>
+                        </td> -->
+                        <td class="text-center">
+                          {% if r.status %}
+                          <span class="check-yes">✔</span>
+                          {% else %}
+                          <span class="check-no">✖</span>
+                          {% endif %}
+                        </td>
+
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+
+                  </table>
+                </div>
+
+              </div>
+
+
 
             </div>
           </div>
@@ -2370,6 +2937,53 @@
 
       callStockDaysSp();
 
+    });
+  </script>
+
+  <!-- IHT -->
+
+  <script>
+    function toNumberSafe(x) {
+      if (x === null || x === undefined || x === "") return 0;
+      const n = Number(String(x).replace(/,/g, ""));
+      return isNaN(n) ? 0 : n;
+    }
+
+    function calcIht() {
+      const enabledEl = document.getElementById("iht_enabled");
+      const ebitdaEl = document.getElementById("iht_ebitda_ty");
+      const thresholdEl = document.getElementById("iht_threshold");
+      const valAdjEl = document.getElementById("val_adj");   // multiple اصلی شما در Opportunity
+      const multEl = document.getElementById("iht_multiple");
+
+      const estEl = document.getElementById("iht_est_value");
+      const flagEl = document.getElementById("iht_flag");
+
+      if (!enabledEl || !ebitdaEl || !thresholdEl || !estEl || !flagEl) return;
+
+      const enabled = enabledEl.value === "Yes";
+      const ebitda = toNumberSafe(ebitdaEl.value);
+      const multiple = valAdjEl ? toNumberSafe(valAdjEl.value) : toNumberSafe(multEl ? multEl.value : 3);
+      const threshold = toNumberSafe(thresholdEl.value);
+
+      if (multEl) multEl.value = multiple;
+
+      const est = ebitda * multiple;
+
+      estEl.value = (enabled ? est.toLocaleString("en-UK") : "");
+      flagEl.value = (enabled && est >= threshold) ? "Yes" : "No";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const enabledEl = document.getElementById("iht_enabled");
+      const thresholdEl = document.getElementById("iht_threshold");
+      const valAdjEl = document.getElementById("val_adj");
+
+      if (enabledEl) enabledEl.addEventListener("change", calcIht);
+      if (thresholdEl) thresholdEl.addEventListener("input", calcIht);
+      if (valAdjEl) valAdjEl.addEventListener("input", calcIht); // با تغییر multiple، IHT هم آپدیت شود
+
+      calcIht();
     });
   </script>
 

@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Client Advisory Assessment</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,.06);
+      --card: rgba(255,255,255,.07);
+      --border: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    html, body { overflow-x: hidden; } /* prevent horizontal scroll */
+    body{
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(59,130,246,.28), transparent 55%),
+        radial-gradient(900px 650px at 85% 20%, rgba(168,85,247,.22), transparent 55%),
+        radial-gradient(1100px 700px at 50% 90%, rgba(16,185,129,.18), transparent 55%),
+        linear-gradient(180deg, #070b14 0%, #0b1220 55%, #070b14 100%);
+    }
+
+    .glass{
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .headerbar{
+      border-radius: calc(var(--radius) + 6px);
+      padding: 18px;
+      background:
+        linear-gradient(135deg, rgba(59,130,246,.18) 0%, rgba(168,85,247,.14) 40%, rgba(16,185,129,.10) 100%),
+        rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .muted{ color: var(--muted); }
+    .mono{ font-variant-numeric: tabular-nums; }
+
+    .kpi{
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .kpi::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(600px 200px at 20% 0%, rgba(59,130,246,.14), transparent 60%);
+      pointer-events:none;
+    }
+    .kpi .num{ font-weight: 800; font-size: 1.45rem; letter-spacing: .2px; }
+
+    .btn-ghost{
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.18);
+      color: var(--text);
+    }
+
+    .form-control, .form-select, .input-group-text{
+      background: rgba(255,255,255,.06) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text) !important;
+    }
+    .form-control::placeholder{ color: rgba(255,255,255,.45); }
+    .input-group-text{ color: rgba(255,255,255,.75); }
+
+    .table-wrap{
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table{
+      --bs-table-bg: transparent;
+      --bs-table-color: var(--text);
+      --bs-table-border-color: rgba(255,255,255,.08);
+      width: 100%;
+      table-layout: fixed; /* key: fit without horizontal scroll */
+      font-size: .90rem;
+    }
+
+    .table thead th{
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(10, 16, 30, .86);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(12px);
+      font-size: .84rem;
+      color: rgba(255,255,255,.82);
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .table td{
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .table tbody tr{
+      transition: transform .08s ease, background .12s ease;
+    }
+    .table tbody tr:hover{
+      background: rgba(255,255,255,.05);
+      transform: translateY(-1px);
+    }
+
+    .badge-soft-success{
+      background: rgba(16,185,129,.14);
+      border: 1px solid rgba(16,185,129,.22);
+      color: rgba(255,255,255,.92);
+      font-weight: 700;
+    }
+    .badge-soft{
+      background: rgba(59,130,246,.12);
+      border: 1px solid rgba(59,130,246,.22);
+      color: rgba(255,255,255,.92);
+      font-weight: 700;
+    }
+    .badge-soft-warning{
+      background: rgba(245,158,11,.16);
+      border: 1px solid rgba(245,158,11,.26);
+      color: rgba(255,255,255,.92);
+      font-weight: 800;
+    }
+    .badge-soft-danger{
+      background: rgba(239,68,68,.16);
+      border: 1px solid rgba(239,68,68,.28);
+      color: rgba(255,255,255,.92);
+      font-weight: 800;
+    }
+
+    .score-pill{
+      min-width: 74px;
+      background: rgba(255,255,255,.06) !important;
+      border: 1px solid rgba(255,255,255,.14) !important;
+      color: rgba(255,255,255,.92) !important;
+    }
+
+    .progress{
+      height: .58rem;
+      background: rgba(255,255,255,.10);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar{
+      background: linear-gradient(90deg, rgba(59,130,246,.95), rgba(168,85,247,.92), rgba(16,185,129,.90));
+    }
+
+    .nowrap{ white-space: nowrap; }
+
+    /* Column sizing to avoid horizontal scroll */
+    col.rank   { width: 6%; }
+    col.name   { width: 22%; }
+    col.month  { width: 12%; }
+    col.score  { width: 12%; }
+    col.flag   { width: 12%; }
+    col.risk   { width: 12%; }
+
+    .targets-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      padding:.35rem .65rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.90);
+      font-size: .88rem;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 992px){
+      .table{ font-size: .86rem; }
+      col.name { width: 26%; }
+      col.month{ width: 13%; }
+      col.score{ width: 12%; }
+      col.flag { width: 12%; }
+      col.risk { width: 11%; }
+    }
+
+    @media (max-width: 768px){
+      /* still no horizontal scroll; allow more wrapping */
+      col.rank { width: 8%; }
+      col.name { width: 28%; }
+      col.month{ width: 14%; }
+      col.score{ width: 12%; }
+      col.flag { width: 13%; }
+      col.risk { width: 11%; }
+      .score-pill{ min-width: 62px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid px-3 px-lg-4 py-4 py-lg-5">
+
+    <!-- Header (title first, clean) -->
+    <div class="headerbar mb-4">
+      <div class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center justify-content-between">
+        <div>
+          <h1 class="h4 mb-1">
+            Client Advisory Assessment — <span id="companyTitle">Naylor Accountancy</span>
+          </h1>
+          <div class="muted small">
+            Portfolio view of clients, scoring, and advisory flags.
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="glass p-3 w-100 w-lg-auto">
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-sm-4">
+              <label class="form-label small mb-1 muted">Company</label>
+              <select id="companySelect" class="form-select"></select>
+            </div>
+
+            <div class="col-12 col-sm-4">
+              <label class="form-label small mb-1 muted">Search client</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input id="searchInput" class="form-control" placeholder="e.g. Xero, Retail, Smith..." />
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-4">
+              <label class="form-label small mb-1 muted">Reporting month</label>
+              <select id="monthFilter" class="form-select">
+                <option value="">All</option>
+              </select>
+            </div>
+
+            <div class="col-12 d-flex gap-2 mt-2">
+              <button class="btn btn-ghost flex-grow-1" id="btnReset">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset filters
+              </button>
+              <button class="btn btn-primary flex-grow-1" id="btnFakeExport">
+                <i class="bi bi-download me-1"></i> Export
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editable targets -->
+      <div class="glass mt-3 p-3">
+        <div class="row g-2 align-items-end">
+          <div class="col-12 col-lg-6">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <span class="targets-pill"><strong>Targets</strong></span>
+              <span class="targets-pill">Suitability ≥ <span class="mono" id="tSuitLabel">50</span>%</span>
+              <span class="targets-pill">Opportunity ≥ <span class="mono" id="tOppLabel">50</span>%</span>
+              <span class="targets-pill">Readiness ≥ <span class="mono" id="tReadyLabel">25</span>%</span>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="row g-2">
+              <div class="col-12 col-md-4">
+                <label class="form-label small mb-1 muted">Suitability target (%)</label>
+                <input id="tSuit" type="number" class="form-control mono" min="0" max="100" value="50">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label small mb-1 muted">Opportunity target (%)</label>
+                <input id="tOpp" type="number" class="form-control mono" min="0" max="100" value="50">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label small mb-1 muted">Readiness target (%)</label>
+                <input id="tReady" type="number" class="form-control mono" min="0" max="100" value="25">
+              </div>
+              <div class="col-12 d-flex gap-2 mt-1">
+                <button id="btnApplyTargets" class="btn btn-primary flex-grow-1">
+                  <i class="bi bi-check2-circle me-1"></i> Apply targets
+                </button>
+                <button id="btnResetTargets" class="btn btn-ghost flex-grow-1">
+                  <i class="bi bi-arrow-repeat me-1"></i> Default targets
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-3">
+        <div class="kpi p-3">
+          <div class="muted small">Clients (visible)</div>
+          <div class="num mono" id="kpiClients">0</div>
+          <div class="muted small mt-2"><i class="bi bi-people me-1"></i>After filters</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="kpi p-3">
+          <div class="muted small">Target for discussion</div>
+          <div class="num mono" id="kpiTarget">0</div>
+          <div class="muted small mt-2"><i class="bi bi-chat-dots me-1"></i>Recommended follow-up</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="kpi p-3">
+          <div class="muted small">R&amp;D opportunities</div>
+          <div class="num mono" id="kpiRD">0</div>
+          <div class="muted small mt-2"><i class="bi bi-lightbulb me-1"></i>Potential claims</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="kpi p-3">
+          <div class="muted small">Potential IHT risk</div>
+          <div class="num mono" id="kpiIHT">0</div>
+          <div class="muted small mt-2"><i class="bi bi-exclamation-triangle me-1"></i>Medium/High flags</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid/Table -->
+    <div class="table-wrap">
+      <div class="p-3 border-bottom" style="border-color: rgba(255,255,255,.10) !important;">
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-start align-items-md-center">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="targets-pill"><i class="bi bi-table me-1"></i> Client Grid</span>
+            <span class="muted small">Sorted by Rank (composite score)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTE: no table-responsive wrapper to avoid horizontal scroll -->
+      <table class="table table-hover align-middle mb-0">
+        <colgroup>
+          <col class="rank">
+          <col class="name">
+          <col class="month">
+          <col class="score">
+          <col class="score">
+          <col class="score">
+          <col class="flag">
+          <col class="flag">
+          <col class="risk">
+        </colgroup>
+
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Client Name</th>
+            <th>Reporting Month Used</th>
+            <th>Suitability Score</th>
+            <th>Opportunity Score</th>
+            <th>Readiness Score</th>
+            <th>Target For Discussion?</th>
+            <th>R&amp;D Opportunity?</th>
+            <th>Potential IHT Risk?</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // -----------------------
+    // Demo Data (hand-made)
+    // -----------------------
+    const demo = {
+      companies: [
+        {
+          id: "naylor",
+          name: "Naylor Accountancy",
+          clients: [
+            { name: "Xero Demo Data",            reportingMonth: "10/31/2025", revenueK: 900,  margin: 0.24, digital: 0.75, engagement: 0.62, complexity: 0.55, payroll: true,  vat: true,  rndSignals: 0.20, ihtSignals: 0.12 },
+            { name: "Beacon Retail Ltd",         reportingMonth: "10/31/2025", revenueK: 1750, margin: 0.18, digital: 0.55, engagement: 0.48, complexity: 0.72, payroll: true,  vat: true,  rndSignals: 0.10, ihtSignals: 0.28 },
+            { name: "Oakridge Property Group",   reportingMonth: "09/30/2025", revenueK: 3200, margin: 0.31, digital: 0.64, engagement: 0.58, complexity: 0.66, payroll: false, vat: true,  rndSignals: 0.08, ihtSignals: 0.62 },
+            { name: "Smith & Co Services",       reportingMonth: "08/31/2025", revenueK: 620,  margin: 0.42, digital: 0.82, engagement: 0.74, complexity: 0.40, payroll: true,  vat: false, rndSignals: 0.34, ihtSignals: 0.18 },
+            { name: "Nova Manufacturing",        reportingMonth: "10/31/2025", revenueK: 5100, margin: 0.14, digital: 0.46, engagement: 0.44, complexity: 0.86, payroll: true,  vat: true,  rndSignals: 0.58, ihtSignals: 0.22 },
+            { name: "Harbor Digital Studio",     reportingMonth: "09/30/2025", revenueK: 980,  margin: 0.36, digital: 0.92, engagement: 0.80, complexity: 0.52, payroll: false, vat: true,  rndSignals: 0.66, ihtSignals: 0.09 },
+          ]
+        },
+        {
+          id: "aster",
+          name: "Aster Tax & Advisory",
+          clients: [
+            { name: "Greenfield Farms",          reportingMonth: "10/31/2025", revenueK: 2100, margin: 0.20, digital: 0.40, engagement: 0.55, complexity: 0.68, payroll: true,  vat: true,  rndSignals: 0.05, ihtSignals: 0.35 },
+            { name: "Pulse Health Clinic",       reportingMonth: "09/30/2025", revenueK: 1450, margin: 0.29, digital: 0.71, engagement: 0.66, complexity: 0.58, payroll: true,  vat: false, rndSignals: 0.22, ihtSignals: 0.30 },
+            { name: "Atlas Contractors",         reportingMonth: "08/31/2025", revenueK: 3800, margin: 0.16, digital: 0.52, engagement: 0.41, complexity: 0.78, payroll: true,  vat: true,  rndSignals: 0.12, ihtSignals: 0.44 },
+            { name: "Luna SaaS",                 reportingMonth: "10/31/2025", revenueK: 2700, margin: 0.38, digital: 0.88, engagement: 0.77, complexity: 0.62, payroll: false, vat: true,  rndSignals: 0.72, ihtSignals: 0.11 },
+          ]
+        }
+      ]
+    };
+
+    // -----------------------
+    // Targets (editable)
+    // -----------------------
+    const targetInputs = {
+      suit: document.getElementById("tSuit"),
+      opp: document.getElementById("tOpp"),
+      ready: document.getElementById("tReady"),
+    };
+
+    const targetLabels = {
+      suit: document.getElementById("tSuitLabel"),
+      opp: document.getElementById("tOppLabel"),
+      ready: document.getElementById("tReadyLabel"),
+    };
+
+    const DEFAULT_TARGETS = { suit: 50, opp: 50, ready: 25 };
+
+    function readTargets(){
+      const suit = clampInt(targetInputs.suit.value, 0, 100);
+      const opp  = clampInt(targetInputs.opp.value, 0, 100);
+      const ready= clampInt(targetInputs.ready.value, 0, 100);
+      return { suit, opp, ready };
+    }
+
+    function applyTargetsToUI(t){
+      targetInputs.suit.value = t.suit;
+      targetInputs.opp.value = t.opp;
+      targetInputs.ready.value = t.ready;
+      targetLabels.suit.textContent = String(t.suit);
+      targetLabels.opp.textContent = String(t.opp);
+      targetLabels.ready.textContent = String(t.ready);
+    }
+
+    function clampInt(v, min, max){
+      const n = Number(v);
+      if (!Number.isFinite(n)) return min;
+      return Math.max(min, Math.min(max, Math.round(n)));
+    }
+
+    // -----------------------
+    // Scoring (demo logic)
+    // -----------------------
+    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+    function pct(x){ return Math.round(x * 100); }
+
+    function calcSuitability(c){
+      const score = (
+        0.35 * c.digital +
+        0.30 * c.engagement +
+        0.25 * clamp01((c.margin - 0.10) / 0.35) +
+        0.10 * (1 - c.complexity)
+      );
+      return clamp01(score);
+    }
+
+    function calcOpportunity(c){
+      const revenueScale = clamp01((c.revenueK - 300) / 5000);
+      const serviceBoost = (c.payroll ? 0.08 : 0) + (c.vat ? 0.08 : 0);
+      const score = 0.40 * c.complexity + 0.40 * revenueScale + 0.20 * clamp01(c.rndSignals + serviceBoost);
+      return clamp01(score);
+    }
+
+    function calcReadiness(c){
+      const score = 0.45 * c.engagement + 0.40 * c.digital + 0.15 * 0.70; // demo "data quality"
+      return clamp01(score);
+    }
+
+    function targetForDiscussion(suit, opp, ready, targets){
+      // 2-out-of-3 rule, using editable targets
+      const hits =
+        (pct(suit)  >= targets.suit) +
+        (pct(opp)   >= targets.opp)  +
+        (pct(ready) >= targets.ready);
+      return hits >= 2;
+    }
+
+    function rndOpportunity(c, opp){
+      return (c.rndSignals >= 0.45) || (opp >= 0.65 && c.complexity >= 0.70);
+    }
+
+    function ihtRisk(c){
+      if (c.ihtSignals >= 0.55) return "High";
+      if (c.ihtSignals >= 0.30) return "Medium";
+      return "Low";
+    }
+
+    function riskBadge(level){
+      if (level === "High")   return `<span class="badge badge-soft-danger rounded-pill px-3 py-2">High</span>`;
+      if (level === "Medium") return `<span class="badge badge-soft-warning rounded-pill px-3 py-2">Medium</span>`;
+      return `<span class="badge badge-soft-success rounded-pill px-3 py-2">Low</span>`;
+    }
+
+    function yesNoBadge(v){
+      return v
+        ? `<span class="badge badge-soft-success rounded-pill px-3 py-2"><i class="bi bi-check2 me-1"></i>Yes</span>`
+        : `<span class="badge badge-soft rounded-pill px-3 py-2"><i class="bi bi-dash-lg me-1"></i>No</span>`;
+    }
+
+    function scoreCell(label, value01){
+      const value = pct(value01);
+      return `
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge score-pill rounded-pill mono">${value}%</span>
+          <div class="flex-grow-1">
+            <div class="progress" role="progressbar" aria-label="${label}" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" style="width:${value}%"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -----------------------
+    // UI / Rendering
+    // -----------------------
+    const elCompany = document.getElementById("companySelect");
+    const elCompanyTitle = document.getElementById("companyTitle");
+    const elMonthFilter = document.getElementById("monthFilter");
+    const elSearch = document.getElementById("searchInput");
+    const elBody = document.getElementById("tbody");
+
+    const kpiClients = document.getElementById("kpiClients");
+    const kpiTarget = document.getElementById("kpiTarget");
+    const kpiRD = document.getElementById("kpiRD");
+    const kpiIHT = document.getElementById("kpiIHT");
+
+    function uniqueMonths(allClients){
+      return [...new Set(allClients.map(c => c.reportingMonth))].sort();
+    }
+
+    function populateCompanies(){
+      elCompany.innerHTML = demo.companies.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+    }
+
+    function populateMonths(company){
+      const months = uniqueMonths(company.clients);
+      const options = months.map(m => `<option value="${m}">${m}</option>`).join("");
+      elMonthFilter.innerHTML = `<option value="">All</option>` + options;
+    }
+
+    function getCompany(){
+      const id = elCompany.value;
+      return demo.companies.find(c => c.id === id) || demo.companies[0];
+    }
+
+    function computeRows(company, targets){
+      const enriched = company.clients.map(c => {
+        const suitability = calcSuitability(c);
+        const opportunity = calcOpportunity(c);
+        const readiness = calcReadiness(c);
+
+        const tfd = targetForDiscussion(suitability, opportunity, readiness, targets);
+        const rd = rndOpportunity(c, opportunity);
+        const risk = ihtRisk(c);
+
+        const composite = 0.40*suitability + 0.40*opportunity + 0.20*readiness;
+
+        return { ...c, suitability, opportunity, readiness, tfd, rd, risk, composite };
+      });
+
+      const q = (elSearch.value || "").trim().toLowerCase();
+      const month = elMonthFilter.value;
+
+      const filtered = enriched.filter(r => {
+        const okSearch = !q || r.name.toLowerCase().includes(q);
+        const okMonth = !month || r.reportingMonth === month;
+        return okSearch && okMonth;
+      });
+
+      filtered.sort((a,b) => b.composite - a.composite);
+      return filtered.map((r, idx) => ({ ...r, rank: idx + 1 }));
+    }
+
+    function render(){
+      const company = getCompany();
+      elCompanyTitle.textContent = company.name;
+
+      const previousMonth = elMonthFilter.value;
+      populateMonths(company);
+      if ([...elMonthFilter.options].some(o => o.value === previousMonth)) {
+        elMonthFilter.value = previousMonth;
+      }
+
+      const targets = readTargets();
+      applyTargetsToUI(targets);
+
+      const rows = computeRows(company, targets);
+
+      kpiClients.textContent = rows.length;
+      kpiTarget.textContent = rows.filter(r => r.tfd).length;
+      kpiRD.textContent = rows.filter(r => r.rd).length;
+      kpiIHT.textContent = rows.filter(r => r.risk !== "Low").length;
+
+      elBody.innerHTML = rows.map(r => `
+        <tr>
+          <td class="mono">
+            <span class="badge bg-dark rounded-pill px-3 py-2 mono">#${r.rank}</span>
+          </td>
+
+          <td>
+            <div class="fw-semibold">${r.name}</div>
+            <div class="muted small">
+              Rev: <span class="mono">${r.revenueK.toLocaleString()}</span>K
+              <span class="mx-1">•</span>
+              Margin: <span class="mono">${Math.round(r.margin*100)}%</span>
+              <span class="mx-1">•</span>
+              Complexity: <span class="mono">${Math.round(r.complexity*100)}%</span>
+            </div>
+          </td>
+
+          <td class="mono">${r.reportingMonth}</td>
+
+          <td>${scoreCell("Suitability", r.suitability)}</td>
+          <td>${scoreCell("Opportunity", r.opportunity)}</td>
+          <td>${scoreCell("Readiness", r.readiness)}</td>
+
+          <td>${yesNoBadge(r.tfd)}</td>
+          <td>${yesNoBadge(r.rd)}</td>
+          <td>${riskBadge(r.risk)}</td>
+        </tr>
+      `).join("");
+
+      if (!rows.length){
+        elBody.innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center py-5">
+              <div class="fw-semibold mb-2">No results found</div>
+              <div class="muted">Try changing filters or clearing the search box.</div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Events
+    document.getElementById("btnReset").addEventListener("click", () => {
+      elSearch.value = "";
+      elMonthFilter.value = "";
+      render();
+    });
+
+    document.getElementById("btnFakeExport").addEventListener("click", () => {
+      alert("Export hook can be implemented (CSV/Excel) in the next step.");
+    });
+
+    document.getElementById("btnApplyTargets").addEventListener("click", () => {
+      render();
+    });
+
+    document.getElementById("btnResetTargets").addEventListener("click", () => {
+      applyTargetsToUI(DEFAULT_TARGETS);
+      render();
+    });
+
+    elCompany.addEventListener("change", () => {
+      elMonthFilter.value = "";
+      elSearch.value = "";
+      render();
+    });
+
+    elMonthFilter.addEventListener("change", render);
+    elSearch.addEventListener("input", render);
+
+    // Init
+    populateCompanies();
+    elCompany.value = demo.companies[0].id;
+    applyTargetsToUI(DEFAULT_TARGETS);
+    render();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
