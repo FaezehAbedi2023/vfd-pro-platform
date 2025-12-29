@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import logging
 from django.db import connection
-
+from decimal import Decimal, ROUND_HALF_UP
 
 sp_logger = logging.getLogger("sp_logger")
 
@@ -231,26 +231,42 @@ def _get_client_suitability(client_id: int):
     with connection.cursor() as cursor:
         cursor.execute(
             """
-            SELECT
+             SELECT
                 client_id,
+
                 is_24_month_history,
                 CNT_months_with_sales_24,
+
                 has_more_than_2_sales_nominals,
                 CNT_sales_nominals_24,
+
                 has_more_than_2_cos_nominals,
                 CNT_cos_nominals_24,
+
                 has_more_than_10_overhead_nominals,
                 CNT_overhead_nominals_24,
+
                 has_more_than_20_customers,
                 CNT_customers_24,
+
                 has_more_than_20_suppliers,
                 CNT_suppliers_24,
+
                 debtor_days_calculated,
+                CNT_debtor_months,
+
                 creditor_days_calculated,
+                CNT_creditor_months,
+
                 stock_days_calculated,
+                CNT_stock_months,
+
                 cash_balance_visible,
+                CNT_cash_months,
+
                 consistent_cost_base,
                 CNT_inconsistent_months_12
+                
             FROM vw_vfd_client_suitability
             WHERE client_id = %s
             """,
@@ -265,7 +281,7 @@ def _get_client_suitability(client_id: int):
 
 def _get_client_readiness(client_id: int):
     """
-    داده‌های Readiness از vfd_client_Readiness
+    داده‌های Readiness از vw_vfd_client_readiness
     """
     with connection.cursor() as cursor:
         cursor.execute(
@@ -273,19 +289,28 @@ def _get_client_readiness(client_id: int):
             SELECT
                 client_id,
                 client_name,
+
                 is_ebitda_positive,
                 val_ebitda_TY,
+                val_ebitda_LY,
                 is_ebitda_more_than_ly,
                 val_ebitda_vs_ly,
+
                 has_dividend_last_12m,
                 val_dividend_TY,
+                val_dividend_LY,
                 is_dividend_at_least_equal_ly,
                 val_dividend_vs_ly,
+
                 is_cash_balance_positive,
                 val_cash_TY,
+                val_cash_LY,
                 is_cash_more_than_ly,
                 val_cash_vs_ly,
+
                 are_sales_improving,
+                val_revenue_TY,
+                val_revenue_LY,
                 val_revenue_vs_ly
             FROM vw_vfd_client_readiness
             WHERE client_id = %s
@@ -297,6 +322,31 @@ def _get_client_readiness(client_id: int):
             return None
         columns = [col[0] for col in cursor.description]
         return dict(zip(columns, row))
+
+
+def _get_client_utilities(client_id: int):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT has_utilities
+            FROM vw_vfd_client_utilities
+            WHERE client_id = %s
+            """,
+            [client_id],
+        )
+        row = cursor.fetchone()
+        return row[0] if row else "No"
+
+
+def _get_client_rd(client_id: int) -> str:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT rd_flag FROM vw_vfd_client_rd WHERE client_id = %s",
+            [client_id],
+        )
+        row = cursor.fetchone()
+        print("DEBUG RD ROW:", row)
+        return row[0] if row else "No"
 
 
 def _get_sales_trend(client_id: int):
@@ -352,20 +402,159 @@ def _var_class(value):
 # ---------- View  ----------
 
 
+def _round10_or_none(v):
+    if v is None:
+        return None
+
+    # v رو حتما Decimal کن (اگر از قبل نبود)
+    if not isinstance(v, Decimal):
+        v = Decimal(str(v))
+
+    ten = Decimal("10")
+
+    # گرد کردن به نزدیک‌ترین مضرب 10
+    return int((v / ten).to_integral_value(rounding=ROUND_HALF_UP) * ten)
+
+
 def client_summary(request, client_id: int):
-    # 👇 رکورد OpportunityCriteria برای این کلاینت (اگر نباشد ساخته می‌شود)
+
     criteria, _ = OpportunityCriteria.objects.get_or_create(client_id=client_id)
 
+    # //Post//////////////////////////////////////
     if request.method == "POST":
         opportunity_score, kpi_state = calculate_opportunity_score(request.POST)
+
+        # ✅ Save Suitability enable/disable settings inside kpi_state
+        suit_cfg = {}
+        suit_cfg["is_24_month_history"] = (
+            request.POST.get("is_24_month_history_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["has_more_than_2_sales_nominals"] = (
+            request.POST.get("has_more_than_2_sales_nominals_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["has_more_than_2_cos_nominals"] = (
+            request.POST.get("has_more_than_2_cos_nominals_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["has_more_than_10_overhead_nominals"] = (
+            request.POST.get("has_more_than_10_overhead_nominals_enabled", "Yes")
+            == "Yes"
+        )
+        suit_cfg["has_more_than_20_customers"] = (
+            request.POST.get("has_more_than_20_customers_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["has_more_than_20_suppliers"] = (
+            request.POST.get("has_more_than_20_suppliers_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["consistent_cost_base"] = (
+            request.POST.get("consistent_cost_base_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["debtor_days_calculated"] = (
+            request.POST.get("debtor_days_calculated_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["creditor_days_calculated"] = (
+            request.POST.get("creditor_days_calculated_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["stock_days_calculated"] = (
+            request.POST.get("stock_days_calculated_enabled", "Yes") == "Yes"
+        )
+        suit_cfg["cash_balance_visible"] = (
+            request.POST.get("cash_balance_visible_enabled", "Yes") == "Yes"
+        )
+
+        kpi_state = kpi_state or {}
+        kpi_state["suitability_cfg"] = suit_cfg
+
+        # IHT
+
+        iht_cfg = {}
+        iht_cfg["enabled"] = request.POST.get("iht_enabled", "Yes") == "Yes"
+
+        try:
+            iht_cfg["threshold"] = int(request.POST.get("iht_threshold", "900000"))
+        except (TypeError, ValueError):
+            iht_cfg["threshold"] = 900000
+
+        kpi_state["iht_cfg"] = iht_cfg
+
+        # Readiness
+
+        readiness_cfg = {}
+        readiness_cfg["is_ebitda_positive"] = (
+            request.POST.get("readiness_is_ebitda_positive_enabled", "Yes") == "Yes"
+        )
+        readiness_cfg["is_ebitda_more_than_ly"] = (
+            request.POST.get("readiness_is_ebitda_more_than_ly_enabled", "Yes") == "Yes"
+        )
+
+        readiness_cfg["has_dividend_last_12m"] = (
+            request.POST.get("readiness_has_dividend_last_12m_enabled", "Yes") == "Yes"
+        )
+        readiness_cfg["is_dividend_at_least_equal_ly"] = (
+            request.POST.get("readiness_is_dividend_at_least_equal_ly_enabled", "Yes")
+            == "Yes"
+        )
+
+        readiness_cfg["is_cash_balance_positive"] = (
+            request.POST.get("readiness_is_cash_balance_positive_enabled", "Yes")
+            == "Yes"
+        )
+        readiness_cfg["is_cash_more_than_ly"] = (
+            request.POST.get("readiness_is_cash_more_than_ly_enabled", "Yes") == "Yes"
+        )
+
+        readiness_cfg["are_sales_improving"] = (
+            request.POST.get("readiness_are_sales_improving_enabled", "Yes") == "Yes"
+        )
+
+        kpi_state["readiness_cfg"] = readiness_cfg
+
+        # ---------------- Targets for Discussion ----------------
+        def _to_int_0_100(v, default):
+            try:
+                x = int(v)
+            except (TypeError, ValueError):
+                x = default
+            return max(0, min(100, x))
+
+        targets = kpi_state.get("targets") or {}
+
+        if "target_suitability" in request.POST:
+            targets["suitability"] = _to_int_0_100(
+                request.POST.get("target_suitability"), 50
+            )
+
+        if "target_opportunity" in request.POST:
+            targets["opportunity"] = _to_int_0_100(
+                request.POST.get("target_opportunity"), 50
+            )
+
+        if "target_readiness" in request.POST:
+            targets["readiness"] = _to_int_0_100(
+                request.POST.get("target_readiness"), 50
+            )
+
+        def _round10(x):
+            return int(round(x / 10.0) * 10)
+
+        for k in ("suitability", "opportunity", "readiness"):
+            if k in targets and targets[k] is not None:
+                targets[k] = max(0, min(100, _round10(targets[k])))
+
+        kpi_state["targets"] = targets
 
         criteria.kpi_state = kpi_state
         criteria.opportunity_score = opportunity_score
         criteria.save()
 
         return redirect("client_summary", client_id=client_id)
+    # //End Post////////////////////////////////////
 
-    # KPI اصلی
+    # ///Start Get ///////////////////////////////////////
+    # Utilities (Yes / No)
+    utilities_flag = _get_client_utilities(client_id)
+    # R&D
+    rd_flag = _get_client_rd(client_id)
+    # KPI
     kpi = _get_client_kpi(client_id)
     if kpi is None:
         raise Http404("Client KPI not found")
@@ -376,59 +565,201 @@ def client_summary(request, client_id: int):
     suitability_bottom_rows = []
     suitability_score = None
 
+    # ---------------- Suitability configuration rows (for Configuration modal) ----------------
+    def _is_yes(v):
+        return str(v).strip().lower() == "yes"
+
+    saved_state = criteria.kpi_state or {}
+    saved_suit_cfg = saved_state.get("suitability_cfg", {}) or {}
+
+    suitability_fields = [
+        {
+            "key": "is_24_month_history",
+            "label": "24 Months History",
+            "status": "is_24_month_history",
+            "value": "CNT_months_with_sales_24",
+        },
+        {
+            "key": "has_more_than_2_sales_nominals",
+            "label": "More Than 2 Sales Nominals",
+            "status": "has_more_than_2_sales_nominals",
+            "value": "CNT_sales_nominals_24",
+        },
+        {
+            "key": "has_more_than_2_cos_nominals",
+            "label": "More Than 2 COS Nominals",
+            "status": "has_more_than_2_cos_nominals",
+            "value": "CNT_cos_nominals_24",
+        },
+        {
+            "key": "has_more_than_10_overhead_nominals",
+            "label": "More Than 10 Overhead Nominals",
+            "status": "has_more_than_10_overhead_nominals",
+            "value": "CNT_overhead_nominals_24",
+        },
+        {
+            "key": "has_more_than_20_customers",
+            "label": "More Than 20 Customers",
+            "status": "has_more_than_20_customers",
+            "value": "CNT_customers_24",
+        },
+        {
+            "key": "has_more_than_20_suppliers",
+            "label": "More Than 20 Suppliers",
+            "status": "has_more_than_20_suppliers",
+            "value": "CNT_suppliers_24",
+        },
+        {
+            "key": "consistent_cost_base",
+            "label": "Consistent Cost Base",
+            "status": "consistent_cost_base",
+            "value": "CNT_inconsistent_months_12",
+        },
+        {
+            "key": "debtor_days_calculated",
+            "label": "Debtor Days Calculated",
+            "status": "debtor_days_calculated",
+            "value": "CNT_debtor_months",
+        },
+        {
+            "key": "creditor_days_calculated",
+            "label": "Creditor Days Calculated",
+            "status": "creditor_days_calculated",
+            "value": "CNT_creditor_months",
+        },
+        {
+            "key": "stock_days_calculated",
+            "label": "Stock Days Calculated",
+            "status": "stock_days_calculated",
+            "value": "CNT_stock_months",
+        },
+        {
+            "key": "cash_balance_visible",
+            "label": "Cash Balance Visible",
+            "status": "cash_balance_visible",
+            "value": "CNT_cash_months",
+        },
+    ]
+
+    suitability_config_rows = []
+    for f in suitability_fields:
+        key = f["key"]
+        enabled = saved_suit_cfg.get(key, True)
+
+        status_val = (suitability or {}).get(f["status"])
+        status = _is_yes(status_val)
+
+        display_value = (suitability or {}).get(f["value"], "")
+
+        suitability_config_rows.append(
+            {
+                "key": key,
+                "label": f["label"],
+                "enabled": enabled,
+                "display_value": display_value,
+                "status": status,
+            }
+        )
+
     if suitability:
 
         def yn(field):
             val = suitability.get(field)
-            return str(val).lower() == "yes"
+            return str(val).strip().lower() == "yes"
 
         suitability_top_rows = [
-            {"label": "24 Months History", "value": yn("is_24_month_history")},
             {
+                "key": "is_24_month_history",
+                "label": "24 Months History",
+                "value": yn("is_24_month_history"),
+            },
+            {
+                "key": "has_more_than_2_sales_nominals",
                 "label": "More Than 2 Sales Nominals",
                 "value": yn("has_more_than_2_sales_nominals"),
             },
             {
+                "key": "has_more_than_2_cos_nominals",
                 "label": "More Than 2 COS Nominals",
                 "value": yn("has_more_than_2_cos_nominals"),
             },
             {
+                "key": "has_more_than_10_overhead_nominals",
                 "label": "More Than 10 Overhead Nominals",
                 "value": yn("has_more_than_10_overhead_nominals"),
             },
             {
+                "key": "has_more_than_20_customers",
                 "label": "More Than 20 Customers",
                 "value": yn("has_more_than_20_customers"),
             },
             {
+                "key": "has_more_than_20_suppliers",
                 "label": "More Than 20 Suppliers",
                 "value": yn("has_more_than_20_suppliers"),
             },
         ]
 
         suitability_bottom_rows = [
-            {"label": "Consistent Cost Base", "value": yn("consistent_cost_base")},
-            {"label": "Debtor Days Calculated", "value": yn("debtor_days_calculated")},
             {
+                "key": "consistent_cost_base",
+                "label": "Consistent Cost Base",
+                "value": yn("consistent_cost_base"),
+            },
+            {
+                "key": "debtor_days_calculated",
+                "label": "Debtor Days Calculated",
+                "value": yn("debtor_days_calculated"),
+            },
+            {
+                "key": "creditor_days_calculated",
                 "label": "Creditor Days Calculated",
                 "value": yn("creditor_days_calculated"),
             },
-            {"label": "Stock Days Calculated", "value": yn("stock_days_calculated")},
-            {"label": "Cash Balance Visible", "value": yn("cash_balance_visible")},
+            {
+                "key": "stock_days_calculated",
+                "label": "Stock Days Calculated",
+                "value": yn("stock_days_calculated"),
+            },
+            {
+                "key": "cash_balance_visible",
+                "label": "Cash Balance Visible",
+                "value": yn("cash_balance_visible"),
+            },
         ]
 
         all_flags = suitability_top_rows + suitability_bottom_rows
-        yes_count = sum(1 for r in all_flags if r["value"])
-        total_count = len(all_flags)
+        enabled_flags = [r for r in all_flags if saved_suit_cfg.get(r["key"], True)]
+        enabled_total = len(enabled_flags)
+        enabled_yes = sum(1 for r in enabled_flags if r["value"])
+
         suitability_score = (
-            round(100 * yes_count / total_count) if total_count else None
+            round(100 * enabled_yes / enabled_total) if enabled_total else None
         )
+
+    # IHT Start
+    saved_state = criteria.kpi_state or {}
+    saved_iht_cfg = saved_state.get("iht_cfg", {}) or {}
+    iht_enabled = saved_iht_cfg.get("enabled", True)
+    iht_threshold = saved_iht_cfg.get("threshold", 900000)
+    iht_multiple = 3
+    ebitda_ty = kpi.get("ebitda_TY") or 0
+    try:
+        est_value = float(ebitda_ty) * float(iht_multiple)
+    except Exception:
+        est_value = 0
+
+    iht_flag = "Yes" if (iht_enabled and est_value >= iht_threshold) else "No"
+    # IHT End
 
     # READINESS
     readiness = _get_client_readiness(client_id)
     readiness_top_rows = []
     readiness_bottom_rows = []
     readiness_score = None
+
+    saved_state = criteria.kpi_state or {}
+    saved_read_cfg = saved_state.get("readiness_cfg", {}) or {}
 
     if readiness:
 
@@ -438,42 +769,204 @@ def client_summary(request, client_id: int):
 
         readiness_top_rows = [
             {
+                "key": "is_ebitda_positive",
                 "label": "Is The Client's EBITDA Positive?",
                 "value": yn_r("is_ebitda_positive"),
             },
             {
+                "key": "is_ebitda_more_than_ly",
                 "label": "Is The EBITDA More Than Last Year?",
                 "value": yn_r("is_ebitda_more_than_ly"),
             },
             {
+                "key": "has_dividend_last_12m",
                 "label": "Have They Paid A Dividend In The Last 12 Months?",
                 "value": yn_r("has_dividend_last_12m"),
             },
             {
+                "key": "is_dividend_at_least_equal_ly",
                 "label": "Is The Dividend At Least Equal To Last Year?",
                 "value": yn_r("is_dividend_at_least_equal_ly"),
             },
         ]
-
         readiness_bottom_rows = [
             {
+                "key": "is_cash_balance_positive",
                 "label": "Is The Cash Balance Positive?",
                 "value": yn_r("is_cash_balance_positive"),
             },
             {
+                "key": "is_cash_more_than_ly",
                 "label": "Is The Cash Balance More Than Last Year?",
                 "value": yn_r("is_cash_more_than_ly"),
             },
             {
+                "key": "are_sales_improving",
                 "label": "Are Sales Improving?",
                 "value": yn_r("are_sales_improving"),
             },
         ]
 
         all_r_flags = readiness_top_rows + readiness_bottom_rows
-        yes_r = sum(1 for r in all_r_flags if r["value"])
-        total_r = len(all_r_flags)
-        readiness_score = round(100 * yes_r / total_r) if total_r else None
+        enabled_r_flags = [r for r in all_r_flags if saved_read_cfg.get(r["key"], True)]
+        enabled_r_total = len(enabled_r_flags)
+        enabled_r_yes = sum(1 for r in enabled_r_flags if r["value"])
+
+        readiness_score = (
+            round(100 * enabled_r_yes / enabled_r_total) if enabled_r_total else None
+        )
+
+    # ---------------- Readiness configuration groups Tab (for Configuration modal) ----------------
+    # saved_state = criteria.kpi_state or {}
+    # saved_read_cfg = saved_state.get("readiness_cfg", {}) or {}
+
+    def _is_yes(v):
+        return str(v).strip().lower() == "yes"
+
+    readiness_config_groups = []
+    if readiness:
+        readiness_config_groups = [
+            {
+                "key": "ebitda",
+                "label": "EBITDA",
+                "ty": readiness.get("val_ebitda_TY"),
+                "ly": readiness.get("val_ebitda_LY"),
+                "vs": readiness.get("val_ebitda_vs_ly"),
+                "metrics": [
+                    {
+                        "key": "is_ebitda_positive",
+                        "label": "Is The Client's EBITDA Positive?",
+                        "status": _is_yes(readiness.get("is_ebitda_positive")),
+                        "enabled": saved_read_cfg.get("is_ebitda_positive", True),
+                        "enabled_name": "readiness_is_ebitda_positive_enabled",
+                    },
+                    {
+                        "key": "is_ebitda_more_than_ly",
+                        "label": "Is The EBITDA More Than Last Year?",
+                        "status": _is_yes(readiness.get("is_ebitda_more_than_ly")),
+                        "enabled": saved_read_cfg.get("is_ebitda_more_than_ly", True),
+                        "enabled_name": "readiness_is_ebitda_more_than_ly_enabled",
+                    },
+                ],
+            },
+            {
+                "key": "dividend",
+                "label": "Dividend",
+                "enabled": saved_read_cfg.get("dividend", True),
+                "ty": readiness.get("val_dividend_TY"),
+                "ly": readiness.get("val_dividend_LY"),
+                "vs": readiness.get("val_dividend_vs_ly"),
+                "metrics": [
+                    {
+                        "key": "has_dividend_last_12m",
+                        "label": "Have They Paid A Dividend In The Last 12 Months?",
+                        "status": _is_yes(readiness.get("has_dividend_last_12m")),
+                        "enabled": saved_read_cfg.get("has_dividend_last_12m", True),
+                        "enabled_name": "readiness_has_dividend_last_12m_enabled",
+                    },
+                    {
+                        "key": "is_dividend_at_least_equal_ly",
+                        "label": "Is The Dividend At Least Equal To Last Year?",
+                        "status": _is_yes(
+                            readiness.get("is_dividend_at_least_equal_ly")
+                        ),
+                        "enabled": saved_read_cfg.get(
+                            "is_dividend_at_least_equal_ly", True
+                        ),
+                        "enabled_name": "readiness_is_dividend_at_least_equal_ly_enabled",
+                    },
+                ],
+            },
+            {
+                "key": "cash",
+                "label": "Cash",
+                "enabled": saved_read_cfg.get("cash", True),
+                "ty": readiness.get("val_cash_TY"),
+                "ly": readiness.get("val_cash_LY"),
+                "vs": readiness.get("val_cash_vs_ly"),
+                "metrics": [
+                    {
+                        "key": "is_cash_balance_positive",
+                        "label": "Is The Cash Balance Positive?",
+                        "status": _is_yes(readiness.get("is_cash_balance_positive")),
+                        "enabled": saved_read_cfg.get("is_cash_balance_positive", True),
+                        "enabled_name": "readiness_is_cash_balance_positive_enabled",
+                    },
+                    {
+                        "key": "is_cash_more_than_ly",
+                        "label": "Is The Cash Balance More Than Last Year?",
+                        "status": _is_yes(readiness.get("is_cash_more_than_ly")),
+                        "enabled": saved_read_cfg.get("is_cash_more_than_ly", True),
+                        "enabled_name": "readiness_is_cash_more_than_ly_enabled",
+                    },
+                ],
+            },
+            {
+                "key": "sales",
+                "label": "Sales",
+                "enabled": saved_read_cfg.get("sales", True),
+                "ty": readiness.get("val_revenue_TY"),
+                "ly": readiness.get("val_revenue_LY"),
+                "vs": readiness.get("val_revenue_vs_ly"),
+                "metrics": [
+                    {
+                        "key": "are_sales_improving",
+                        "label": "Are Sales Improving?",
+                        "status": _is_yes(readiness.get("are_sales_improving")),
+                        "enabled": saved_read_cfg.get("are_sales_improving", True),
+                        "enabled_name": "readiness_are_sales_improving_enabled",
+                    }
+                ],
+            },
+        ]
+        readiness_config_rows = []
+        for g in readiness_config_groups:
+            for m in g["metrics"]:
+                readiness_config_rows.append(
+                    {
+                        "field": m["label"],
+                        "status": m["status"],
+                        "enabled": m["enabled"],
+                        "enabled_name": f"readiness_{m['key']}_enabled",
+                        "ty": g.get("ty"),
+                        "ly": g.get("ly"),
+                        "vs": g.get("vs"),
+                    }
+                )
+
+        # ----------------  Target for Discussion ----------------
+    saved_state = criteria.kpi_state or {}
+    targets = (saved_state.get("targets") or {}).copy()
+
+    opportunity_score = criteria.opportunity_score
+
+    if targets.get("suitability") is None:
+        targets["suitability"] = _round10_or_none(suitability_score) or 50
+    if targets.get("opportunity") is None:
+        targets["opportunity"] = _round10_or_none(opportunity_score) or 50
+    if targets.get("readiness") is None:
+        targets["readiness"] = _round10_or_none(readiness_score) or 50
+
+    target_suitability = targets["suitability"]
+    target_opportunity = targets["opportunity"]
+    target_readiness = targets["readiness"]
+
+    if (
+        suitability_score is None
+        or opportunity_score is None
+        or readiness_score is None
+    ):
+        target_for_discussion = "—"
+    else:
+        target_for_discussion = (
+            "Yes"
+            if (
+                suitability_score >= target_suitability
+                and opportunity_score >= target_opportunity
+                and readiness_score >= target_readiness
+            )
+            else "No"
+        )
 
     # KPI TABLES (Opportunity / Working Capital)
     left_rows = []
@@ -640,6 +1133,26 @@ def client_summary(request, client_id: int):
         "sales_trend": sales_trend,
         # برای Opportunity Criteria در template
         "kpi_state": kpi_state,
+        "suitability_config_rows": suitability_config_rows,
+        # IHT
+        "iht_enabled": iht_enabled,
+        "iht_threshold": iht_threshold,
+        "iht_multiple": iht_multiple,
+        "iht_ebitda_ty": ebitda_ty,
+        "iht_est_value": est_value,
+        "iht_flag": iht_flag,
+        # Readiness Tab
+        "readiness_config_rows": readiness_config_rows,
+        "readiness_config_groups": readiness_config_groups,
+        # Utilities
+        "utilities_flag": utilities_flag,
+        # R&D
+        "rd_flag": rd_flag,
+        # Target for Discussion
+        "target_suitability": target_suitability,
+        "target_opportunity": target_opportunity,
+        "target_readiness": target_readiness,
+        "target_for_discussion": target_for_discussion,
     }
     print("SALES TREND:", sales_trend)
 
@@ -1190,17 +1703,6 @@ def ajax_oh_pct_criteria(request, client_id: int):
 
 # -------Start Ebitda-------
 def _call_ebitda_profitability_sp(client_id, sign_mode, min_months, threshold, flag_on):
-    """
-    اجرای SP:
-        sp_vfd_client_ebitda_profitability
-
-    ورودی:
-        client_id   -> p_client_id
-        sign_mode   -> p_sign_mode ('+/-', '+', '-')
-        min_months  -> p_min_months (None → SP می‌ذاره 24)
-        threshold   -> p_threshold (مثلاً 10.00)
-        flag_on     -> p_flag_on ('Yes' / 'No')
-    """
 
     sp_logger.debug("--------------------------------------------------")
     sp_logger.debug("Calling SP: sp_vfd_client_ebitda_profitability")
@@ -1299,6 +1801,8 @@ def ajax_ebitda_criteria(request, client_id: int):
             sp_logger.debug("SP returned NO RESULT for EBITDA.")
             return JsonResponse({"ok": False, "error": "No result from SP"}, status=200)
 
+        profit_impact = result.get("EBITDA_Impact")
+
         data = {
             "ok": True,
             "ebitda_ty": _fmt_num(result.get("EBITDA_TY_12m"), 0),
@@ -1310,6 +1814,7 @@ def ajax_ebitda_criteria(request, client_id: int):
                 if result.get("EBITDA_Flag") is not None
                 else None
             ),
+            "ebitda_impact": _fmt_num(profit_impact, 1),
             # "ebitda_impact":      _fmt_num(result.get("EBITDA_Profit_Impact"), 0) if "EBITDA_Profit_Impact" in result else None,
             # "ebitda_val_impact":  _fmt_num(result.get("EBITDA_Val_Impact"), 0)    if "EBITDA_Val_Impact" in result else None,
         }
