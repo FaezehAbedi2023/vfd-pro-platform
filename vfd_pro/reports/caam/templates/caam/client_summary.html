@@ -1,10 +1,11 @@
+<!-- DEBUG MARK: CAAM v2 -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>Client Summary - {{ client_name }}</title>
+  <title>Client ssssSummary - {{ client_name }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -572,6 +573,7 @@
 </head>
 
 <body>
+  <h1>vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv</h1>
   <div class="page-container">
 
     <!-- ====== Header ====== -->
@@ -968,7 +970,9 @@
       aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-          <form method="post" action="">
+          <!-- <form method="post" action=""> -->
+          <form method="post" action="{% url 'caam:client_summary' client_id=client_id %}">
+
             {% csrf_token %}
             <div class="modal-header">
               <h5 class="modal-title" id="opportunityCriteriaLabel">Setting</h5>
@@ -2219,6 +2223,8 @@
       }
     </script>
 
+
+
     <!---SP Revenue profitability js----->
     <script>
 
@@ -2239,8 +2245,8 @@
       const csrftoken = getCookie("csrftoken");
 
       // URL view AJAX
-      const revenueUrl = "{% url 'ajax_revenue_criteria' client_id=client_id %}";
-
+      const revenueUrl = "{% url 'caam:ajax_revenue_criteria' client_id=client_id %}";
+      console.log("REVENUE URL:", revenueUrl);
       function callRevenueSp() {
         console.log("callRevenueSp fired");
         const enabledEl = document.getElementById("rev_enabled");
@@ -2328,10 +2334,11 @@
       });
     </script>
 
+
     <!-- Gross Margin -->
     <script>
 
-      const gmUrl = "{% url 'ajax_gm_criteria' client_id=client_id %}";
+      const gmUrl = "{% url 'caam:ajax_gm_criteria' client_id=client_id %}";
 
       function callGmSp() {
         const enabledEl = document.getElementById("gm_enabled");
@@ -2418,7 +2425,7 @@
     <!---Overhead---->
     <script>
 
-      const overheadUrl = "{% url 'ajax_oh_val_criteria' client_id=client_id %}";
+      const overheadUrl = "{% url 'caam:ajax_oh_val_criteria' client_id=client_id %}";
 
       function callOverheadSp() {
         const enabledEl = document.getElementById("oh_val_enabled");
@@ -2501,7 +2508,7 @@
 
     <script>
 
-      const overheadPctUrl = "{% url 'ajax_oh_pct_criteria' client_id=client_id %}";
+      const overheadPctUrl = "{% url 'caam:ajax_oh_pct_criteria' client_id=client_id %}";
 
       function callOverheadPctSp() {
         const enabledEl = document.getElementById("oh_pct_enabled");
@@ -2584,7 +2591,7 @@
 
     <script>
 
-      const ebitdaUrl = "{% url 'ajax_ebitda_criteria' client_id=client_id %}";
+      const ebitdaUrl = "{% url 'caam:ajax_ebitda_criteria' client_id=client_id %}";
 
       function callEbitdaSp() {
         const enabledEl = document.getElementById("ebitda_enabled");
@@ -2661,7 +2668,7 @@
     <!--New Customer--->
 
     <script>
-      const newcustUrl = "{% url 'ajax_newcust_criteria' client_id=client_id %}";
+      const newcustUrl = "{% url 'caam:ajax_newcust_criteria' client_id=client_id %}";
 
       function callNewcustSp() {
         const enabledEl = document.getElementById("newcust_enabled");
@@ -2730,7 +2737,8 @@
 
     <!--Customer Retention-->
     <script>
-      const retentionUrl = "{% url 'ajax_retention_criteria' client_id=client_id %}";
+      const retentionUrl = "{% url 'caam:ajax_retention_criteria' client_id=client_id %}";
+
 
       function callRetentionSp() {
         const enabledEl = document.getElementById("retention_enabled");
@@ -2795,7 +2803,8 @@
     <!--Cash position-->
 
     <script>
-      const cashUrl = "{% url 'ajax_cash_criteria' client_id=client_id %}";
+      const cashUrl = "{% url 'caam:ajax_cash_criteria' client_id=client_id %}";
+      console.log("cashUrl =", cashUrl);
 
       function callCashSp() {
         const enabledEl = document.getElementById("cash_enabled");
@@ -2857,7 +2866,7 @@
 
     <!--Debtor Days-->
     <script>
-      const debtorUrl = "{% url 'ajax_debtordays_criteria' client_id=client_id %}";
+      const debtorUrl = "{% url 'caam:ajax_debtordays_criteria' client_id=client_id %}";
 
       function callDebtorDaysSp() {
         const enabledEl = document.getElementById("debtordays_enabled");
@@ -2919,7 +2928,7 @@
 
     <!--Creditor Days-->
     <script>
-      const creditorUrl = "{% url 'ajax_creditordays_criteria' client_id=client_id %}";
+      const creditorUrl = "{% url 'caam:ajax_creditordays_criteria' client_id=client_id %}";
 
       function callCreditorDaysSp() {
         const enabledEl = document.getElementById("creditordays_enabled");
@@ -2981,7 +2990,7 @@
 
     <!--Stock Days-->
     <script>
-      const stockUrl = "{% url 'ajax_stockdays_criteria' client_id=client_id %}";
+      const stockUrl = "{% url 'caam:ajax_stockdays_criteria' client_id=client_id %}";
 
       function callStockDaysSp() {
         const enabledEl = document.getElementById("stockdays_enabled");

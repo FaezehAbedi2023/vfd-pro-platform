@@ -160,7 +160,7 @@ def portfolio_view(request):
         "selected_month": month,
     }
 
-    return render(request, "transactions/portfolio.html", context)
+    return render(request, "vfd_pro/portfolio.html", context)
 
 
 def download_vfd_report(request):
@@ -1156,7 +1156,7 @@ def client_summary(request, client_id: int):
     }
     print("SALES TREND:", sales_trend)
 
-    return render(request, "transactions/client_summary.html", context)
+    return render(request, "vfd_pro/client_summary.html", context)
 
 
 # ----------Call Sps for profitability ----------
