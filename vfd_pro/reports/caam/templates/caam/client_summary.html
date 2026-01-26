@@ -1,15 +1,17 @@
-<!-- DEBUG MARK: CAAM v2 -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>Client ssssSummary - {{ client_name }}</title>
+  <title>Client Summary - {{ client_name }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+  <link rel="stylesheet" href="{% static 'vfd_pro/css/progress.css' %}">
 
   <style>
     :root {
@@ -371,9 +373,8 @@
       border-radius: 999px;
 
       border: 1px solid #25a35a;
-      /* سبز هم‌خوان با UI */
+
       background: #eaf8f0;
-      /* سبز خیلی روشن */
       color: #157a3e;
 
       font-weight: 600;
@@ -413,25 +414,20 @@
     .kpi-strip {
       display: flex;
       gap: 16px;
-      /* فاصله بین باکس‌ها */
       align-items: stretch;
       flex-wrap: wrap;
-      /* تو موبایل/صفحه کوچیک میره خط بعد */
       margin: 8px 0 22px;
-      /* فاصله از هدر و بخش بعد */
+
     }
 
     .kpi-box {
       flex: 1 1 170px;
-      /* حداقل عرض هر باکس */
       min-width: 170px;
       max-width: 220px;
-      /* نذار خیلی کش بیاد */
       background: var(--bg-card);
       border-radius: 14px;
       box-shadow: var(--shadow-soft);
       padding: 14px 14px 12px;
-      /* بزرگ‌تر */
       border: 1px solid var(--border-subtle);
     }
 
@@ -445,7 +441,6 @@
 
     .kpi-box .kpi-value {
       font-size: 1.55rem;
-      /* عدد بزرگ‌تر */
       font-weight: 800;
       line-height: 1.1;
     }
@@ -456,7 +451,7 @@
       margin-top: 6px;
     }
 
-    /* رنگ‌ها مثل کارت‌های امتیاز */
+
     .kpi-box.suitability {
       background: #fefce8;
       border-color: #facc15;
@@ -512,7 +507,7 @@
 
     }
 
-    /* همه‌ی KPI هایی که donut دارن */
+
     .kpi-card.kpi-donut {
       display: flex;
       flex-direction: column;
@@ -523,7 +518,7 @@
       min-height: 110px;
     }
 
-    /* عنوان داخل کارت */
+
     .kpi-card.kpi-donut .kpi-title {
       font-weight: 600;
       font-size: 14px;
@@ -532,7 +527,7 @@
       text-align: left;
     }
 
-    /* ظرف چارت */
+
     .kpi-donut-wrap {
       width: 70px;
       height: 70px;
@@ -545,13 +540,13 @@
       display: block;
     }
 
-    /* زیباتر شدن باکس‌ها */
+
     .kpi-box {
       border-radius: 16px;
       border-width: 2px;
     }
 
-    /* حالت‌های رنگی عمومی */
+
     .kpi-box.is-green {
       background: #ecfdf3 !important;
       border-color: #22c55e !important;
@@ -573,16 +568,13 @@
 </head>
 
 <body>
-  <h1>vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv</h1>
+
   <div class="page-container">
 
     <!-- ====== Header ====== -->
     <div class="page-header-card">
       <div class="page-header-title">
         <h3>{{ client_name }}</h3>
-        <!-- <div class="page-header-meta">
-          Client ID: {{ client_id }}
-        </div> -->
       </div>
       <div class="d-flex align-items-center gap-2">
 
@@ -645,30 +637,6 @@
         <div class="kpi-title">Potential IHT Risk</div>
         <div class="kpi-value" id="val-iht">{% if iht_flag %}{{ iht_flag }}{% else %}No{% endif %}</div>
       </div>
-      <!-- <div class="kpi-box">
-        <div class="kpi-title">Target for Discussion?</div>
-        <div class="kpi-value">{{ target_for_discussion }}</div>
-      </div>
-
-
-      <div class="kpi-box">
-        <div class="kpi-title">R&amp;D Opportunity?</div>
-        <div class="kpi-value">{{ rd_flag }}</div>
-      </div>
-
-      <div class="kpi-box">
-        <div class="kpi-title">Utilities</div>
-        <div class="kpi-value">{{ utilities_flag }}</div>
-      </div>
-
-      <div class="kpi-box iht">
-        <div class="kpi-title">Potential IHT Risk</div>
-        <div class="kpi-value">{% if iht_flag %}{{ iht_flag }}{% else %}No{% endif %}</div>
-      </div>
-    </div> -->
-
-
-
 
       <!-- 1) SUITABILITY ROW -->
       <div class="row g-4 mb-4">
@@ -686,19 +654,20 @@
           <div class="card card-kpi">
             <div class="card-body card-body-clean">
 
+              <!-- TOP MATRIX -->
               <table class="table text-center matrix-table mb-3">
                 <thead>
                   <tr>
-                    {% for r in suitability_top_rows %}
-                    <th>{{ r.label }}</th>
+                    {% for m in suitability.top %}
+                    <th>{{ m.label }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    {% for r in suitability_top_rows %}
+                    {% for m in suitability.top %}
                     <td>
-                      {% if r.value %}
+                      {% if m.is_yes %}
                       <span class="check-yes">✔</span>
                       {% else %}
                       <span class="check-no">✖</span>
@@ -709,19 +678,23 @@
                 </tbody>
               </table>
 
-              <table class="table text-center matrix-table mt-3 mb-0">
+
+              <!-- BOTTOM MATRIX -->
+
+
+              <table class="table text-center matrix-table mb-3 mb-0">
                 <thead>
                   <tr>
-                    {% for r in suitability_bottom_rows %}
-                    <th>{{ r.label }}</th>
+                    {% for m in suitability.bottom %}
+                    <th>{{ m.label }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    {% for r in suitability_bottom_rows %}
+                    {% for m in suitability.bottom %}
                     <td>
-                      {% if r.value %}
+                      {% if m.is_yes %}
                       <span class="check-yes">✔</span>
                       {% else %}
                       <span class="check-no">✖</span>
@@ -731,10 +704,12 @@
                   </tr>
                 </tbody>
               </table>
+
 
             </div>
           </div>
         </div>
+
 
         <div class="col-md-2">
           <div class="score-card">
@@ -764,6 +739,8 @@
         <div class="col-md-8">
 
           <!-- Main KPI card -->
+          <!-- ================= PERFORMANCE KPI ================= -->
+
           <div class="card card-kpi mb-4">
             <div class="card-header-gradient">
               <div>
@@ -771,6 +748,7 @@
                 <div class="card-header-subtitle">Key profitability and margin metrics</div>
               </div>
             </div>
+
             <div class="card-body p-0">
               <table class="table table-sm kpi-table">
                 <thead>
@@ -781,33 +759,39 @@
                     <th class="text-end">Var</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {% for row in left_rows %}
+                  {% for r in performance_kpi.rows %}
                   <tr>
-                    <td class="kpi-label">{{ row.label }}</td>
+                    <td class="kpi-label">{{ r.label }}</td>
+
                     <td class="text-end">
-                      {% if row.ty is not None %}
-                      {{ row.ty|floatformat:1 }}{% if row.is_percentage %}%{% endif %}
-                      {% else %}-{% endif %}
+                      {% if r.ty is not None %}{{ r.ty }}{% else %}-{% endif %}
                     </td>
+
                     <td class="text-end">
-                      {% if row.ly is not None %}
-                      {{ row.ly|floatformat:1 }}{% if row.is_percentage %}%{% endif %}
-                      {% else %}-{% endif %}
+                      {% if r.ly is not None %}{{ r.ly }}{% else %}-{% endif %}
                     </td>
-                    <td class="text-end {{ row.var_class }}">
-                      {% if row.var is not None %}
-                      {{ row.var|floatformat:1 }}{% if row.is_percentage %}%{% endif %}
-                      {% else %}-{% endif %}
+
+                    <td class="text-end {{ r.var_class }}">
+                      {% if r.var is not None %}
+                      {{ r.var|floatformat:1 }}{{ r.var_suffix }}
+                      {% else %}
+                      -
+                      {% endif %}
                     </td>
                   </tr>
                   {% endfor %}
                 </tbody>
+
               </table>
             </div>
           </div>
 
+
           <!-- Working capital card -->
+
+          <!-- ================= WORKING CAPITAL KPI ================= -->
           <div class="card card-kpi">
             <div class="card-header-gradient"
               style="background:linear-gradient(90deg,var(--accent-blue-dark),var(--accent-blue-light));">
@@ -816,6 +800,7 @@
                 <div class="card-header-subtitle">Liquidity and cash cycle indicators</div>
               </div>
             </div>
+
             <div class="card-body p-0">
               <table class="table table-sm kpi-table">
                 <thead>
@@ -826,42 +811,40 @@
                     <th class="text-end">Var</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {% for row in right_rows %}
+                  {% for r in working_capital_kpi.rows %}
                   <tr>
-                    <td class="kpi-label">{{ row.label }}</td>
+                    <td class="kpi-label">{{ r.label }}</td>
+
                     <td class="text-end">
-                      {% if row.ty is not None %}
-                      {{ row.ty|floatformat:1 }}
-                      {% else %}-{% endif %}
+                      {% if r.ty is not None %}{{ r.ty }}{% else %}-{% endif %}
                     </td>
+
                     <td class="text-end">
-                      {% if row.ly is not None %}
-                      {{ row.ly|floatformat:1 }}
-                      {% else %}-{% endif %}
+                      {% if r.ly is not None %}{{ r.ly }}{% else %}-{% endif %}
                     </td>
-                    <td class="text-end {{ row.var_class }}">
-                      {% if row.var is not None %}
-                      {{ row.var|floatformat:1 }}
-                      {% else %}-{% endif %}
+
+                    <td class="text-end {{ r.var_class }}">
+                      {% if r.var is not None %}
+                      {{ r.var|floatformat:1 }}{{ r.var_suffix }}
+                      {% else %}
+                      -
+                      {% endif %}
                     </td>
                   </tr>
                   {% endfor %}
                 </tbody>
+
               </table>
             </div>
           </div>
+
 
         </div>
 
         <div class="col-md-2">
           <div class="score-card position-relative">
-            <!-- Criteria button moved here -->
-            <!-- <button type="button" class="btn btn-sm btn-outline-success position-absolute top-0 end-0 mt-2 me-2"
-            data-bs-toggle="modal" data-bs-target="#opportunityCriteriaModal">
-            ⚙
-          </button> -->
-
             <div class="score-label">Opportunity Score</div>
             <div class="score-helper">Relative size of value at stake</div>
             <div class="badge-score badge-opportunity">
@@ -889,19 +872,20 @@
           <div class="card card-kpi">
             <div class="card-body card-body-clean">
 
+              <!-- TOP ROW -->
               <table class="table text-center matrix-table mb-3">
                 <thead>
                   <tr>
-                    {% for r in readiness_top_rows %}
-                    <th>{{ r.label }}</th>
+                    {% for m in readiness.top %}
+                    <th>{{ m.label }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    {% for r in readiness_top_rows %}
+                    {% for m in readiness.top %}
                     <td>
-                      {% if r.value %}
+                      {% if m.status %}
                       <span class="check-yes">✔</span>
                       {% else %}
                       <span class="check-no">✖</span>
@@ -912,19 +896,20 @@
                 </tbody>
               </table>
 
+              <!-- BOTTOM ROW -->
               <table class="table text-center matrix-table mt-3 mb-0">
                 <thead>
                   <tr>
-                    {% for r in readiness_bottom_rows %}
-                    <th>{{ r.label }}</th>
+                    {% for m in readiness.bottom %}
+                    <th>{{ m.label }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    {% for r in readiness_bottom_rows %}
+                    {% for m in readiness.bottom %}
                     <td>
-                      {% if r.value %}
+                      {% if m.status %}
                       <span class="check-yes">✔</span>
                       {% else %}
                       <span class="check-no">✖</span>
@@ -950,6 +935,7 @@
         </div>
 
       </div>
+
 
       <!-- SALES TREND -->
       <h4 class="section-heading">Sales Trend (Last 12 Months)</h4>
@@ -1026,15 +1012,16 @@
                 <div class="tab-pane fade show active" id="outer-suitability" role="tabpanel"
                   aria-labelledby="outer-suitability-tab">
 
-                  <!-- Target (Suitability) - add ABOVE the grid/table -->
+                  <!-- Target (Suitability) -->
                   <div class="criteria-target-row">
                     <label for="target_suitability" class="form-label small text-muted">
                       Target for Suitability (%)
                     </label>
-                    <input type="number" class="form-control form-control-sm" id="target_suitability"
-                      name="target_suitability" min="0" max="100" step="10" value="{{ target_suitability|default:50 }}">
-                  </div>
 
+                    <input type="number" class="form-control form-control-sm" id="target_suitability"
+                      name="suitability_target_percent" min="0" max="100" step="1"
+                      value="{{ suitability_settings.target_percent|default_if_none:'' }}">
+                  </div>
 
                   <div class="table-responsive">
                     <table class="table table-sm align-middle">
@@ -1048,89 +1035,62 @@
                       </thead>
 
                       <tbody>
-                        {% for r in suitability_config_rows %}
+                        {% for row in suitability_settings.rows %}
                         <tr>
+
                           <td>
-                            <select name="{{ r.key }}_enabled" class="form-select form-select-sm">
-                              <option value="Yes" {% if r.enabled %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if not r.enabled %}selected{% endif %}>No</option>
+                            <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
+                              class="form-select form-select-sm">
+
+                              <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
+                              <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
+
                             </select>
                           </td>
 
-                          <td>{{ r.label }}</td>
+                          <td>{{ row.label }}</td>
 
                           <td>
-                            <input type="text" class="form-control form-control-sm" value="{{ r.display_value }}"
-                              disabled>
+                            <input type="text" class="form-control form-control-sm"
+                              value="{{ row.value|default_if_none:'' }}" disabled>
                           </td>
 
                           <td class="text-center">
-                            {% if r.status %}
+                            {% if row.status %}
                             <span class="check-yes">✔</span>
                             {% else %}
                             <span class="check-no">✖</span>
                             {% endif %}
                           </td>
+
                         </tr>
                         {% empty %}
                         <tr>
-                          <td colspan="4" class="text-muted">
-                      <tbody>
-                        {% for r in suitability_config_rows %}
-                        <tr>
-                          <!-- Enable -->
-                          <td style="width:110px;">
-                            <select name="{{ r.key }}_enabled" class="form-select form-select-sm">
-                              <option value="Yes" {% if r.enabled %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if not r.enabled %}selected{% endif %}>No</option>
-                            </select>
-                          </td>
-
-                          <!-- Field -->
-                          <td>{{ r.label }}</td>
-
-                          <!-- Value -->
-                          <td style="width:160px;">
-                            <input type="text" class="form-control form-control-sm" value="{{ r.display_value }}"
-                              disabled>
-                          </td>
-
-                          <!-- Status -->
-                          <td style="width:90px;" class="text-center">
-                            {% if r.status %}
-                            <span class="check-yes">✔</span>
-                            {% else %}
-                            <span class="check-no">✖</span>
-                            {% endif %}
-                          </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="4" class="text-muted">
-                            No suitability rows (suitability_config_rows is empty)
+                          <td colspan="4" class="text-muted text-center py-3">
+                            No suitability rows found.
                           </td>
                         </tr>
                         {% endfor %}
                       </tbody>
 
-                      </td>
-                      </tr>
-                      {% endfor %}
-                      </tbody>
                     </table>
                   </div>
 
-                </div><!-- /#outer-suitability -->
+                </div>
+
+
+
                 <!-- OUTER PANE: OPPORTUNITY -->
                 <div class="tab-pane fade" id="outer-opportunity" role="tabpanel"
                   aria-labelledby="outer-opportunity-tab">
+
                   <!-- Target (OPPORTUNITY) -->
                   <div class="criteria-target-row">
                     <label for="target_opportunity" class="form-label small text-muted">
                       Target for Opportunity (%)
                     </label>
                     <input type="number" class="form-control form-control-sm" id="target_opportunity"
-                      name="target_opportunity" min="0" max="100" step="10" value="{{ target_opportunity|default:50 }}">
+                      name="opp_target_percent" min="0" max="100" step="1" value="{{ cfg.opp_target_percent }}">
                   </div>
 
                   <!-- INNER TABS (ONLY INSIDE OPPORTUNITY) -->
@@ -1151,16 +1111,12 @@
                     </li>
                   </ul>
 
-
-                  <!-- ===================== PERFORMANCE TAB ===================== -->
-
                   <div class="tab-content">
 
-                    <!-- INNER PANE: PERFORMANCE -->
+
+                    <!-- ===================== PERFORMANCE TAB ===================== -->
                     <div class="tab-pane fade show active" id="inner-perf" role="tabpanel"
                       aria-labelledby="inner-perf-tab">
-
-                      <!-- <div class="tab-pane fade show active" id="perf-criteria" role="tabpanel"> -->
 
                       <!-- Global Time Period (Only Performance) -->
                       <div class="d-flex align-items-end justify-content-between mb-3">
@@ -1168,15 +1124,25 @@
 
                         <div style="min-width:220px;">
                           <label class="form-label mb-1 small text-muted">Time period</label>
-                          <select id="global_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
+                          <select id="{{ perf_settings.period.id }}" name="{{ perf_settings.period.name }}"
+                            class="form-select form-select-sm">
+                            <option value="12" {% if perf_settings.period.is_12 %}selected{% endif %}>Last 12 months
+                            </option>
+                            <option value="6" {% if perf_settings.period.is_6 %}selected{% endif %}>Last 6 months
+                            </option>
+                            <option value="3" {% if perf_settings.period.is_3 %}selected{% endif %}>Last 3 months
+                            </option>
                           </select>
+
+                          <div id="periodProgress" class="mt-1">
+                            <div class="pp-track">
+                              <div class="pp-bar"></div>
+                            </div>
+                          </div>
+
+
                         </div>
                       </div>
-
-
 
                       <!-- Group 1: Revenue / GM / Overheads -->
                       <div class="table-responsive mb-4">
@@ -1186,324 +1152,101 @@
                               <th rowspan="2" style="width:80px;">Enable</th>
                               <th rowspan="2">Criterion</th>
                               <th colspan="2" class="text-center">Rule</th>
-                              <th colspan="6" class="text-center">Actuals </th>
+                              <th colspan="6" class="text-center">Actuals</th>
                             </tr>
                             <tr>
-                              <!-- <th style="width:150px;">Time Period</th> -->
                               <th style="width:80px;">Dir</th>
                               <th style="width:110px;">Threshold</th>
                               <th style="width:110px;">Last 12 months</th>
                               <th style="width:110px;">Last 6 months</th>
                               <th style="width:110px;">Last 3 months</th>
-                              <th style="width:90px;">Flag</th>
+                              <th style="width:90px;" class="text-center">Flag</th>
                               <th style="width:130px;">Profit Impact</th>
-                              <!-- <th style="width:140px;">Valuation Impact</th> -->
-
                               <th style="width:140px;">
                                 <div class="d-flex flex-column gap-1">
                                   <span>Valuation Impact</span>
                                   <div class="input-group input-group-sm">
-                                    <input id="val_adj" name="val_adj" type="number" class="form-control" step="1"
-                                      min="0" max="9" value="3" />
-
+                                    <input id="{{ perf_settings.multiple.id }}" name="{{ perf_settings.multiple.name }}"
+                                      type="number" class="form-control" step="1" min="0" max="9"
+                                      value="{{ perf_settings.multiple.value|default_if_none:'' }}">
                                   </div>
                                 </div>
                               </th>
-
-
-
                             </tr>
                           </thead>
+
                           <tbody>
+                            {% for r in perf_settings.group1 %}
+                            <tr data-perf-key="{{ r.key }}">
 
-                            <!-- Revenue -->
-                            <tr>
+                              <!-- Enable -->
                               <td>
-                                <select name="rev_enabled" id="rev_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.revenue %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
+                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                  class="form-select form-select-sm">
+                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
                                 </select>
                               </td>
-                              <td>Revenue</td>
-                              <!-- <td>
-                          <select id="rev_period" name="rev_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
+
+                              <!-- Criterion -->
+                              <td>{{ r.label }}</td>
+
+                              <!-- Dir -->
                               <td>
-                                <select id="rev_dir" name="rev_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="-">-</option>
+                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
+                                  class="form-select form-select-sm">
+                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
                                 </select>
+
                               </td>
+
+                              <!-- Threshold -->
                               <td>
                                 <div class="input-group input-group-sm">
-                                  <input id="rev_threshold" type="number" step="0.01" name="rev_threshold"
-                                    class="form-control" value="15.00">
+                                  <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number"
+                                    step="0.01" class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
                                   <span class="input-group-text">%</span>
                                 </div>
                               </td>
 
-                              <!-- Actuals (disabled) -->
+                              <!-- Actuals -->
                               <td>
-                                <input id="rev_last_12" type="text" class="form-control form-control-sm"
-                                  value="{{ rev_last_12 }}" disabled>
+                                <input id="{{ r.actual.last12.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.last12.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="rev_last_6" type="text" class="form-control form-control-sm"
-                                  value="{{ rev_last_6 }}" disabled>
+                                <input id="{{ r.actual.last6.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.last6.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="rev_last_3" type="text" class="form-control form-control-sm"
-                                  value="{{ rev_last_3 }}" disabled>
+                                <input id="{{ r.actual.last3.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.last3.value|default_if_none:'' }}" disabled>
                               </td>
+
+                              <!-- Flag (single span for AJAX update) -->
+                              <td class="text-center">
+                                <span id="{{ r.flag.id }}"
+                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
+                                </span>
+                              </td>
+
+                              <!-- Profit Impact -->
                               <td>
-                                {% with k=kpi_state.revenue %}
-                                <input name="rev_flag" id="rev_flag" readonly class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
+                                <input id="{{ r.profit_impact.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.profit_impact.value|default_if_none:'' }}" disabled>
                               </td>
+
+                              <!-- Valuation Impact -->
                               <td>
-                                <input id="rev_profit_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ rev_profit_impact }}" disabled>
+                                <input id="{{ r.val_impact.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.val_impact.value|default_if_none:'' }}" disabled>
                               </td>
-                              <td>
-                                <input id="rev_val_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ rev_val_impact }}" disabled>
-                              </td>
+
                             </tr>
-
-
-                            <!-- Gross Margin -->
-                            <tr>
-                              <td>
-                                <select name="gm_enabled" id="gm_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.gm %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-                              </td>
-
-                              <td>Gross Margin %</td>
-
-                              <!-- <td>
-                          <select id="gm_period" name="gm_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="gm_dir" name="gm_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="-">-</option>
-
-
-                                </select>
-                              </td>
-
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <!-- پیشنهاد: 10.00 به معنای 10 واحد درصد -->
-                                  <input id="gm_threshold" type="number" step="0.01" name="gm_threshold"
-                                    class="form-control" value="10.00">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-                              <!-- Output fields (disabled, فقط نمایش) -->
-                              <td>
-                                <input id="gm_last_12" type="text" class="form-control form-control-sm"
-                                  value="{{ gm_last_12 }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="gm_last_6" type="text" class="form-control form-control-sm"
-                                  value="{{ gm_last_6 }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="gm_last_3" type="text" class="form-control form-control-sm"
-                                  value="{{ gm_last_3 }}" disabled>
-                              </td>
-
-                              <td>
-                                {% with k=kpi_state.gm %}
-                                <input name="gm_flag" id="gm_flag" readonly class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-                              </td>
-
-                              <td>
-                                <input id="gm_profit_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ gm_profit_impact }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="gm_val_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ gm_val_impact }}" disabled>
-                              </td>
-                            </tr>
-
-
-                            <!-- Overhead £ -->
-
-                            <tr>
-                              <td>
-                                <select name="oh_val_enabled" id="oh_val_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.oh_val %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-
-                              </td>
-
-                              <td>Overhead £</td>
-
-                              <!-- <td>
-                          <select id="oh_val_period" name="oh_val_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="oh_val_dir" name="oh_val_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+">+</option>
-                                  <option value="-" selected>-</option>
-
-                                </select>
-                              </td>
-
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <input id="oh_val_threshold" type="number" step="0.01" name="oh_val_threshold"
-                                    class="form-control" value="10.00">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-
-                              <td>
-                                <input id="oh_val_last_12" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_val_last_12 }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="oh_val_last_6" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_val_last_6 }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="oh_val_last_3" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_val_last_3 }}" disabled>
-                              </td>
-
-                              <td>
-                                {% with k=kpi_state.oh_val %}
-                                <input name="oh_val_flag" id="oh_val_flag" readonly class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
-                              </td>
-
-                              <td>
-                                <input id="oh_val_profit_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_val_profit_impact }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="oh_val_val_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_val_val_impact }}" disabled>
-                              </td>
-                            </tr>
-
-                            <!-- Overhead % -->
-                            <tr>
-                              <td>
-                                <select name="oh_pct_enabled" id="oh_pct_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.oh_pct %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-
-                              </td>
-
-                              <td>Overhead %</td>
-
-                              <!-- <td>
-                          <select id="oh_pct_period" name="oh_pct_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="oh_pct_dir" name="oh_pct_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+">+</option>
-                                  <option value="-" selected>-</option>
-
-                                </select>
-                              </td>
-
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <input id="oh_pct_threshold" type="number" step="0.01" name="oh_pct_threshold"
-                                    class="form-control" value="10.00">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-
-                              <td>
-                                <input id="oh_pct_last_12" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_pct_last_12 }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="oh_pct_last_6" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_pct_last_6 }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="oh_pct_last_3" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_pct_last_3 }}" disabled>
-                              </td>
-
-                              <td>
-                                {% with k=kpi_state.oh_pct %}
-                                <input name="oh_pct_flag" id="oh_pct_flag" readonly class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
-                              </td>
-
-                              <td>
-                                <input id="oh_pct_profit_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_pct_profit_impact }}" disabled>
-                              </td>
-
-                              <td>
-                                <input id="oh_pct_val_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ oh_pct_val_impact }}" disabled>
-                              </td>
-                            </tr>
-
-
+                            {% endfor %}
                           </tbody>
                         </table>
                       </div>
@@ -1519,92 +1262,87 @@
                               <th colspan="7" class="text-center">Actuals</th>
                             </tr>
                             <tr>
-                              <!-- <th style="width:155px;">Time Period</th> -->
                               <th style="width:80px;">Dir</th>
                               <th style="width:110px;">Threshold</th>
                               <th style="width:110px;">EBITDA TY</th>
                               <th style="width:110px;">EBITDA LY</th>
                               <th style="width:90px;">Var %</th>
                               <th style="width:110px;">Var £</th>
-                              <th style="width:90px;">Flag</th>
+                              <th style="width:90px;" class="text-center">Flag</th>
                               <th style="width:130px;">EBITDA Impact</th>
-                              <!-- <th style="width:140px;">Valuation Impact</th> -->
                             </tr>
                           </thead>
+
                           <tbody>
+                            {% for r in perf_settings.group2 %}
+                            <tr data-perf-key="{{ r.key }}">
 
-                            <tr>
+                              <!-- Enable -->
                               <td>
-                                <select name="ebitda_enabled" id="ebitda_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.ebitda %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
+                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                  class="form-select form-select-sm">
+                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                                </select>
+                              </td>
+
+                              <!-- Criterion -->
+                              <td>{{ r.label }}</td>
+
+                              <!-- Dir -->
+                              <td>
+                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
+                                  class="form-select form-select-sm">
+                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
                                 </select>
 
                               </td>
 
-                              <td>EBITDA £</td>
-
-                              <!-- <td>
-                          <select id="ebitda_period" name="ebitda_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="ebitda_dir" name="ebitda_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="-">-</option>
-
-                                </select>
-                              </td>
-
+                              <!-- Threshold -->
                               <td>
                                 <div class="input-group input-group-sm">
-                                  <input id="ebitda_threshold" type="number" step="0.01" name="ebitda_threshold"
-                                    class="form-control" value="10.00">
+                                  <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number"
+                                    step="0.01" class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
                                   <span class="input-group-text">%</span>
                                 </div>
                               </td>
 
-                              <!-- Actuals (خروجی SP) -->
+                              <!-- Actuals -->
                               <td>
-                                <input id="ebitda_ty" type="text" class="form-control form-control-sm"
-                                  value="{{ ebitda_ty }}" disabled>
+                                <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="ebitda_ly" type="text" class="form-control form-control-sm"
-                                  value="{{ ebitda_ly }}" disabled>
+                                <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="ebitda_var_pct" type="text" class="form-control form-control-sm"
-                                  value="{{ ebitda_var_pct }}" disabled>
+                                <input id="{{ r.actual.varp.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.varp.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="ebitda_var_val" type="text" class="form-control form-control-sm"
-                                  value="{{ ebitda_var_val }}" disabled>
+                                <input id="{{ r.actual.varv.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.varv.value|default_if_none:'' }}" disabled>
                               </td>
-                              <td>
-                                {% with k=kpi_state.ebitda %}
-                                <input name="ebitda_flag" id="ebitda_flag" readonly class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
 
+                              <!-- Flag -->
+                              <td class="text-center">
+                                <span id="{{ r.flag.id }}"
+                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
+                                </span>
                               </td>
+
+                              <!-- Impact -->
                               <td>
-                                <input id="ebitda_impact" type="text" class="form-control form-control-sm"
-                                  value="{{ ebitda_impact }}" disabled>
+                                <input id="{{ r.impact.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.impact.value|default_if_none:'' }}" disabled>
                               </td>
-                              <!-- <td>
-                          <input id="ebitda_val_impact" type="text" class="form-control form-control-sm"
-                            value="{{ ebitda_val_impact }}" disabled>
-                        </td> -->
+
                             </tr>
-
+                            {% endfor %}
                           </tbody>
                         </table>
                       </div>
@@ -1617,147 +1355,89 @@
                               <th rowspan="2" style="width:80px;">Enable</th>
                               <th rowspan="2">Criterion</th>
                               <th colspan="2" class="text-center">Rule</th>
-                              <th colspan="4" class="text-center">Actuals </th>
+                              <th colspan="4" class="text-center">Actuals</th>
                             </tr>
                             <tr>
-                              <!-- <th style="width:150px;">Time Period</th> -->
                               <th style="width:80px;">Dir</th>
                               <th style="width:110px;">Threshold</th>
                               <th style="width:110px;">TY</th>
                               <th style="width:110px;">LY</th>
                               <th style="width:90px;">Var %</th>
-                              <th style="width:90px;">Flag</th>
+                              <th style="width:90px;" class="text-center">Flag</th>
                             </tr>
                           </thead>
+
                           <tbody>
+                            {% for r in perf_settings.group3 %}
+                            <tr data-perf-key="{{ r.key }}">
 
-                            <!-- New Customers -->
-                            <tr>
+                              <!-- Enable -->
                               <td>
-                                <select name="newcust_enabled" id="newcust_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.newcust %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-
-                              </td>
-                              <td>New Customers</td>
-                              <!-- <td>
-                          <select id="newcust_period" name="newcust_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-                              <td>
-                                <select id="newcust_dir" name="newcust_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="-">-</option>
-
-                                </select>
-                              </td>
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <input id="newcust_threshold" type="number" step="0.01" name="newcust_threshold"
-                                    class="form-control" value="10.00">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-                              <td>
-                                <input id="newcust_ty" type="text" class="form-control form-control-sm"
-                                  value="{{ newcust_ty }}" disabled>
-                              </td>
-                              <td>
-                                <input id="newcust_ly" type="text" class="form-control form-control-sm"
-                                  value="{{ newcust_ly }}" disabled>
-                              </td>
-                              <td>
-                                <input id="newcust_var_pct" type="text" class="form-control form-control-sm"
-                                  value="{{ newcust_var_pct }}" disabled>
-                              </td>
-                              <td>
-                                {% with k=kpi_state.newcust %}
-                                <input name="newcust_flag" id="newcust_flag" readonly
-                                  class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
-                              </td>
-                            </tr>
-
-
-                            <!-- Client Retention -->
-                            <tr>
-                              <td>
-                                <select name="retention_enabled" id="retention_enabled"
+                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
                                   class="form-select form-select-sm">
-                                  {% with k=kpi_state.retention %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
+                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
                                 </select>
-
                               </td>
-                              <td>Client Retention</td>
-                              <!-- <td>
-                          <select id="retention_period" name="retention_period" class="form-select form-select-sm">
-                            <option value="12" selected>Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
+
+                              <!-- Criterion -->
+                              <td>{{ r.label }}</td>
+
+                              <!-- Dir -->
                               <td>
-                                <select id="retention_dir" name="retention_dir" class="form-select form-select-sm">
-                                  <option value="+/-">+/-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="-">-</option>
-
+                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
+                                  class="form-select form-select-sm">
+                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
                                 </select>
+
                               </td>
+
+                              <!-- Threshold -->
                               <td>
                                 <div class="input-group input-group-sm">
-                                  <input id="retention_threshold" type="number" step="0.01" name="retention_threshold"
-                                    class="form-control" value="10.00">
+                                  <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number"
+                                    step="0.01" class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
                                   <span class="input-group-text">%</span>
                                 </div>
                               </td>
 
+                              <!-- Actuals -->
                               <td>
-                                <input id="retention_ty" type="text" class="form-control form-control-sm"
-                                  value="{{ retention_ty }}" disabled>
+                                <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="retention_ly" type="text" class="form-control form-control-sm"
-                                  value="{{ retention_ly }}" disabled>
+                                <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
                               </td>
                               <td>
-                                <input id="retention_var_pct" type="text" class="form-control form-control-sm"
-                                  value="{{ retention_var_pct }}" disabled>
+                                <input id="{{ r.actual.varp.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.varp.value|default_if_none:'' }}" disabled>
                               </td>
-                              <td>
-                                {% with k=kpi_state.retention %}
-                                <input name="retention_flag" id="retention_flag" readonly
-                                  class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
 
+                              <!-- Flag -->
+                              <td class="text-center">
+                                <span id="{{ r.flag.id }}"
+                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
+                                </span>
                               </td>
+
                             </tr>
-
-
+                            {% endfor %}
                           </tbody>
                         </table>
                       </div>
 
-                      <!-- </div> -->
                     </div>
-                    <!-- ===================== WORKING CAPITAL TAB ===================== -->
 
+
+                    <!-- /#inner-perf -->
+
+                    <!-- ===================== WORKING CAPITAL TAB ===================== -->
                     <div class="tab-pane fade" id="inner-wc" role="tabpanel" aria-labelledby="inner-wc-tab">
-                      <!-- <div class="tab-pane fade" id="wc-criteria" role="tabpanel"> -->
 
                       <div class="table-responsive">
                         <table class="table table-sm align-middle">
@@ -1766,255 +1446,100 @@
                               <th rowspan="2" style="width:80px;">Enable</th>
                               <th rowspan="2">Criterion</th>
                               <th colspan="3" class="text-center">Rule</th>
-                              <th colspan="5" class="text-center">Actuals </th>
+                              <th colspan="5" class="text-center">Actuals</th>
                             </tr>
                             <tr>
-                              <!-- <th style="width:150px;">Time Period</th> -->
                               <th style="width:80px;">Dir</th>
                               <th style="width:110px;">Var</th>
                               <th style="width:110px;">TY</th>
                               <th style="width:110px;">LY</th>
                               <th style="width:90px;">Var %</th>
                               <th style="width:90px;">Var</th>
-                              <th style="width:90px;">Flag</th>
+                              <th style="width:90px;" class="text-center">Flag</th>
                             </tr>
                           </thead>
+
                           <tbody>
+                            {% for r in working_capital_settings.rows %}
+                            <tr data-wc-key="{{ r.key }}">
 
-                            <!-- Cash Position -->
-                            <tr>
+                              <!-- Enable -->
                               <td>
-                                <select name="cash_enabled" id="cash_enabled" class="form-select form-select-sm">
-                                  {% with k=kpi_state.cash %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-
-                              </td>
-
-                              <td>Cash Position</td>
-
-                              <!-- <td>
-                          <select id="cash_period" name="cash_period" class="form-select form-select-sm">
-                            <option value="var" selected>Var %</option>
-                            <option value="12">Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="cash_dir" name="cash_dir" class="form-select form-select-sm">
-                                  <option value="-">-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="+/-">+/-</option>
-                                </select>
-                              </td>
-
-                              <td>
-                                <input id="cash_threshold" type="number" step="0.01" name="cash_threshold"
-                                  class="form-control form-select-sm" value="10.00">
-                              </td>
-
-                              <td><input id="cash_ty" type="text" class="form-control form-control-sm" disabled></td>
-                              <td><input id="cash_ly" type="text" class="form-control form-control-sm" disabled></td>
-                              <td><input id="cash_var_pct" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="cash_var_val" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td>
-                                {% with k=kpi_state.cash %}
-                                <input name="cash_flag" id="cash_flag" readonly class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
-                              </td>
-                            </tr>
-
-                            <!-- Debtor Days -->
-                            <tr>
-                              <td>
-                                <select name="debtordays_enabled" id="debtordays_enabled"
+                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
                                   class="form-select form-select-sm">
-                                  {% with k=kpi_state.debtordays %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-
-                              </td>
-
-                              <td>Debtor Days</td>
-
-                              <!-- <td>
-                          <select id="debtordays_period" name="debtordays_period" class="form-select form-select-sm">
-                            <option value="var" selected>Var</option>
-                            <option value="12">Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="debtordays_dir" name="debtordays_dir" class="form-select form-select-sm">
-                                  <option value="+">+</option>
-                                  <option value="-" selected>-</option>
-                                  <option value="+/-">+/-</option>
+                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
                                 </select>
                               </td>
 
+                              <!-- Criterion -->
+                              <td>{{ r.label }}</td>
+
+                              <!-- Dir -->
                               <td>
-                                <input id="debtordays_threshold" type="number" step="1" name="debtordays_threshold"
-                                  class="form-control" value="1">
-                              </td>
-
-                              <td><input id="debtordays_ty" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="debtordays_ly" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="debtordays_var_pct" type="text" class="form-control form-control-sm"
-                                  disabled>
-                              </td>
-                              <td><input id="debtordays_var_val" type="text" class="form-control form-control-sm"
-                                  disabled>
-                              </td>
-                              <td>
-                                {% with k=kpi_state.debtordays %}
-                                <input name="debtordays_flag" id="debtordays_flag" readonly
-                                  class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
-
-                              </td>
-                            </tr>
-
-                            <!-- Creditor Days -->
-                            <tr>
-                              <td>
-                                <select id="creditordays_enabled" name="creditordays_enabled"
+                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
                                   class="form-select form-select-sm">
-                                  {% with k=kpi_state.creditordays %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
+                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
                                 </select>
                               </td>
 
-                              <td>Creditor Days</td>
-
-                              <!-- <td>
-                          <select id="creditordays_period" name="creditordays_period"
-                            class="form-select form-select-sm">
-                            <option value="var" selected>Var</option>
-                            <option value="12">Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
+                              <!-- Var -->
                               <td>
-                                <select id="creditordays_dir" name="creditordays_dir"
-                                  class="form-select form-select-sm">
-                                  <option value="-">-</option>
-                                  <option value="+" selected>+</option>
-                                  <option value="+/-">+/-</option>
-                                </select>
+                                <input id="{{ r.var.id }}" name="{{ r.var.name }}" type="number" step="0.01"
+                                  class="form-control form-control-sm" value="{{ r.var.value|default_if_none:'' }}">
                               </td>
 
+                              <!-- Actuals: TY -->
                               <td>
-                                <input id="creditordays_threshold" type="number" step="1" name="creditordays_threshold"
-                                  class="form-control" value="1">
+                                <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
                               </td>
 
-                              <td><input id="creditordays_ty" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="creditordays_ly" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="creditordays_var_pct" type="text" class="form-control form-control-sm"
-                                  disabled>
-                              </td>
-                              <td><input id="creditordays_var_val" type="text" class="form-control form-control-sm"
-                                  disabled>
-                              </td>
+                              <!-- Actuals: LY -->
                               <td>
-                                {% with k=kpi_state.creditordays %}
-                                <input name="creditordays_flag" id="creditordays_flag" readonly
-                                  class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
+                                <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
                               </td>
+
+                              <!-- Actuals: Var % -->
+                              <td>
+                                <input id="{{ r.actual.var_pct.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.var_pct.value|default_if_none:'' }}" disabled>
+                              </td>
+
+                              <!-- Actuals: Var value -->
+                              <td>
+                                <input id="{{ r.actual.var_val.id }}" type="text" class="form-control form-control-sm"
+                                  value="{{ r.actual.var_val.value|default_if_none:'' }}" disabled>
+                              </td>
+
+                              <!-- Flag (single span, AJAX-ready) -->
+                              <td class="text-center">
+                                <span id="{{ r.flag.id }}"
+                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
+                                </span>
+                              </td>
+
                             </tr>
-
-                            <!-- Stock Days -->
-                            <tr>
-                              <td>
-                                <select id="stockdays_enabled" name="stockdays_enabled"
-                                  class="form-select form-select-sm">
-                                  {% with k=kpi_state.stockdays %}
-                                  <option value="Yes" {% if k and k.enabled %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if k and not k.enabled %}selected{% endif %}>No</option>
-                                  {% endwith %}
-                                </select>
-                              </td>
-
-                              <td>Stock Days</td>
-
-                              <!-- <td>
-                          <select id="stockdays_period" name="stockdays_period" class="form-select form-select-sm">
-                            <option value="var" selected>Var</option>
-                            <option value="12">Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                          </select>
-                        </td> -->
-
-                              <td>
-                                <select id="stockdays_dir" name="stockdays_dir" class="form-select form-select-sm">
-                                  <option value="-" selected>-</option>
-                                  <option value="+">+</option>
-                                  <option value="+/-">+/-</option>
-                                </select>
-                              </td>
-
-                              <td>
-                                <input id="stockdays_threshold" type="number" step="1" name="stockdays_threshold"
-                                  class="form-control" value="1">
-                              </td>
-
-                              <td><input id="stockdays_ty" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="stockdays_ly" type="text" class="form-control form-control-sm" disabled>
-                              </td>
-                              <td><input id="stockdays_var_pct" type="text" class="form-control form-control-sm"
-                                  disabled>
-                              </td>
-                              <td><input id="stockdays_var_val" type="text" class="form-control form-control-sm"
-                                  disabled>
-                              </td>
-                              <td>
-                                {% with k=kpi_state.stockdays %}
-                                <input name="stockdays_flag" id="stockdays_flag" readonly
-                                  class="form-control form-control-sm"
-                                  value="{% if k and k.flag %}Yes{% else %}No{% endif %}">
-                                {% endwith %}
-
-                              </td>
-                            </tr>
-
+                            {% endfor %}
                           </tbody>
+
                         </table>
                       </div>
 
-                      <!-- </div> -->
                     </div>
 
-
+                    <!-- /#inner-wc -->
 
                   </div>
+                  <!-- /.tab-content -->
+
                 </div>
+
+
 
                 <!-- OUTER PANE: IHT -->
                 <div class="tab-pane fade" id="outer-iht" role="tabpanel" aria-labelledby="outer-iht-tab">
@@ -2039,21 +1564,22 @@
 
                       <tbody>
                         <tr>
-                          <!-- Enable -->
+                          <!-- Enable (from config) -->
                           <td>
-                            <select name="iht_enabled" id="iht_enabled" class="form-select form-select-sm">
-                              <option value="Yes" {% if iht_enabled %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if not iht_enabled %}selected{% endif %}>No</option>
+                            <select name="{{ iht_settings.enabled_name }}" id="iht_enable"
+                              class="form-select form-select-sm">
+                              <option value="Yes" {% if iht_settings.enabled_is_yes %}selected{% endif %}>Yes</option>
+                              <option value="No" {% if iht_settings.enabled_is_no %}selected{% endif %}>No</option>
                             </select>
                           </td>
 
                           <!-- Metric -->
                           <td>EBITDA (TY)</td>
 
-                          <!-- Value -->
+                          <!-- Value (from report: opp_EBITDA_TY_12m) -->
                           <td>
                             <input type="text" id="iht_ebitda_ty" class="form-control form-control-sm"
-                              value="{{ iht_ebitda_ty }}" disabled>
+                              value="{{ iht_settings.ebitda_ty|default_if_none:'' }}" disabled>
                           </td>
 
                           <!-- Result -->
@@ -2064,9 +1590,10 @@
                           <td></td>
                           <td>Multiple</td>
                           <td>
-                            <!-- همون multiple که الان داری: val_adj -->
-                            <input type="number" id="iht_multiple" class="form-control form-control-sm"
-                              value="{{ iht_multiple }}" disabled>
+                            <!-- from config (same as Opportunity), read-only -->
+                            <input type="number" id="iht_multiple" name="{{ iht_settings.multiple_name }}"
+                              class="form-control form-control-sm"
+                              value="{{ iht_settings.multiple|default_if_none:'' }}" disabled>
                             <div class="form-text">Uses the same Multiple as Opportunity (read-only).</div>
                           </td>
                           <td></td>
@@ -2078,23 +1605,29 @@
                           <td>
                             <div class="input-group input-group-sm">
                               <span class="input-group-text">£</span>
-                              <input type="number" name="iht_threshold" id="iht_threshold" class="form-control"
-                                step="10000" min="0" value="{{ iht_threshold }}">
+                              <input type="number" name="{{ iht_settings.threshold_name }}" id="iht_valuation_threshold"
+                                class="form-control" step="10000" min="0"
+                                value="{{ iht_settings.threshold|default_if_none:'' }}">
                             </div>
                           </td>
-                          <td class="text-muted small">Default 900,000</td>
+                          <td></td>
                         </tr>
 
                         <tr>
                           <td></td>
                           <td>Estimated Business Value</td>
                           <td>
-                            <input type="text" id="iht_est_value" class="form-control form-control-sm"
-                              value="{{ iht_est_value }}" disabled>
+                            <!-- initial from report/table, later JS can update -->
+                            <input type="text" id="iht_est_valuation" class="form-control form-control-sm"
+                              value="{{ iht_settings.estimated_business_value|default_if_none:'' }}" disabled>
                           </td>
-                          <td>
-                            <input type="text" name="iht_flag" id="iht_flag" class="form-control form-control-sm"
-                              value="{{ iht_flag }}" readonly>
+
+                          <td class="text-center">
+                            <!-- single span (no two spans), later JS can update -->
+                            <span id="iht_risk_icon"
+                              class="{% if iht_settings.risk_flag %}check-yes{% else %}check-no{% endif %}">
+                              {% if iht_settings.risk_flag %}✔{% else %}✖{% endif %}
+                            </span>
                           </td>
                         </tr>
 
@@ -2104,16 +1637,21 @@
 
                 </div>
 
+
+
+
                 <!-- OUTER PANE: Readiness -->
+
                 <div class="tab-pane fade" id="outer-readiness" role="tabpanel" aria-labelledby="outer-readiness-tab">
 
                   <!-- Target (Readiness) -->
                   <div class="criteria-target-row">
-                    <label for="target_readiness" class="form-label small text-muted">
+                    <label for="readiness_target_percent" class="form-label small text-muted">
                       Target for Readiness (%)
                     </label>
-                    <input type="number" class="form-control form-control-sm" id="target_readiness"
-                      name="target_readiness" min="0" max="100" step="10" value="{{ target_readiness|default:25 }}">
+                    <input type="number" class="form-control form-control-sm" id="readiness_target_percent"
+                      name="readiness_target_percent" min="0" max="100" step="1"
+                      value="{{ readiness_settings.target_percent|default_if_none:'' }}">
                   </div>
 
                   <div class="table-responsive">
@@ -2130,63 +1668,46 @@
                       </thead>
 
                       <tbody>
-                        {% for r in readiness_config_rows %}
+                        {% for row in readiness_settings.rows %}
                         <tr>
-                          <!-- Enable -->
-
-                          <td>
-                            <select class="form-select form-select-sm" name="{{ r.enabled_name }}">
-                              <option value="Yes" {% if r.enabled %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if not r.enabled %}selected{% endif %}>No</option>
+                          <td style="width:110px;">
+                            <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
+                              class="form-select form-select-sm">
+                              <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
+                              <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
                             </select>
-
                           </td>
 
-                          <!-- Field -->
-                          <!-- <td class="fw-medium">{{ r.label }}</td> -->
-                          <td>
-                            <strong>{{ r.field }}</strong><br>
-                            <small class="text-muted">{{ r.status_label }}</small>
+                          <td>{{ row.label }}</td>
+
+                          <td style="width:160px;">
+                            <input type="text" class="form-control form-control-sm text-end"
+                              value="{{ row.ty|default_if_none:'' }}" disabled>
                           </td>
 
-                          <!-- TY -->
-                          <td class="text-end">
-                            {% if r.ty is not None %}{{ r.ty|floatformat:1 }}{% else %}-{% endif %}
+                          <td style="width:160px;">
+                            <input type="text" class="form-control form-control-sm text-end"
+                              value="{{ row.ly|default_if_none:'' }}" disabled>
                           </td>
 
-                          <!-- LY -->
-                          <td class="text-end">
-                            {% if r.ly is not None %}{{ r.ly|floatformat:1 }}{% else %}-{% endif %}
+                          <td style="width:160px;">
+                            <input type="text" class="form-control form-control-sm text-end"
+                              value="{{ row.vs|default_if_none:'' }}" disabled>
                           </td>
 
-                          <!-- Vs -->
-                          <td class="text-end">
-                            {% if r.vs is not None %}{{ r.vs|floatformat:1 }}{% else %}-{% endif %}
-                          </td>
-
-                          <!-- Status (آخرین ستون) -->
-                          <!-- <td class="text-center">
-                          <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            {% for c in r.checks %}
-                            <div class="d-flex align-items-center gap-1">
-                              {% if c.value %}
-                              <span class="check-yes">✔</span>
-                              {% else %}
-                              <span class="check-no">✖</span>
-                              {% endif %}
-                              <small class="text-muted">{{ c.label }}</small>
-                            </div>
-                            {% endfor %}
-                          </div>
-                        </td> -->
-                          <td class="text-center">
-                            {% if r.status %}
+                          <td style="width:90px;" class="text-center">
+                            {% if row.status %}
                             <span class="check-yes">✔</span>
                             {% else %}
                             <span class="check-no">✖</span>
                             {% endif %}
                           </td>
-
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="6" class="text-muted text-center py-3">
+                            No readiness rows found.
+                          </td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -2203,1150 +1724,79 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-success btn-sm">Save criteria</button>
+              <!-- <button type="submit" class="btn btn-success btn-sm">Save criteria</button> -->
+              <button id="btnSummarySaveCriteria" type="button" class="btn btn-success">
+                Save criteria
+              </button>
+
             </div>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- JSON data for chart -->
+    {% load static %}
+    <script>
+      window.CAAM_URLS = {
+        revenueUrl: "{% url 'caam:ajax_revenue_criteria' client_id=client_id %}",
+        gmUrl: "{% url 'caam:ajax_gm_criteria' client_id=client_id %}",
+        overheadUrl: "{% url 'caam:ajax_oh_val_criteria' client_id=client_id %}",
+        overheadPctUrl: "{% url 'caam:ajax_oh_pct_criteria' client_id=client_id %}",
+        ebitdaUrl: "{% url 'caam:ajax_ebitda_criteria' client_id=client_id %}",
+        newcustUrl: "{% url 'caam:ajax_newcust_criteria' client_id=client_id %}",
+        retentionUrl: "{% url 'caam:ajax_retention_criteria' client_id=client_id %}",
+        cashUrl: "{% url 'caam:ajax_cash_criteria' client_id=client_id %}",
+        debtorUrl: "{% url 'caam:ajax_debtordays_criteria' client_id=client_id %}",
+        creditorUrl: "{% url 'caam:ajax_creditordays_criteria' client_id=client_id %}",
+        stockUrl: "{% url 'caam:ajax_stockdays_criteria' client_id=client_id %}",
+      };
+
+      window.CAAM_PAGE = {
+        suitability: Number("{{ suitability_score|default_if_none:0 }}"),
+        opportunity: Number("{{ opportunity_score|default_if_none:0 }}"),
+        readiness: Number("{{ readiness_score|default_if_none:0 }}"),
+        targetSuitability: Number("{{ target_suitability|default_if_none:50 }}"),
+        targetOpportunity: Number("{{ target_opportunity|default_if_none:50 }}"),
+        targetReadiness: Number("{{ target_readiness|default_if_none:50 }}"),
+      };
+      window.CAAM_ENDPOINTS = window.CAAM_ENDPOINTS || {};
+      window.CAAM_ENDPOINTS.save_config =
+        "{% url 'caam:ajax_save_config' client_id=client_id %}";
+
+      window.CAAM_PAGE = window.CAAM_PAGE || {};
+      window.CAAM_PAGE.companyId = Number("{{ company_id }}");
+      window.CAAM_PAGE.version = 0;
+    </script>
+
+
+    <script src="{% static 'vfd_pro/js/progress.js' %}"></script>
+
+    <script src="{% static 'vfd_pro/js/caam_report.js' %}" defer></script>
+
     {{ sales_trend|json_script:"sales-data" }}
 
 
-    <script>
-      function formatAmount(x) {
-        if (x === null || x === undefined || x === "") return "";
-        const num = Number(x);
-        if (isNaN(num)) return x;
-        return num.toLocaleString("en-UK");
-      }
-    </script>
-
-
-
-    <!---SP Revenue profitability js----->
-    <script>
-
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-          const cookies = document.cookie.split(";");
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + "=")) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-            }
-          }
-        }
-        return cookieValue;
-      }
-      const csrftoken = getCookie("csrftoken");
-
-      // URL view AJAX
-      const revenueUrl = "{% url 'caam:ajax_revenue_criteria' client_id=client_id %}";
-      console.log("REVENUE URL:", revenueUrl);
-      function callRevenueSp() {
-        console.log("callRevenueSp fired");
-        const enabledEl = document.getElementById("rev_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("rev_dir");
-        const thresholdEl = document.getElementById("rev_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        console.log({ enabledEl, periodEl, dirEl, thresholdEl, valAdjEl });
-
-
-        if (!enabledEl || !periodEl || !dirEl || !thresholdEl) {
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("rev_enabled", enabledEl.value);
-        formData.append("rev_period", periodEl.value);
-        formData.append("rev_dir", dirEl.value);
-        formData.append("rev_threshold", thresholdEl.value);
-        formData.append("val_adj", valAdjEl ? valAdjEl.value : "3");
-
-
-
-        fetch(revenueUrl, {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": csrftoken
-          },
-          body: formData
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("SP error:", data.error);
-              return;
-            }
-
-
-            const last12El = document.getElementById("rev_last_12");
-            const last6El = document.getElementById("rev_last_6");
-            const last3El = document.getElementById("rev_last_3");
-            const flagEl = document.getElementById("rev_flag");
-            const piEl = document.getElementById("rev_profit_impact");
-            const viEl = document.getElementById("rev_val_impact");
-
-            if (last12El) last12El.value = data.rev_last_12 ?? "";
-            if (last6El) last6El.value = data.rev_last_6 ?? "";
-            if (last3El) last3El.value = data.rev_last_3 ?? "";
-            if (flagEl) flagEl.value = data.rev_flag ?? "";
-            if (piEl) piEl.value = data.rev_profit_impact ?? "";
-            if (viEl) viEl.value = data.rev_val_impact ?? "";
-          })
-          .catch(err => {
-            console.error("AJAX error:", err);
-          });
-      }
-
-      function debounce(fn, delay) {
-        let timer = null;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("rev_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("rev_dir");
-        const thresholdEl = document.getElementById("rev_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        if (enabledEl) enabledEl.addEventListener("change", callRevenueSp);
-        if (periodEl) periodEl.addEventListener("change", callRevenueSp);
-        if (dirEl) dirEl.addEventListener("change", callRevenueSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callRevenueSp, 500));
-
-        if (valAdjEl) {
-          valAdjEl.addEventListener("input", debounce(callRevenueSp, 300));
-          valAdjEl.addEventListener("change", callRevenueSp);
-        }
-
-        callRevenueSp();
-      });
-    </script>
-
-
-    <!-- Gross Margin -->
-    <script>
-
-      const gmUrl = "{% url 'caam:ajax_gm_criteria' client_id=client_id %}";
-
-      function callGmSp() {
-        const enabledEl = document.getElementById("gm_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("gm_dir");
-        const thEl = document.getElementById("gm_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        console.log({ enabledEl, periodEl, dirEl, thEl, valAdjEl });
-
-        if (!enabledEl || !periodEl || !dirEl || !thEl) {
-          console.warn("GM elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("gm_enabled", enabledEl.value);
-        formData.append("gm_period", periodEl.value);
-        formData.append("gm_dir", dirEl.value);
-        formData.append("gm_threshold", thEl.value);
-        formData.append("val_adj", valAdjEl ? valAdjEl.value : "3");
-
-        fetch(gmUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("GM SP error:", data.error);
-              return;
-            }
-
-            // fill output fields
-            const out12 = document.getElementById("gm_last_12");
-            const out6 = document.getElementById("gm_last_6");
-            const out3 = document.getElementById("gm_last_3");
-            const flag = document.getElementById("gm_flag");
-            const pi = document.getElementById("gm_profit_impact");
-            const vi = document.getElementById("gm_val_impact");
-
-            if (out12) out12.value = data.gm_last_12 ?? "";
-            if (out6) out6.value = data.gm_last_6 ?? "";
-            if (out3) out3.value = data.gm_last_3 ?? "";
-            if (flag) flag.value = data.gm_flag ?? "";
-            if (pi) pi.value = data.gm_profit_impact ?? "";
-            if (vi) vi.value = data.gm_val_impact ?? "";
-          })
-          .catch(err => console.error("GM AJAX Error:", err));
-      }
-
-
-      function debounce(fn, delay) {
-        let timer = null;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("gm_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("gm_dir");
-        const thresholdEl = document.getElementById("gm_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        if (enabledEl) enabledEl.addEventListener("change", callGmSp);
-        if (periodEl) periodEl.addEventListener("change", callGmSp);
-        if (dirEl) dirEl.addEventListener("change", callGmSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callGmSp, 600));
-
-
-        if (valAdjEl) {
-          valAdjEl.addEventListener("input", debounce(callGmSp, 300));
-          valAdjEl.addEventListener("change", callGmSp);
-        }
-
-        callGmSp();
-      });
-    </script>
-
-    <!---Overhead---->
-    <script>
-
-      const overheadUrl = "{% url 'caam:ajax_oh_val_criteria' client_id=client_id %}";
-
-      function callOverheadSp() {
-        const enabledEl = document.getElementById("oh_val_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("oh_val_dir");
-        const thresholdEl = document.getElementById("oh_val_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        if (!enabledEl || !periodEl || !dirEl || !thresholdEl) {
-          console.warn("Overhead elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("oh_val_enabled", enabledEl.value);
-        formData.append("oh_val_period", periodEl.value);
-        formData.append("oh_val_dir", dirEl.value);
-        formData.append("oh_val_threshold", thresholdEl.value);
-        formData.append("val_adj", valAdjEl ? valAdjEl.value : "3");
-
-        fetch(overheadUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("Overhead SP error:", data.error);
-              return;
-            }
-
-            const out12 = document.getElementById("oh_val_last_12");
-            const out6 = document.getElementById("oh_val_last_6");
-            const out3 = document.getElementById("oh_val_last_3");
-            const flag = document.getElementById("oh_val_flag");
-            const pi = document.getElementById("oh_val_profit_impact");
-            const vi = document.getElementById("oh_val_val_impact");
-
-            if (out12) out12.value = data.oh_val_last_12 ?? "";
-            if (out6) out6.value = data.oh_val_last_6 ?? "";
-            if (out3) out3.value = data.oh_val_last_3 ?? "";
-            if (flag) flag.value = data.oh_val_flag ?? "";
-            if (pi) pi.value = data.oh_val_profit_impact ?? "";
-            if (vi) vi.value = data.oh_val_val_impact ?? "";
-          })
-          .catch(err => console.error("Overhead AJAX Error:", err));
-      }
-
-      function debounce(fn, delay) {
-        let timer = null;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("oh_val_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("oh_val_dir");
-        const thresholdEl = document.getElementById("oh_val_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        if (enabledEl) enabledEl.addEventListener("change", callOverheadSp);
-        if (periodEl) periodEl.addEventListener("change", callOverheadSp);
-        if (dirEl) dirEl.addEventListener("change", callOverheadSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callOverheadSp, 600));
-
-        if (valAdjEl) {
-          valAdjEl.addEventListener("input", debounce(callOverheadSp, 300));
-          valAdjEl.addEventListener("change", callOverheadSp);
-        }
-
-        callOverheadSp();
-      });
-    </script>
-
-    <!---Overhead %--->
-
-    <script>
-
-      const overheadPctUrl = "{% url 'caam:ajax_oh_pct_criteria' client_id=client_id %}";
-
-      function callOverheadPctSp() {
-        const enabledEl = document.getElementById("oh_pct_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("oh_pct_dir");
-        const thresholdEl = document.getElementById("oh_pct_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-
-        if (!enabledEl || !periodEl || !dirEl || !thresholdEl) {
-          console.warn("Overhead % elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("oh_pct_enabled", enabledEl.value);
-        formData.append("oh_pct_period", periodEl.value);
-        formData.append("oh_pct_dir", dirEl.value);
-        formData.append("oh_pct_threshold", thresholdEl.value);
-        formData.append("val_adj", valAdjEl ? valAdjEl.value : "3");
-
-        fetch(overheadPctUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("Overhead % SP error:", data.error);
-              return;
-            }
-
-            const out12 = document.getElementById("oh_pct_last_12");
-            const out6 = document.getElementById("oh_pct_last_6");
-            const out3 = document.getElementById("oh_pct_last_3");
-            const flag = document.getElementById("oh_pct_flag");
-            const pi = document.getElementById("oh_pct_profit_impact");
-            const vi = document.getElementById("oh_pct_val_impact");
-
-            if (out12) out12.value = data.oh_pct_last_12 ?? "";
-            if (out6) out6.value = data.oh_pct_last_6 ?? "";
-            if (out3) out3.value = data.oh_pct_last_3 ?? "";
-            if (flag) flag.value = data.oh_pct_flag ?? "";
-            if (pi) pi.value = data.oh_pct_profit_impact ?? "";
-            if (vi) vi.value = data.oh_pct_val_impact ?? "";
-          })
-          .catch(err => console.error("Overhead % AJAX Error:", err));
-      }
-
-      function debounce(fn, delay) {
-        let timer = null;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("oh_pct_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("oh_pct_dir");
-        const thresholdEl = document.getElementById("oh_pct_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        if (enabledEl) enabledEl.addEventListener("change", callOverheadPctSp);
-        if (periodEl) periodEl.addEventListener("change", callOverheadPctSp);
-        if (dirEl) dirEl.addEventListener("change", callOverheadPctSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callOverheadPctSp, 600));
-
-        if (valAdjEl) {
-          valAdjEl.addEventListener("input", debounce(callOverheadPctSp, 300));
-          valAdjEl.addEventListener("change", callOverheadPctSp);
-        }
-        callOverheadPctSp();
-      });
-    </script>
-
-    <!--Ebitda-->
-
-    <script>
-
-      const ebitdaUrl = "{% url 'caam:ajax_ebitda_criteria' client_id=client_id %}";
-
-      function callEbitdaSp() {
-        const enabledEl = document.getElementById("ebitda_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("ebitda_dir");
-        const thresholdEl = document.getElementById("ebitda_threshold");
-
-        if (!enabledEl || !periodEl || !dirEl || !thresholdEl) {
-          console.warn("EBITDA elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("ebitda_enabled", enabledEl.value);
-        formData.append("ebitda_period", periodEl.value);
-        formData.append("ebitda_dir", dirEl.value);
-        formData.append("ebitda_threshold", thresholdEl.value);
-
-        fetch(ebitdaUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("EBITDA SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("ebitda_ty");
-            const ly = document.getElementById("ebitda_ly");
-            const vpct = document.getElementById("ebitda_var_pct");
-            const vval = document.getElementById("ebitda_var_val");
-            const flag = document.getElementById("ebitda_flag");
-            const imp = document.getElementById("ebitda_impact");
-            const vimp = document.getElementById("ebitda_val_impact");
-
-            if (ty) ty.value = formatAmount(data.ebitda_ty);
-            if (ly) ly.value = formatAmount(data.ebitda_ly);
-            if (vpct) vpct.value = data.ebitda_var_pct ?? "";
-            if (vval) vval.value = formatAmount(data.ebitda_var_val);
-            if (flag) flag.value = data.ebitda_flag ?? "";
-            if (imp) imp.value = data.ebitda_impact ?? "";
-            if (vimp) vimp.value = data.ebitda_val_impact ?? "";
-          })
-          .catch(err => console.error("EBITDA AJAX Error:", err));
-      }
-
-      function debounce(fn, delay) {
-        let timer = null;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("ebitda_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("ebitda_dir");
-        const thresholdEl = document.getElementById("ebitda_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callEbitdaSp);
-        if (periodEl) periodEl.addEventListener("change", callEbitdaSp);
-        if (dirEl) dirEl.addEventListener("change", callEbitdaSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callEbitdaSp, 600));
-
-        callEbitdaSp();
-      });
-    </script>
-
-
-    <!--New Customer--->
-
-    <script>
-      const newcustUrl = "{% url 'caam:ajax_newcust_criteria' client_id=client_id %}";
-
-      function callNewcustSp() {
-        const enabledEl = document.getElementById("newcust_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("newcust_dir");
-        const thresholdEl = document.getElementById("newcust_threshold");
-
-        if (!enabledEl || !periodEl || !dirEl || !thresholdEl) {
-          console.warn("NewCust elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("newcust_enabled", enabledEl.value);
-        formData.append("newcust_period", periodEl.value);
-        formData.append("newcust_dir", dirEl.value);
-        formData.append("newcust_threshold", thresholdEl.value);
-
-        fetch(newcustUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("NewCust SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("newcust_ty");
-            const ly = document.getElementById("newcust_ly");
-            const vpct = document.getElementById("newcust_var_pct");
-            const flag = document.getElementById("newcust_flag");
-
-            if (ty) ty.value = data.newcust_ty ?? "";
-            if (ly) ly.value = data.newcust_ly ?? "";
-            if (vpct) vpct.value = data.newcust_var_pct ?? "";
-            if (flag) flag.value = data.newcust_flag ?? "";
-          })
-          .catch(err => console.error("NewCust AJAX Error:", err));
-      }
-
-      function debounce(fn, delay) {
-        let timer = null;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("newcust_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("newcust_dir");
-        const thresholdEl = document.getElementById("newcust_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callNewcustSp);
-        if (periodEl) periodEl.addEventListener("change", callNewcustSp);
-        if (dirEl) dirEl.addEventListener("change", callNewcustSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callNewcustSp, 600));
-
-        callNewcustSp();
-      });
-    </script>
-
-    <!--Customer Retention-->
-    <script>
-      const retentionUrl = "{% url 'caam:ajax_retention_criteria' client_id=client_id %}";
-
-
-      function callRetentionSp() {
-        const enabledEl = document.getElementById("retention_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("retention_dir");
-        const thresholdEl = document.getElementById("retention_threshold");
-
-        if (!enabledEl || !periodEl || !dirEl || !thresholdEl) {
-          console.warn("Retention elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("retention_enabled", enabledEl.value);
-        formData.append("retention_period", periodEl.value);
-        formData.append("retention_dir", dirEl.value);
-        formData.append("retention_threshold", thresholdEl.value);
-
-        fetch(retentionUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("Retention SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("retention_ty");
-            const ly = document.getElementById("retention_ly");
-            const vpct = document.getElementById("retention_var_pct");
-            const flag = document.getElementById("retention_flag");
-
-            if (ty) ty.value = data.retention_ty ?? "";
-            if (ly) ly.value = data.retention_ly ?? "";
-            if (vpct) vpct.value = data.retention_var_pct ?? "";
-            if (flag) flag.value = data.retention_flag ?? "";
-          })
-          .catch(err => console.error("Retention AJAX Error:", err));
-      }
-
-
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("retention_enabled");
-        const periodEl = document.getElementById("global_period");
-        const dirEl = document.getElementById("retention_dir");
-        const thresholdEl = document.getElementById("retention_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callRetentionSp);
-        if (periodEl) periodEl.addEventListener("change", callRetentionSp);
-        if (dirEl) dirEl.addEventListener("change", callRetentionSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callRetentionSp, 600));
-
-
-        callRetentionSp();
-      });
-    </script>
-
-    <!--Cash position-->
-
-    <script>
-      const cashUrl = "{% url 'caam:ajax_cash_criteria' client_id=client_id %}";
-      console.log("cashUrl =", cashUrl);
-
-      function callCashSp() {
-        const enabledEl = document.getElementById("cash_enabled");
-        const dirEl = document.getElementById("cash_dir");
-        const thresholdEl = document.getElementById("cash_threshold");
-
-        if (!enabledEl || !dirEl || !thresholdEl) {
-          console.warn("Cash elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("cash_enabled", enabledEl.value);
-        formData.append("cash_dir", dirEl.value);
-        formData.append("cash_threshold", thresholdEl.value);
-
-        fetch(cashUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("Cash SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("cash_ty");
-            const ly = document.getElementById("cash_ly");
-            const vpct = document.getElementById("cash_var_pct");
-            const vval = document.getElementById("cash_var_val");
-            const flag = document.getElementById("cash_flag");
-
-            if (ty) ty.value = formatAmount(data.cash_ty);
-            if (ly) ly.value = formatAmount(data.cash_ly);
-            if (vpct) vpct.value = data.cash_var_pct ?? "";
-            if (vval) vval.value = formatAmount(data.cash_var_val);
-            if (flag) flag.value = data.cash_flag ?? "";
-          })
-          .catch(err => console.error("Cash AJAX Error:", err));
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("cash_enabled");
-        const dirEl = document.getElementById("cash_dir");
-        const thresholdEl = document.getElementById("cash_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callCashSp);
-        if (dirEl) dirEl.addEventListener("change", callCashSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callCashSp, 600));
-
-
-        callCashSp();
-
-      });
-    </script>
-
-
-    <!--Debtor Days-->
-    <script>
-      const debtorUrl = "{% url 'caam:ajax_debtordays_criteria' client_id=client_id %}";
-
-      function callDebtorDaysSp() {
-        const enabledEl = document.getElementById("debtordays_enabled");
-        const dirEl = document.getElementById("debtordays_dir");
-        const thresholdEl = document.getElementById("debtordays_threshold");
-
-        if (!enabledEl || !dirEl || !thresholdEl) {
-          console.warn("DebtorDays elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("debtordays_enabled", enabledEl.value);
-        formData.append("debtordays_dir", dirEl.value);
-        formData.append("debtordays_threshold", thresholdEl.value);
-
-        fetch(debtorUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("DebtorDays SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("debtordays_ty");
-            const ly = document.getElementById("debtordays_ly");
-            const vpct = document.getElementById("debtordays_var_pct");
-            const vval = document.getElementById("debtordays_var_val");
-            const flag = document.getElementById("debtordays_flag");
-
-            if (ty) ty.value = data.debtordays_ty ?? "";
-            if (ly) ly.value = data.debtordays_ly ?? "";
-            if (vpct) vpct.value = data.debtordays_var_pct ?? "";
-            if (vval) vval.value = data.debtordays_var_val ?? "";
-            if (flag) flag.value = data.debtordays_flag ?? "";
-          })
-          .catch(err => console.error("DebtorDays AJAX Error:", err));
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("debtordays_enabled");
-        const dirEl = document.getElementById("debtordays_dir");
-        const thresholdEl = document.getElementById("debtordays_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callDebtorDaysSp);
-        if (dirEl) dirEl.addEventListener("change", callDebtorDaysSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callDebtorDaysSp, 600));
-
-
-        callDebtorDaysSp();
-
-      });
-    </script>
-
-
-    <!--Creditor Days-->
-    <script>
-      const creditorUrl = "{% url 'caam:ajax_creditordays_criteria' client_id=client_id %}";
-
-      function callCreditorDaysSp() {
-        const enabledEl = document.getElementById("creditordays_enabled");
-        const dirEl = document.getElementById("creditordays_dir");
-        const thresholdEl = document.getElementById("creditordays_threshold");
-
-        if (!enabledEl || !dirEl || !thresholdEl) {
-          console.warn("CreditorDays elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("creditordays_enabled", enabledEl.value);
-        formData.append("creditordays_dir", dirEl.value);
-        formData.append("creditordays_threshold", thresholdEl.value);
-
-        fetch(creditorUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("CreditorDays SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("creditordays_ty");
-            const ly = document.getElementById("creditordays_ly");
-            const vpct = document.getElementById("creditordays_var_pct");
-            const vval = document.getElementById("creditordays_var_val");
-            const flag = document.getElementById("creditordays_flag");
-
-            if (ty) ty.value = data.creditordays_ty ?? "";
-            if (ly) ly.value = data.creditordays_ly ?? "";
-            if (vpct) vpct.value = data.creditordays_var_pct ?? "";
-            if (vval) vval.value = data.creditordays_var_val ?? "";
-            if (flag) flag.value = data.creditordays_flag ?? "";
-          })
-          .catch(err => console.error("CreditorDays AJAX Error:", err));
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("creditordays_enabled");
-        const dirEl = document.getElementById("creditordays_dir");
-        const thresholdEl = document.getElementById("creditordays_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callCreditorDaysSp);
-        if (dirEl) dirEl.addEventListener("change", callCreditorDaysSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callCreditorDaysSp, 600));
-
-
-        callCreditorDaysSp();
-
-      });
-    </script>
-
-
-    <!--Stock Days-->
-    <script>
-      const stockUrl = "{% url 'caam:ajax_stockdays_criteria' client_id=client_id %}";
-
-      function callStockDaysSp() {
-        const enabledEl = document.getElementById("stockdays_enabled");
-        const dirEl = document.getElementById("stockdays_dir");
-        const thresholdEl = document.getElementById("stockdays_threshold");
-
-        if (!enabledEl || !dirEl || !thresholdEl) {
-          console.warn("StockDays elements not found");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("stockdays_enabled", enabledEl.value);
-        formData.append("stockdays_dir", dirEl.value);
-        formData.append("stockdays_threshold", thresholdEl.value);
-
-        fetch(stockUrl, {
-          method: "POST",
-          headers: { "X-CSRFToken": csrftoken },
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.ok) {
-              console.warn("StockDays SP error:", data.error);
-              return;
-            }
-
-            const ty = document.getElementById("stockdays_ty");
-            const ly = document.getElementById("stockdays_ly");
-            const vpct = document.getElementById("stockdays_var_pct");
-            const vval = document.getElementById("stockdays_var_val");
-            const flag = document.getElementById("stockdays_flag");
-
-            if (ty) ty.value = data.stockdays_ty ?? "";
-            if (ly) ly.value = data.stockdays_ly ?? "";
-            if (vpct) vpct.value = data.stockdays_var_pct ?? "";
-            if (vval) vval.value = data.stockdays_var_val ?? "";
-            if (flag) flag.value = data.stockdays_flag ?? "";
-          })
-          .catch(err => console.error("StockDays AJAX Error:", err));
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("stockdays_enabled");
-        const dirEl = document.getElementById("stockdays_dir");
-        const thresholdEl = document.getElementById("stockdays_threshold");
-
-        if (enabledEl) enabledEl.addEventListener("change", callStockDaysSp);
-        if (dirEl) dirEl.addEventListener("change", callStockDaysSp);
-        if (thresholdEl) thresholdEl.addEventListener("input", debounce(callStockDaysSp, 600));
-
-
-        callStockDaysSp();
-
-      });
-    </script>
-
-    <!-- IHT -->
-
-    <script>
-      function toNumberSafe(x) {
-        if (x === null || x === undefined || x === "") return 0;
-        const n = Number(String(x).replace(/,/g, ""));
-        return isNaN(n) ? 0 : n;
-      }
-
-      function calcIht() {
-        const enabledEl = document.getElementById("iht_enabled");
-        const ebitdaEl = document.getElementById("iht_ebitda_ty");
-        const thresholdEl = document.getElementById("iht_threshold");
-        const valAdjEl = document.getElementById("val_adj");   // multiple اصلی شما در Opportunity
-        const multEl = document.getElementById("iht_multiple");
-
-        const estEl = document.getElementById("iht_est_value");
-        const flagEl = document.getElementById("iht_flag");
-
-        if (!enabledEl || !ebitdaEl || !thresholdEl || !estEl || !flagEl) return;
-
-        const enabled = enabledEl.value === "Yes";
-        const ebitda = toNumberSafe(ebitdaEl.value);
-        const multiple = valAdjEl ? toNumberSafe(valAdjEl.value) : toNumberSafe(multEl ? multEl.value : 3);
-        const threshold = toNumberSafe(thresholdEl.value);
-
-        if (multEl) multEl.value = multiple;
-
-        const est = ebitda * multiple;
-
-        estEl.value = (enabled ? est.toLocaleString("en-UK") : "");
-        flagEl.value = (enabled && est >= threshold) ? "Yes" : "No";
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const enabledEl = document.getElementById("iht_enabled");
-        const thresholdEl = document.getElementById("iht_threshold");
-        const valAdjEl = document.getElementById("val_adj");
-
-        if (enabledEl) enabledEl.addEventListener("change", calcIht);
-        if (thresholdEl) thresholdEl.addEventListener("input", calcIht);
-        if (valAdjEl) valAdjEl.addEventListener("input", calcIht); // با تغییر multiple، IHT هم آپدیت شود
-
-        calcIht();
-      });
-    </script>
-
-    <!-- Donut -->
-    <script>
-      const centerTextPlugin = {
-        id: 'centerText',
-        afterDraw(chart, args, pluginOptions) {
-          const { ctx } = chart;
-          const meta = chart.getDatasetMeta(0);
-          if (!meta || !meta.data || !meta.data[0]) return;
-
-          const x = meta.data[0].x;
-          const y = meta.data[0].y;
-
-          ctx.save();
-          ctx.font = '700 14px system-ui, -apple-system, Segoe UI, sans-serif';
-          ctx.fillStyle = pluginOptions?.color || '#111827';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(pluginOptions?.text || '', x, y);
-          ctx.restore();
-        }
-      };
-
-      function donut(elId, value, colorDone, colorRest) {
-        const el = document.getElementById(elId);
-        if (!el) return null;
-
-        const v = Math.max(0, Math.min(100, Number(value || 0)));
-
-        return new Chart(el, {
-          type: 'doughnut',
-          data: {
-            labels: ['Done', 'Remaining'],
-            datasets: [{
-              data: [v, 100 - v],
-              backgroundColor: [colorDone, colorRest],
-              borderWidth: 0,
-              hoverOffset: 0
-            }]
-          },
-          suggest: {
-            // (هیچی)
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '72%',
-            plugins: {
-              legend: { display: false },
-              tooltip: { enabled: false },
-              centerText: { text: v + '%', color: '#111827' }
-            }
-          },
-          plugins: [centerTextPlugin]
-        });
-      }
-
-      // values from Django
-      const suitability = Number('{{ suitability_score|default_if_none:0 }}');
-      const opportunity = Number('{{ opportunity_score|default_if_none:0 }}');
-      const readiness = Number('{{ readiness_score|default_if_none:0 }}');
-
-      // targets from Django (saved in kpi_state.targets)
-      const targetSuitability = Number('{{ target_suitability|default_if_none:50 }}');
-      const targetOpportunity = Number('{{ target_opportunity|default_if_none:50 }}');
-      const targetReadiness = Number('{{ target_readiness|default_if_none:50 }}');
-
-      // رنگ‌ها
-      const GREEN_DONE = '#22c55e';
-      const GREEN_REST = '#bbf7d0';
-
-      const YELLOW_DONE = '#f59e0b';
-      const YELLOW_REST = '#fde68a';
-
-      // chart instances
-      let suitChart = null;
-      let oppChart = null;
-      let readChart = null;
-
-      function pickDonutColors(score, target) {
-        // اگر score >= target => سبز، اگر کمتر => زرد
-        return (Number(score) >= Number(target))
-          ? { done: GREEN_DONE, rest: GREEN_REST }
-          : { done: YELLOW_DONE, rest: YELLOW_REST };
-      }
-
-      function renderDonuts() {
-        // اگر کاربر target را در modal تغییر دهد (قبل از submit)، همان را برای رنگ استفاده کن
-        const tSuitEl = document.getElementById('target_suitability');
-        const tOppEl = document.getElementById('target_opportunity');
-        const tReadEl = document.getElementById('target_readiness');
-
-        const tSuit = tSuitEl ? Number(tSuitEl.value || targetSuitability) : targetSuitability;
-        const tOpp = tOppEl ? Number(tOppEl.value || targetOpportunity) : targetOpportunity;
-        const tRead = tReadEl ? Number(tReadEl.value || targetReadiness) : targetReadiness;
-
-        const c1 = pickDonutColors(suitability, tSuit);
-        const c2 = pickDonutColors(opportunity, tOpp);
-        const c3 = pickDonutColors(readiness, tRead);
-
-        // ساده‌ترین راه: destroy + recreate (برای تغییر رنگ dataset)
-        if (suitChart) suitChart.destroy();
-        if (oppChart) oppChart.destroy();
-        if (readChart) readChart.destroy();
-
-        suitChart = donut('kpiSuitabilityChart', suitability, c1.done, c1.rest);
-        oppChart = donut('kpiOpportunityChart', opportunity, c2.done, c2.rest);
-        readChart = donut('kpiReadinessChart', readiness, c3.done, c3.rest);
-      }
-
-      document.addEventListener('DOMContentLoaded', function () {
-        renderDonuts();
-
-        // وقتی targetها در Configuration تغییر می‌کنن، رنگ donut آپدیت بشه
-        ['target_suitability', 'target_opportunity', 'target_readiness'].forEach(id => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          el.addEventListener('input', renderDonuts);
-          el.addEventListener('change', renderDonuts);
-        });
-      });
-    </script>
-
-    <!--Script Yes/No-->
-    <script>
-      function normYN(v) {
-        return String(v || '').trim().toLowerCase();
-      }
-
-      function applyFlagColors() {
-        document.querySelectorAll('.kpi-box.js-flag').forEach(box => {
-          const rule = box.getAttribute('data-rule');
-          const valEl = box.querySelector('.kpi-value');
-          const v = normYN(valEl ? valEl.textContent : '');
-
-          box.classList.remove('is-green', 'is-yellow', 'is-red');
-
-          if (rule === 'yes-green-no-yellow') {
-            if (v === 'yes') box.classList.add('is-green');
-            else if (v === 'no') box.classList.add('is-yellow');
-          }
-
-          if (rule === 'no-green-yes-yellow') {
-            if (v === 'no') box.classList.add('is-green');
-            else if (v === 'yes') box.classList.add('is-yellow');
-          }
-
-          if (rule === 'yes-red-no-green') {
-            if (v === 'yes') box.classList.add('is-red');
-            else if (v === 'no') box.classList.add('is-green');
-          }
-        });
-      }
-
-      document.addEventListener('DOMContentLoaded', applyFlagColors);
-    </script>
-
-
-    <!-- Chart.js Script -->
-    <script>
-      const salesDataElement = document.getElementById("sales-data");
-      const salesData = salesDataElement
-        ? JSON.parse(salesDataElement.textContent)
-        : [];
-
-      const labels = salesData.map(x => x.offset);
-      const monthly = salesData.map(x => x.sales_month);
-      const rolling = salesData.map(x => x.rolling_12 || x.sales_rolling_12_months);
-
-      const ctx = document.getElementById("salesChart").getContext("2d");
-
-      new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              type: "bar",
-              label: "Sales",
-              data: monthly,
-              backgroundColor: "#16a34a",
-              borderRadius: 4,
-              maxBarThickness: 34
-            },
-            {
-              type: "line",
-              label: "Rolling 12 Months",
-              data: rolling,
-              borderColor: "#22c55e",
-              borderWidth: 3,
-              pointRadius: 3,
-              pointHoverRadius: 4,
-              tension: 0.25,
-              yAxisID: "y1"
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            mode: "index",
-            intersect: false
-          },
-          scales: {
-            x: {
-              ticks: {
-                font: { size: 12 },
-                maxRotation: 0
-              },
-              grid: { display: false }
-            },
-            y: {
-              ticks: {
-                font: { size: 12 },
-                callback: value => Number(value).toLocaleString()
-              },
-              grid: { color: "rgba(148, 163, 184, 0.15)" }
-            },
-            y1: {
-              position: "right",
-              ticks: {
-                font: { size: 12 },
-                callback: value => Number(value).toLocaleString()
-              },
-              grid: { drawOnChartArea: false }
-            }
-          },
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: {
-                usePointStyle: true,
-                boxWidth: 10,
-                font: { size: 12 }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function (ctx) {
-                  const label = ctx.dataset.label || "";
-                  const value = Number(ctx.parsed.y).toLocaleString();
-                  return `${label}: ${value}`;
-                }
-              }
-            }
-          }
-        }
-      });
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="summarySavingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+      data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Processing...</h5>
+          </div>
+          <div class="modal-body d-flex align-items-center gap-3">
+            <div class="spinner-border" role="status" aria-hidden="true"></div>
+            <div>
+              <div><strong>Saving criteria</strong></div>
+              <div class="text-muted">Please wait — saving your criteria.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
 </body>
 
 </html>

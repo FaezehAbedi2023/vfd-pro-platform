@@ -1,6 +1,9 @@
 from __future__ import annotations
 from django.db import connection
 from typing import Any, Iterable, Optional
+from datetime import date, datetime
+from decimal import Decimal
+from uuid import UUID
 import logging
 
 sp_logger = logging.getLogger("sp_logger")
@@ -47,3 +50,53 @@ def callproc_one_dict(proc_name: str, params: list[Any]) -> Optional[dict]:
             return None
         cols = [c[0] for c in cursor.description]
         return dict(zip(cols, row))
+
+
+def callproc_all_dicts(proc_name: str, params: list):
+
+    with connection.cursor() as cursor:
+        cursor.callproc(proc_name, params)
+
+        while True:
+            if cursor.description:
+                cols = [c[0] for c in cursor.description]
+                rows = cursor.fetchall()
+                if not rows:
+                    return []
+
+                out = []
+                for r in rows:
+                    d = dict(zip(cols, r))
+                    d = {k: _json_safe_value(v) for k, v in d.items()}
+                    out.append(d)
+
+                return out
+
+            if not cursor.nextset():
+                break
+
+    return []
+
+
+def _json_safe_value(v):
+    if v is None:
+        return None
+
+    # MySQL BINARY/VARBINARY fields
+    if isinstance(v, (bytes, bytearray, memoryview)):
+
+        return bytes(v).hex()
+
+    # datetime/date
+    if isinstance(v, (datetime, date)):
+        return v.isoformat()
+
+    # Decimal
+    if isinstance(v, Decimal):
+        return float(v)
+
+    # UUID
+    if isinstance(v, UUID):
+        return str(v)
+
+    return v

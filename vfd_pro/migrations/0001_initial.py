@@ -7,54 +7,82 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ClientTransaction',
+            name="ClientTransaction",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('client_id', models.IntegerField(blank=True, null=True)),
-                ('journal_id', models.IntegerField(blank=True, null=True)),
-                ('account_id', models.IntegerField(blank=True, null=True)),
-                ('contact_id', models.IntegerField(blank=True, null=True)),
-                ('tax_rate_id', models.IntegerField(blank=True, null=True)),
-                ('source_id', models.IntegerField(blank=True, null=True)),
-                ('source', models.CharField(blank=True, max_length=255, null=True)),
-                ('category', models.CharField(blank=True, max_length=255, null=True)),
-                ('journal_number', models.CharField(blank=True, max_length=255, null=True)),
-                ('number', models.CharField(blank=True, max_length=255, null=True)),
-                ('journal_reference', models.CharField(blank=True, max_length=255, null=True)),
-                ('reference', models.CharField(blank=True, max_length=255, null=True)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('currency_code', models.CharField(blank=True, max_length=10, null=True)),
-                ('currency_rate', models.DecimalField(blank=True, decimal_places=6, max_digits=18, null=True)),
-                ('net_amount', models.DecimalField(blank=True, decimal_places=2, max_digits=18, null=True)),
-                ('gross_amount', models.DecimalField(blank=True, decimal_places=2, max_digits=18, null=True)),
-                ('tax_amount', models.DecimalField(blank=True, decimal_places=2, max_digits=18, null=True)),
-                ('transaction_date', models.DateField(blank=True, null=True)),
-                ('issued_date', models.DateField(blank=True, null=True)),
-                ('created_datetime', models.DateTimeField(blank=True, null=True)),
-                ('modified_datetime', models.DateTimeField(blank=True, null=True)),
-                ('sync_timestamp', models.DateTimeField(blank=True, null=True)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("client_id", models.IntegerField(blank=True, null=True)),
+                ("journal_id", models.IntegerField(blank=True, null=True)),
+                ("account_id", models.IntegerField(blank=True, null=True)),
+                ("contact_id", models.IntegerField(blank=True, null=True)),
+                ("tax_rate_id", models.IntegerField(blank=True, null=True)),
+                ("source_id", models.IntegerField(blank=True, null=True)),
+                ("source", models.CharField(blank=True, max_length=255, null=True)),
+                ("category", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "journal_number",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                ("number", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "journal_reference",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                ("reference", models.CharField(blank=True, max_length=255, null=True)),
+                ("description", models.TextField(blank=True, null=True)),
+                (
+                    "currency_code",
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
+                (
+                    "currency_rate",
+                    models.DecimalField(
+                        blank=True, decimal_places=6, max_digits=18, null=True
+                    ),
+                ),
+                (
+                    "net_amount",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=18, null=True
+                    ),
+                ),
+                (
+                    "gross_amount",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=18, null=True
+                    ),
+                ),
+                (
+                    "tax_amount",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=18, null=True
+                    ),
+                ),
+                ("transaction_date", models.DateField(blank=True, null=True)),
+                ("issued_date", models.DateField(blank=True, null=True)),
+                ("created_datetime", models.DateTimeField(blank=True, null=True)),
+                ("modified_datetime", models.DateTimeField(blank=True, null=True)),
+                ("sync_timestamp", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'client_transaction',
-                'managed': False,
+                "db_table": "client_transaction",
+                "managed": False,
             },
         ),
-        migrations.CreateModel(
-            name='OpportunityCriteria',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('client_id', models.IntegerField()),
-                ('kpi_state', models.JSONField(blank=True, default=dict)),
-                ('opportunity_score', models.DecimalField(decimal_places=2, default=0, max_digits=5)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-            ],
-            options={
-                'db_table': 'opportunity_criteria',
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='OpportunityCriteria',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('client_id', models.IntegerField()),
+        #         ('kpi_state', models.JSONField(blank=True, default=dict)),
+        #         ('opportunity_score', models.DecimalField(decimal_places=2, default=0, max_digits=5)),
+        #         ('updated_at', models.DateTimeField(auto_now=True)),
+        #     ],
+        #     options={
+        #         'db_table': 'opportunity_criteria',
+        #     },
+        # ),
     ]

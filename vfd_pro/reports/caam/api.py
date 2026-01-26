@@ -4,6 +4,14 @@ import json
 from decimal import Decimal
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
+from vfd_pro.common.utils import format_month_year
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.db import connection
+import json
+
 import logging
 
 from vfd_pro.common.utils import _fmt_num, fmt_percent
@@ -19,43 +27,78 @@ from .selectors import (
     _call_debtor_days_profitability_sp,
     _call_creditor_days_profitability_sp,
     _call_stock_days_profitability_sp,
+    _get_caam_report,
 )
 
 sp_logger = logging.getLogger("sp_logger")
 
 
+@require_GET
+def ajax_caam_report(request, company_id: int):
+    try:
+        rows = _get_caam_report(company_id)
+        for r in rows:
+            r["reporting_month_label"] = format_month_year(r.get("reporting_date"))
+
+        return JsonResponse({"ok": True, "rows": rows})
+    except Exception as e:
+        sp_logger.error(f"ajax_caam_report ERROR: {e}", exc_info=True)
+        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+
+
 @require_POST
 def ajax_revenue_criteria(request, client_id: int):
+    print("### ajax_revenue_criteria HIT ###")
+
+    sp_logger.debug("--------------------------------------------------")
+    sp_logger.debug("ajax_revenue_criteria CALLED")
+    sp_logger.debug(f"client_id={client_id}")
+    sp_logger.debug(f"RAW POST DATA => {request.POST}")
 
     try:
-        # ---- این‌ها مستقیم از فرم می‌آیند (اگر نباشند → KeyError) ----
+
         rev_enabled = request.POST["rev_enabled"]  # 'Yes' / 'No'
-        # rev_period_str = request.POST["rev_period"]        # "3" / "6" / "12"
         rev_period_str = request.POST.get("rev_period", "12")
         rev_dir = request.POST["rev_dir"]  # '+/-', '+', '-'
-        rev_threshold_str = request.POST["rev_threshold"]  # مثل "15.00"
-        val_adj = int(request.POST.get("val_adj", 3))
+        rev_threshold_str = request.POST["rev_threshold"]  # Ex: "15.00"
 
+        sp_logger.debug(
+            f"FORM FIELDS => rev_enabled={rev_enabled}, "
+            f"rev_period={rev_period_str}, rev_dir={rev_dir}, "
+            f"rev_threshold={rev_threshold_str}"
+        )
+
+        # val_adj
         try:
             val_adj = int(request.POST.get("val_adj", 3))
         except (TypeError, ValueError):
             val_adj = 3
 
+        # parse period
         try:
             rev_period = int(rev_period_str)
         except ValueError:
+            sp_logger.error(f"Invalid rev_period: {rev_period_str}")
             return JsonResponse(
                 {"ok": False, "error": "Invalid rev_period"}, status=400
             )
 
+        # parse threshold
         try:
             rev_threshold = Decimal(rev_threshold_str)
         except Exception:
+            sp_logger.error(f"Invalid rev_threshold: {rev_threshold_str}")
             return JsonResponse(
                 {"ok": False, "error": "Invalid rev_threshold"}, status=400
             )
 
         rev_min_months = None
+
+        sp_logger.debug(
+            "CALLING _call_revenue_profitability_sp WITH => "
+            f"client_id={client_id}, period={rev_period}, rev_dir={rev_dir}, "
+            f"min_months={rev_min_months}, threshold={rev_threshold}, enabled={rev_enabled}"
+        )
 
         result = _call_revenue_profitability_sp(
             client_id=client_id,
@@ -66,7 +109,10 @@ def ajax_revenue_criteria(request, client_id: int):
             flag_on=rev_enabled,
         )
 
+        sp_logger.debug(f"SP RAW RESULT (dict) => {result}")
+
         if not result:
+            sp_logger.debug("SP returned NO RESULT for Revenue.")
             return JsonResponse(
                 {"ok": False, "error": "No result from stored procedure"},
                 status=200,
@@ -90,48 +136,73 @@ def ajax_revenue_criteria(request, client_id: int):
             "val_adj": val_adj,
         }
 
+        sp_logger.debug(f"JSON RESPONSE DATA (Revenue) => {data}")
         return JsonResponse(data)
 
     except KeyError as e:
-
+        sp_logger.error(f"Missing field in POST (Revenue): {e}", exc_info=True)
         return JsonResponse(
             {"ok": False, "error": f"Missing field: {str(e)}"},
             status=400,
         )
     except Exception as e:
+        sp_logger.error(
+            f"UNEXPECTED ERROR in ajax_revenue_criteria: {e}", exc_info=True
+        )
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
 @require_POST
 def ajax_gm_criteria(request, client_id: int):
+    print("### ajax_gm_criteria HIT ###")
+
+    sp_logger.debug("--------------------------------------------------")
+    sp_logger.debug("ajax_gm_criteria CALLED")
+    sp_logger.debug(f"client_id={client_id}")
+    sp_logger.debug(f"RAW POST DATA => {request.POST}")
 
     try:
+
         gm_enabled = request.POST["gm_enabled"]  # 'Yes' / 'No'
-        # gm_period_str = request.POST["gm_period"]        # "3" / "6" / "12"
         gm_period_str = request.POST.get("gm_period", "12")
         gm_dir = request.POST["gm_dir"]  # '+', '-', '+/-'
-        gm_threshold_str = request.POST["gm_threshold"]  #  "10.00"
+        gm_threshold_str = request.POST["gm_threshold"]  # "10.00"
 
-        val_adj = int(request.POST.get("val_adj", 3))
+        sp_logger.debug(
+            f"FORM FIELDS => gm_enabled={gm_enabled}, "
+            f"gm_period={gm_period_str}, gm_dir={gm_dir}, "
+            f"gm_threshold={gm_threshold_str}"
+        )
 
+        # val_adj
         try:
             val_adj = int(request.POST.get("val_adj", 3))
         except (TypeError, ValueError):
             val_adj = 3
 
+        # parse period
         try:
             gm_period = int(gm_period_str)
         except ValueError:
+            sp_logger.error(f"Invalid gm_period: {gm_period_str}")
             return JsonResponse({"ok": False, "error": "Invalid gm_period"}, status=400)
 
+        # parse threshold
         try:
             gm_threshold = Decimal(gm_threshold_str)
         except Exception:
+            sp_logger.error(f"Invalid gm_threshold: {gm_threshold_str}")
             return JsonResponse(
                 {"ok": False, "error": "Invalid gm_threshold"}, status=400
             )
 
         gm_min_months = None
+
+        sp_logger.debug(
+            "CALLING _call_gm_profitability_sp WITH => "
+            f"client_id={client_id}, period={gm_period}, gm_dir={gm_dir}, "
+            f"min_months={gm_min_months}, threshold={gm_threshold}, enabled={gm_enabled}"
+        )
 
         result = _call_gm_profitability_sp(
             client_id=client_id,
@@ -142,8 +213,14 @@ def ajax_gm_criteria(request, client_id: int):
             flag_on=gm_enabled,
         )
 
+        sp_logger.debug(f"SP RAW RESULT (dict) => {result}")
+
         if not result:
-            return JsonResponse({"ok": False, "error": "No result from SP"}, status=200)
+            sp_logger.debug("SP returned NO RESULT for Gross Margin.")
+            return JsonResponse(
+                {"ok": False, "error": "No result from stored procedure"},
+                status=200,
+            )
 
         gm_profit_impact = result.get("Impact_Profit_GM")
         gm_val_impact = (
@@ -165,13 +242,17 @@ def ajax_gm_criteria(request, client_id: int):
             "val_adj": val_adj,
         }
 
+        sp_logger.debug(f"JSON RESPONSE DATA (Gross Margin) => {data}")
         return JsonResponse(data)
 
     except KeyError as e:
+        sp_logger.error(f"Missing field in POST (Gross Margin): {e}", exc_info=True)
         return JsonResponse(
-            {"ok": False, "error": f"Missing field: {str(e)}"}, status=400
+            {"ok": False, "error": f"Missing field: {str(e)}"},
+            status=400,
         )
     except Exception as e:
+        sp_logger.error(f"UNEXPECTED ERROR in ajax_gm_criteria: {e}", exc_info=True)
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
@@ -185,7 +266,6 @@ def ajax_oh_val_criteria(request, client_id: int):
 
     try:
         oh_enabled = request.POST["oh_val_enabled"]  # 'Yes' / 'No'
-        # oh_period_str = request.POST["oh_val_period"]        # "3" / "6" / "12"
         oh_period_str = request.POST.get("oh_val_period", "12")
         oh_dir = request.POST["oh_val_dir"]  # '+', '-', '+/-'
         oh_threshold_str = request.POST["oh_val_threshold"]  #  "10.00"
@@ -283,7 +363,6 @@ def ajax_oh_pct_criteria(request, client_id: int):
 
     try:
         oh_enabled = request.POST["oh_pct_enabled"]  # 'Yes' / 'No'
-        # oh_period_str = request.POST["oh_pct_period"]        # "3" / "6" / "12"
         oh_period_str = request.POST.get("oh_pct_period", "12")
         oh_dir = request.POST["oh_pct_dir"]  # '+', '-', '+/-'
         oh_threshold_str = request.POST["oh_pct_threshold"]  # "10.00"
@@ -358,8 +437,6 @@ def ajax_oh_pct_criteria(request, client_id: int):
             "oh_pct_profit_impact": _fmt_num(profit_impact, 1),
             "oh_pct_val_impact": _fmt_num(val_impact, 1),
             "val_adj": val_adj,
-            # "oh_pct_profit_impact": _fmt_num(result.get("Overhead_pct_Profit_Impact"), 0) if "Overhead_pct_Profit_Impact" in result else None,
-            # "oh_pct_val_impact":    _fmt_num(result.get("Overhead_pct_Val_Impact"), 0)    if "Overhead_pct_Val_Impact" in result else None,
         }
 
         sp_logger.debug(f"JSON RESPONSE DATA (Overhead %) => {data}")
@@ -385,8 +462,7 @@ def ajax_ebitda_criteria(request, client_id: int):
 
     try:
         e_enabled = request.POST["ebitda_enabled"]  # 'Yes' / 'No'
-        # e_period_str = request.POST.get("ebitda_period", "12")  # "3" / "6" / "12" )
-        e_period_str = request.POST.get("ebitda_period", "12")
+        e_period_str = request.POST.get("ebitda_period", "12")  # "3" / "6" / "12" )
         e_dir = request.POST["ebitda_dir"]  # '+', '-', '+/-'
         e_threshold_str = request.POST["ebitda_threshold"]  # "10.00"
 
@@ -446,8 +522,6 @@ def ajax_ebitda_criteria(request, client_id: int):
                 else None
             ),
             "ebitda_impact": _fmt_num(profit_impact, 1),
-            # "ebitda_impact":      _fmt_num(result.get("EBITDA_Profit_Impact"), 0) if "EBITDA_Profit_Impact" in result else None,
-            # "ebitda_val_impact":  _fmt_num(result.get("EBITDA_Val_Impact"), 0)    if "EBITDA_Val_Impact" in result else None,
         }
 
         sp_logger.debug(f"JSON RESPONSE DATA (EBITDA) => {data}")
@@ -632,20 +706,12 @@ def ajax_cash_criteria(request, client_id: int):
 
     try:
         enabled = request.POST["cash_enabled"]
-        # period_str = request.POST.get("cash_period", "var")
         direction = request.POST["cash_dir"]
         threshold_str = request.POST["cash_threshold"]
 
         sp_logger.debug(
-            f"FORM FIELDS => cash_enabled={enabled}, "
-            # f"cash_period={period_str}, cash_dir={direction}, "
-            f"cash_threshold={threshold_str}"
+            f"FORM FIELDS => cash_enabled={enabled}, " f"cash_threshold={threshold_str}"
         )
-
-        # try:
-        #     _ = int(period_str) if period_str != "var" else None
-        # except ValueError:
-        #     sp_logger.warning(f"Invalid cash_period (ignored in SP): {period_str}")
 
         try:
             threshold = Decimal(threshold_str)
@@ -707,13 +773,11 @@ def ajax_debtordays_criteria(request, client_id: int):
 
     try:
         enabled = request.POST["debtordays_enabled"]
-        # period_str = request.POST.get("debtordays_period", "var")
         direction = request.POST["debtordays_dir"]
         threshold_str = request.POST["debtordays_threshold"]
 
         sp_logger.debug(
             f"FORM FIELDS => debtordays_enabled={enabled}, "
-            # f"debtordays_period={period_str}, debtordays_dir={direction}, "
             f"debtordays_threshold={threshold_str}"
         )
 
@@ -779,13 +843,11 @@ def ajax_creditordays_criteria(request, client_id: int):
 
     try:
         enabled = request.POST["creditordays_enabled"]
-        # period_str = request.POST.get("creditordays_period", "var")
         direction = request.POST["creditordays_dir"]
         threshold_str = request.POST["creditordays_threshold"]
 
         sp_logger.debug(
             f"FORM FIELDS => creditordays_enabled={enabled}, "
-            # f"creditordays_period={period_str}, creditordays_dir={direction}, "
             f"creditordays_threshold={threshold_str}"
         )
 
@@ -851,13 +913,11 @@ def ajax_stockdays_criteria(request, client_id: int):
 
     try:
         enabled = request.POST["stockdays_enabled"]
-        # period_str = request.POST.get("stockdays_period", "var")
         direction = request.POST["stockdays_dir"]
         threshold_str = request.POST["stockdays_threshold"]
 
         sp_logger.debug(
             f"FORM FIELDS => stockdays_enabled={enabled}, "
-            # f"stockdays_period={period_str}, stockdays_dir={direction}, "
             f"stockdays_threshold={threshold_str}"
         )
 
@@ -910,4 +970,107 @@ def ajax_stockdays_criteria(request, client_id: int):
         sp_logger.error(
             f"UNEXPECTED ERROR in ajax_stockdays_criteria: {e}", exc_info=True
         )
+        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+
+
+@require_POST
+def ajax_save_config(request, client_id: int):
+    sp_logger.debug("--------------------------------------------------")
+    sp_logger.debug("ajax_save_config CALLED")
+    sp_logger.debug(f"client_id={client_id}")
+
+    raw_body_bytes = request.body or b""
+    try:
+        raw_body_str = raw_body_bytes.decode("utf-8", errors="replace")
+    except Exception:
+        raw_body_str = str(raw_body_bytes)
+
+    sp_logger.debug(f"RAW BODY (str) => {raw_body_str}")
+
+    try:
+        # 1) Parse JSON
+        try:
+            payload = json.loads(raw_body_str or "{}")
+        except Exception as e:
+            sp_logger.error(f"Invalid JSON body: {e}", exc_info=True)
+            return JsonResponse({"ok": False, "error": "Invalid JSON body"}, status=400)
+
+        sp_logger.debug(f"PARSED PAYLOAD => {payload}")
+
+        # 2) Extract fields
+        company_id = payload.get("company_id")
+        version = payload.get("version", 0)
+        config = payload.get("config")
+        reset_flag = payload.get("reset_flag", 0)
+        try:
+            reset_flag = int(reset_flag or 0)
+        except Exception:
+            reset_flag = 0
+
+        sp_logger.debug(
+            f"EXTRACTED FIELDS => company_id={company_id}, version={version}, "
+            f"config_type={type(config).__name__}"
+        )
+
+        # 3) Validate
+        if company_id is None:
+            sp_logger.error("Validation error: company_id is required")
+            return JsonResponse(
+                {"ok": False, "error": "company_id is required"}, status=400
+            )
+
+        if config is None or not isinstance(config, dict):
+            sp_logger.error(
+                f"Validation error: config must be a JSON object. Got: {type(config).__name__}"
+            )
+            return JsonResponse(
+                {"ok": False, "error": "config must be a JSON object"}, status=400
+            )
+
+        # 4) Normalize version
+        try:
+            version_float = float(version)
+        except Exception:
+            sp_logger.error(f"Invalid version value: {version}. Defaulting to 0.0")
+            version_float = 0.0
+
+        # 5) Dump config
+        try:
+            config_json_str = json.dumps(config)
+        except Exception as e:
+            sp_logger.error(f"Failed to json.dumps(config): {e}", exc_info=True)
+            return JsonResponse(
+                {"ok": False, "error": "config is not JSON serializable"}, status=400
+            )
+
+        sp_logger.debug(
+            f"FINAL INPUTS => client_id={client_id}, company_id={company_id}, "
+            f"version={version_float}, config_json_len={len(config_json_str)}"
+        )
+        sp_logger.debug(f"CONFIG JSON => {config_json_str}")
+
+        # 6) Call SP
+        with connection.cursor() as cursor:
+            sp_logger.debug("Calling SP: sp_caam_save_criteria(...)")
+
+            cursor.execute(
+                "CALL sp_caam_save_criteria(%s, %s, %s, %s, %s)",
+                [client_id, company_id, version_float, config_json_str, reset_flag],
+            )
+
+            row = cursor.fetchone()
+            cols = [c[0] for c in cursor.description] if cursor.description else []
+
+            sp_logger.debug(f"SP cursor.description cols => {cols}")
+            sp_logger.debug(f"SP fetched row => {row}")
+
+        result = dict(zip(cols, row)) if (row and cols) else None
+        sp_logger.debug(f"SP RESULT dict => {result}")
+
+        data = {"ok": True, "row": result}
+        sp_logger.debug(f"JSON RESPONSE DATA (ajax_save_config) => {data}")
+        return JsonResponse(data)
+
+    except Exception as e:
+        sp_logger.error(f"UNEXPECTED ERROR in ajax_save_config: {e}", exc_info=True)
         return JsonResponse({"ok": False, "error": str(e)}, status=500)

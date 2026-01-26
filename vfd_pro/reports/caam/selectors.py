@@ -1,10 +1,14 @@
 from __future__ import annotations
 from django.db import connection
+from typing import List, Dict, Any, Optional
+
+
 from vfd_pro.common.db import (
     fetch_one_dict,
     fetch_all_dicts,
     fetch_scalar,
     callproc_one_dict,
+    callproc_all_dicts,
 )
 
 import logging
@@ -12,112 +16,65 @@ import logging
 sp_logger = logging.getLogger("sp_logger")
 
 
-def _get_client_kpi(client_id: int):
-    return fetch_one_dict(
-        "SELECT * FROM vw_vfd_client_kpis WHERE client_id = %s",
-        [client_id],
-    )
+from typing import Any, Dict, List, Optional
 
 
-def _get_client_suitability(client_id: int):
+def _get_caam_report(
+    company_id: int, client_id: Optional[int] = None
+) -> List[Dict[str, Any]]:
 
-    return fetch_one_dict(
-        """
-             SELECT
-                client_id,
+    try:
+        params = [company_id, None if client_id is None else int(client_id)]
+        rows = callproc_all_dicts("sp_get_caam_report", params)
+        return rows or []
 
-                is_24_month_history,
-                CNT_months_with_sales_24,
-
-                has_more_than_2_sales_nominals,
-                CNT_sales_nominals_24,
-
-                has_more_than_2_cos_nominals,
-                CNT_cos_nominals_24,
-
-                has_more_than_10_overhead_nominals,
-                CNT_overhead_nominals_24,
-
-                has_more_than_20_customers,
-                CNT_customers_24,
-
-                has_more_than_20_suppliers,
-                CNT_suppliers_24,
-
-                debtor_days_calculated,
-                CNT_debtor_months,
-
-                creditor_days_calculated,
-                CNT_creditor_months,
-
-                stock_days_calculated,
-                CNT_stock_months,
-
-                cash_balance_visible,
-                CNT_cash_months,
-
-                consistent_cost_base,
-                CNT_inconsistent_months_12
-                
-            FROM vw_vfd_client_suitability
-            WHERE client_id = %s
-            """,
-        [client_id],
-    )
+    except Exception as exc:
+        sp_logger.error(
+            "ERROR in _get_caam_report(company_id=%s, client_id=%s): %s",
+            company_id,
+            client_id,
+            exc,
+            exc_info=True,
+        )
+        raise
 
 
-def _get_client_readiness(client_id: int):
-    return fetch_one_dict(
-        """
-            SELECT
-                client_id,
-                client_name,
+def _get_caam_report_details(company_id: int, client_id: int) -> Optional[dict]:
 
-                is_ebitda_positive,
-                val_ebitda_TY,
-                val_ebitda_LY,
-                is_ebitda_more_than_ly,
-                val_ebitda_vs_ly,
-
-                has_dividend_last_12m,
-                val_dividend_TY,
-                val_dividend_LY,
-                is_dividend_at_least_equal_ly,
-                val_dividend_vs_ly,
-
-                is_cash_balance_positive,
-                val_cash_TY,
-                val_cash_LY,
-                is_cash_more_than_ly,
-                val_cash_vs_ly,
-
-                are_sales_improving,
-                val_revenue_TY,
-                val_revenue_LY,
-                val_revenue_vs_ly
-            FROM vw_vfd_client_readiness
-            WHERE client_id = %s
-            """,
-        [client_id],
-    )
+    sql = """
+        SELECT *
+        FROM tbl_process_caam_report
+        WHERE company_id = %s
+          AND client_id = %s
+        ORDER BY reporting_date DESC
+        LIMIT 1
+    """
+    return fetch_one_dict(sql, [company_id, client_id])
 
 
-def _get_client_utilities(client_id: int):
-    return fetch_one_dict(
-        """
-            SELECT has_utilities
-            FROM vw_vfd_client_utilities
-            WHERE client_id = %s
-            """,
-        [client_id],
-    )
+def _get_caam_report_config(client_id: int) -> Optional[dict]:
+    sql = """
+        SELECT *
+        FROM vw_caam_report_config
+        WHERE client_id = %s
+        LIMIT 1
+    """
+    return fetch_one_dict(sql, [client_id])
 
 
-def _get_client_rd(client_id: int) -> str:
-    return fetch_one_dict(
-        "SELECT rd_flag FROM vw_vfd_client_rd WHERE client_id = %s",
-        [client_id],
-    )
+def _get_caam_report_config_by_company(company_id: int) -> Optional[dict]:
+    sql = """
+        SELECT *
+        FROM vw_caam_report_config
+        WHERE company_id IN (%s, 0)
+        ORDER BY 
+            CASE 
+                WHEN company_id = %s THEN 0
+                ELSE 1
+            END
+        LIMIT 1
+    """
+    return fetch_one_dict(sql, [company_id, company_id])
 
 
 def _get_sales_trend(client_id: int):

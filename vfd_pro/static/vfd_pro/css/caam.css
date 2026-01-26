@@ -1,0 +1,192 @@
+/* =========================================================
+   CAAM Configuration Modal (FINAL / CLEAN)
+   Only affects: #companyConfigurationModal
+   ========================================================= */
+
+#companyConfigurationModal.caam-modal {
+    --caam-font: 12px;
+    --caam-line: 1.15;
+    --caam-border: rgba(0, 0, 0, 0.08);
+    --caam-border2: rgba(0, 0, 0, 0.06);
+    --caam-headbg: rgba(243, 244, 246, 0.95);
+}
+
+/* Dialog sizing */
+@media (min-width: 1200px) {
+    #companyConfigurationModal .modal-dialog {
+        max-width: 980px;
+    }
+}
+
+/* Base scale */
+#companyConfigurationModal.caam-modal,
+#companyConfigurationModal.caam-modal * {
+    font-size: var(--caam-font);
+    line-height: var(--caam-line);
+}
+
+/* Container look */
+#companyConfigurationModal.caam-modal .modal-content {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* Header / footer */
+#companyConfigurationModal.caam-modal .modal-header,
+#companyConfigurationModal.caam-modal .modal-footer {
+    padding: 8px 12px;
+    border-color: var(--caam-border);
+}
+
+#companyConfigurationModal.caam-modal .modal-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Body scroll */
+#companyConfigurationModal .caam-modal__body {
+    padding: 10px 12px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Tabs */
+#companyConfigurationModal .nav-tabs .nav-link {
+    padding: 4px 8px;
+    font-weight: 600;
+    border-radius: 10px 10px 0 0;
+}
+
+#companyConfigurationModal .caam-tabs--inner .nav-link {
+    padding: 4px 8px;
+    font-weight: 600;
+}
+
+/* Labels */
+#companyConfigurationModal .form-label {
+    margin-bottom: 2px;
+    font-size: 11.5px;
+}
+
+/* Controls wrapper (Time period / Multiple) */
+#companyConfigurationModal .caam-controls {
+    background: rgba(15, 23, 42, 0.03);
+    border: 1px solid var(--caam-border2);
+    border-radius: 10px;
+    padding: 8px;
+}
+
+/* Inputs / selects (tight height) */
+#companyConfigurationModal .form-control-sm,
+#companyConfigurationModal .form-select-sm {
+    height: 24px;
+    min-height: 24px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 12px;
+}
+
+#companyConfigurationModal .input-group-sm>.form-control,
+#companyConfigurationModal .input-group-sm>.input-group-text {
+    height: 24px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 12px;
+}
+
+/* Tables general */
+#companyConfigurationModal .caam-table {
+    margin-bottom: 0;
+}
+
+#companyConfigurationModal .caam-table thead th {
+    background: var(--caam-headbg);
+    border-bottom: 1px solid var(--caam-border);
+    color: rgba(17, 24, 39, 0.85);
+    font-weight: 700;
+    padding: 6px 8px;
+    font-size: 11.5px;
+    white-space: nowrap;
+}
+
+#companyConfigurationModal .caam-table td {
+    border-top: 1px solid var(--caam-border2);
+    padding: 5px 8px;
+    vertical-align: middle;
+}
+
+/* --------- 2-column tables: Suitability / Readiness --------- */
+#companyConfigurationModal .caam-table--yn {
+    table-layout: auto;
+    /* fixes huge "gap" feel */
+}
+
+#companyConfigurationModal .caam-table--yn th:first-child,
+#companyConfigurationModal .caam-table--yn td:first-child {
+    width: 86px;
+    /* compact enable column */
+}
+
+#companyConfigurationModal .caam-select-yn {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+}
+
+/* Bring Field closer visually */
+#companyConfigurationModal .caam-table--yn td:nth-child(2),
+#companyConfigurationModal .caam-table--yn th:nth-child(2) {
+    padding-left: 10px;
+}
+
+/* --------- 4-column tables: Performance / Working Capital --------- */
+#companyConfigurationModal .caam-table--rule {
+    table-layout: fixed;
+}
+
+#companyConfigurationModal .caam-table--rule th:first-child,
+#companyConfigurationModal .caam-table--rule td:first-child {
+    width: 92px;
+}
+
+#companyConfigurationModal .caam-table--rule th:nth-child(3),
+#companyConfigurationModal .caam-table--rule td:nth-child(3) {
+    width: 92px;
+}
+
+#companyConfigurationModal .caam-table--rule th:last-child,
+#companyConfigurationModal .caam-table--rule td:last-child {
+    width: 160px;
+}
+
+/* Buttons */
+#companyConfigurationModal .btn-sm {
+    padding: 4px 10px/entity 2px;
+    /* if this line causes issue, replace with below */
+    font-size: 12px;
+}
+
+/* (fix for safe button padding) */
+#companyConfigurationModal .btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+/* Mobile touch comfort */
+@media (max-width: 576px) {
+    #companyConfigurationModal .caam-modal__body {
+        max-height: 78vh;
+        padding: 10px 10px;
+    }
+
+    #companyConfigurationModal .caam-table--yn th:first-child,
+    #companyConfigurationModal .caam-table--yn td:first-child {
+        width: 94px;
+    }
+
+    #companyConfigurationModal .caam-select-yn {
+        width: 82px;
+        min-width: 82px;
+        max-width: 82px;
+    }
+}

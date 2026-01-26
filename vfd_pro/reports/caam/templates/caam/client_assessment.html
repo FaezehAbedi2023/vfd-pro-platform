@@ -1,5 +1,7 @@
+{% load static %}
 <!doctype html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,691 +9,1298 @@
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'vfd_pro/css/caam.css' %}">
 
   <style>
-    :root{
-      --bg: #0b1220;
-      --panel: rgba(255,255,255,.06);
-      --card: rgba(255,255,255,.07);
-      --border: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.65);
-      --shadow: 0 18px 45px rgba(0,0,0,.35);
+    :root {
+      --bg: #0b0f17;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel2: rgba(255, 255, 255, 0.08);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.65);
+      --shadow: 0 16px 44px rgba(0, 0, 0, 0.45);
       --radius: 18px;
     }
 
-    html, body { overflow-x: hidden; } /* prevent horizontal scroll */
-    body{
-      min-height: 100vh;
+    html,
+    body {
+      height: 100%;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(110, 90, 255, 0.25), transparent 60%),
+        radial-gradient(900px 520px at 90% 15%, rgba(0, 212, 255, 0.20), transparent 55%),
+        radial-gradient(1000px 700px at 40% 90%, rgba(255, 122, 86, 0.15), transparent 60%),
+        var(--bg);
       color: var(--text);
-      background:
-        radial-gradient(1200px 700px at 15% 10%, rgba(59,130,246,.28), transparent 55%),
-        radial-gradient(900px 650px at 85% 20%, rgba(168,85,247,.22), transparent 55%),
-        radial-gradient(1100px 700px at 50% 90%, rgba(16,185,129,.18), transparent 55%),
-        linear-gradient(180deg, #070b14 0%, #0b1220 55%, #070b14 100%);
     }
 
-    .glass{
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 52px;
+    }
+
+    .glass {
       background: var(--panel);
-      border: 1px solid var(--border);
+      border: 1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
     }
 
-    .headerbar{
-      border-radius: calc(var(--radius) + 6px);
-      padding: 18px;
-      background:
-        linear-gradient(135deg, rgba(59,130,246,.18) 0%, rgba(168,85,247,.14) 40%, rgba(16,185,129,.10) 100%),
-        rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .muted{ color: var(--muted); }
-    .mono{ font-variant-numeric: tabular-nums; }
-
-    .kpi{
+    .glass-2 {
+      background: var(--panel2);
+      border: 1px solid var(--stroke);
       border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
+      backdrop-filter: blur(10px);
     }
-    .kpi::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(600px 200px at 20% 0%, rgba(59,130,246,.14), transparent 60%);
-      pointer-events:none;
-    }
-    .kpi .num{ font-weight: 800; font-size: 1.45rem; letter-spacing: .2px; }
 
-    .btn-ghost{
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
+    .muted {
+      color: var(--muted);
+    }
+
+    .mono {
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .page-title {
+      letter-spacing: .2px;
+      font-weight: 700;
+      font-size: 26px;
+      margin: 0;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .kpi {
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .kpi .val {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--stroke);
       color: var(--text);
     }
-    .btn-ghost:hover{
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.18);
-      color: var(--text);
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
-    .form-control, .form-select, .input-group-text{
-      background: rgba(255,255,255,.06) !important;
-      border: 1px solid var(--border) !important;
-      color: var(--text) !important;
-    }
-    .form-control::placeholder{ color: rgba(255,255,255,.45); }
-    .input-group-text{ color: rgba(255,255,255,.75); }
-
-    .table-wrap{
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+    .table thead th {
+      color: rgba(255, 255, 255, 0.85);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    .table{
-      --bs-table-bg: transparent;
-      --bs-table-color: var(--text);
-      --bs-table-border-color: rgba(255,255,255,.08);
-      width: 100%;
-      table-layout: fixed; /* key: fit without horizontal scroll */
-      font-size: .90rem;
+    .table td,
+    .table th {
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
+      vertical-align: middle;
     }
 
-    .table thead th{
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: rgba(10, 16, 30, .86);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(12px);
-      font-size: .84rem;
-      color: rgba(255,255,255,.82);
-      white-space: normal;
-      word-break: break-word;
+    .progress {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.10);
+      border-radius: 999px;
     }
 
-    .table td{
-      white-space: normal;
-      word-break: break-word;
+    .progress-bar {
+      border-radius: 999px;
     }
 
-    .table tbody tr{
-      transition: transform .08s ease, background .12s ease;
+    .score-pill {
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.9);
     }
-    .table tbody tr:hover{
-      background: rgba(255,255,255,.05);
+
+    .badge-soft-success {
+      background: rgba(25, 135, 84, 0.18);
+      color: rgba(212, 255, 233, 0.95);
+      border: 1px solid rgba(25, 135, 84, 0.28);
+    }
+
+    .badge-soft-warning {
+      background: rgba(255, 193, 7, 0.18);
+      color: rgba(255, 244, 214, 0.95);
+      border: 1px solid rgba(255, 193, 7, 0.28);
+    }
+
+    .badge-soft-danger {
+      background: rgba(220, 53, 69, 0.18);
+      color: rgba(255, 222, 227, 0.95);
+      border: 1px solid rgba(220, 53, 69, 0.28);
+    }
+
+    @media (min-width: 992px) {
+      .w-lg-auto {
+        width: auto !important;
+      }
+    }
+
+    /* Compact table */
+    .compact-table th,
+    .compact-table td {
+      padding: 6px 8px !important;
+      font-size: 13px;
+    }
+
+    .compact-table thead th {
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+
+    #btnBackCriteria,
+    #btnBackConfig,
+    .btn-back {
+      opacity: 1 !important;
+      visibility: visible !important;
+      color: #0d6efd !important;
+      border: 1px solid #0d6efd !important;
+      background: #fff !important;
+    }
+
+    #btnBackCriteria:hover,
+    #btnBackConfig:hover,
+    .btn-back:hover {
+      color: #fff !important;
+      background: #0d6efd !important;
+    }
+
+    /* =========================
+   Configuration Button
+   ========================= */
+
+    .config-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      background: linear-gradient(135deg, #e9fff4, #f6fffb);
+      color: #0f7b5c;
+
+      border: 1px solid #86e3c3;
+      border-radius: 999px;
+
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 600;
+
+      cursor: pointer;
+      user-select: none;
+
+      transition: all 0.2s ease-in-out;
+    }
+
+    .config-btn__icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .config-btn:hover {
+      background: #0f7b5c;
+      color: #ffffff;
+      border-color: #0f7b5c;
       transform: translateY(-1px);
     }
 
-    .badge-soft-success{
-      background: rgba(16,185,129,.14);
-      border: 1px solid rgba(16,185,129,.22);
-      color: rgba(255,255,255,.92);
-      font-weight: 700;
-    }
-    .badge-soft{
-      background: rgba(59,130,246,.12);
-      border: 1px solid rgba(59,130,246,.22);
-      color: rgba(255,255,255,.92);
-      font-weight: 700;
-    }
-    .badge-soft-warning{
-      background: rgba(245,158,11,.16);
-      border: 1px solid rgba(245,158,11,.26);
-      color: rgba(255,255,255,.92);
-      font-weight: 800;
-    }
-    .badge-soft-danger{
-      background: rgba(239,68,68,.16);
-      border: 1px solid rgba(239,68,68,.28);
-      color: rgba(255,255,255,.92);
-      font-weight: 800;
+    .config-btn:hover .config-btn__icon {
+      transform: rotate(90deg);
+      transition: transform 0.25s ease;
     }
 
-    .score-pill{
-      min-width: 74px;
-      background: rgba(255,255,255,.06) !important;
-      border: 1px solid rgba(255,255,255,.14) !important;
-      color: rgba(255,255,255,.92) !important;
+    .config-btn:active {
+      transform: scale(0.97);
     }
 
-    .progress{
-      height: .58rem;
-      background: rgba(255,255,255,.10);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .progress-bar{
-      background: linear-gradient(90deg, rgba(59,130,246,.95), rgba(168,85,247,.92), rgba(16,185,129,.90));
-    }
-
-    .nowrap{ white-space: nowrap; }
-
-    /* Column sizing to avoid horizontal scroll */
-    col.rank   { width: 6%; }
-    col.name   { width: 22%; }
-    col.month  { width: 12%; }
-    col.score  { width: 12%; }
-    col.flag   { width: 12%; }
-    col.risk   { width: 12%; }
-
-    .targets-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:.35rem;
-      padding:.35rem .65rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.90);
-      font-size: .88rem;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 992px){
-      .table{ font-size: .86rem; }
-      col.name { width: 26%; }
-      col.month{ width: 13%; }
-      col.score{ width: 12%; }
-      col.flag { width: 12%; }
-      col.risk { width: 11%; }
-    }
-
-    @media (max-width: 768px){
-      /* still no horizontal scroll; allow more wrapping */
-      col.rank { width: 8%; }
-      col.name { width: 28%; }
-      col.month{ width: 14%; }
-      col.score{ width: 12%; }
-      col.flag { width: 13%; }
-      col.risk { width: 11%; }
-      .score-pill{ min-width: 62px; }
+    .config-btn {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
   </style>
+
 </head>
 
-<body>
-  <div class="container-fluid px-3 px-lg-4 py-4 py-lg-5">
+<body data-company-id="{{ company_id|default:'' }}">
+  <div class="wrap">
 
-    <!-- Header (title first, clean) -->
-    <div class="headerbar mb-4">
-      <div class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center justify-content-between">
+    <!-- Header -->
+    <div class="glass p-4 mb-3">
+      <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-center justify-content-between">
         <div>
-          <h1 class="h4 mb-1">
-            Client Advisory Assessment — <span id="companyTitle">Naylor Accountancy</span>
-          </h1>
-          <div class="muted small">
-            Portfolio view of clients, scoring, and advisory flags.
-          </div>
+          <h1 class="page-title">Client Advisory Assessment</h1>
+          <p class="sub mb-0">
+            Company: <span id="companyName" class="fw-semibold">-</span>
+            <!-- <span class="muted"> | </span> -->
+            Company ID: <span id="companyIdText" class="mono">-</span>
+          </p>
+          <!-- NEW: Configuration button in header -->
+          <button type="button" class="config-btn" data-bs-toggle="modal" data-bs-target="#companyConfigurationModal">
+            <span class="config-btn__icon">⚙</span>
+            <span class="config-btn__text">Configuration</span>
+          </button>
+
         </div>
 
         <!-- Controls -->
         <div class="glass p-3 w-100 w-lg-auto">
           <div class="row g-2 align-items-end">
-            <div class="col-12 col-sm-4">
-              <label class="form-label small mb-1 muted">Company</label>
-              <select id="companySelect" class="form-select"></select>
-            </div>
-
-            <div class="col-12 col-sm-4">
+            <!-- Search -->
+            <div class="col-12 col-lg-8">
               <label class="form-label small mb-1 muted">Search client</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input id="searchInput" class="form-control" placeholder="e.g. Xero, Retail, Smith..." />
+                <input id="searchInput" class="form-control" list="clientNamesList" />
               </div>
+              <datalist id="clientNamesList"></datalist>
             </div>
 
-            <div class="col-12 col-sm-4">
-              <label class="form-label small mb-1 muted">Reporting month</label>
-              <select id="monthFilter" class="form-select">
-                <option value="">All</option>
-              </select>
-            </div>
-
-            <div class="col-12 d-flex gap-2 mt-2">
-              <button class="btn btn-ghost flex-grow-1" id="btnReset">
-                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset filters
-              </button>
-              <button class="btn btn-primary flex-grow-1" id="btnFakeExport">
-                <i class="bi bi-download me-1"></i> Export
+            <!-- Reset button -->
+            <div class="col-12 col-lg-4">
+              <button class="btn btn-ghost w-100" id="btnReset">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
               </button>
             </div>
           </div>
+
         </div>
       </div>
 
-      <!-- Editable targets -->
-      <div class="glass mt-3 p-3">
-        <div class="row g-2 align-items-end">
-          <div class="col-12 col-lg-6">
-            <div class="d-flex flex-wrap gap-2 align-items-center">
-              <span class="targets-pill"><strong>Targets</strong></span>
-              <span class="targets-pill">Suitability ≥ <span class="mono" id="tSuitLabel">50</span>%</span>
-              <span class="targets-pill">Opportunity ≥ <span class="mono" id="tOppLabel">50</span>%</span>
-              <span class="targets-pill">Readiness ≥ <span class="mono" id="tReadyLabel">25</span>%</span>
-            </div>
+      <!-- KPI row -->
+      <div class="row g-2 mt-3">
+
+        <div class="col-6 col-lg-3">
+          <div class="kpi">
+            <div class="label">Target for discussion (Yes)</div>
+            <div class="val mono" id="kpiTarget">0</div>
           </div>
-
-          <div class="col-12 col-lg-6">
-            <div class="row g-2">
-              <div class="col-12 col-md-4">
-                <label class="form-label small mb-1 muted">Suitability target (%)</label>
-                <input id="tSuit" type="number" class="form-control mono" min="0" max="100" value="50">
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label small mb-1 muted">Opportunity target (%)</label>
-                <input id="tOpp" type="number" class="form-control mono" min="0" max="100" value="50">
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label small mb-1 muted">Readiness target (%)</label>
-                <input id="tReady" type="number" class="form-control mono" min="0" max="100" value="25">
-              </div>
-              <div class="col-12 d-flex gap-2 mt-1">
-                <button id="btnApplyTargets" class="btn btn-primary flex-grow-1">
-                  <i class="bi bi-check2-circle me-1"></i> Apply targets
-                </button>
-                <button id="btnResetTargets" class="btn btn-ghost flex-grow-1">
-                  <i class="bi bi-arrow-repeat me-1"></i> Default targets
-                </button>
-              </div>
-            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="kpi">
+            <div class="label">R&amp;D opportunity (Yes)</div>
+            <div class="val mono" id="kpiRD">0</div>
           </div>
-
         </div>
-      </div>
-
-    </div>
-
-    <!-- KPIs -->
-    <div class="row g-3 mb-3">
-      <div class="col-12 col-md-3">
-        <div class="kpi p-3">
-          <div class="muted small">Clients (visible)</div>
-          <div class="num mono" id="kpiClients">0</div>
-          <div class="muted small mt-2"><i class="bi bi-people me-1"></i>After filters</div>
+        <div class="col-6 col-lg-3">
+          <div class="kpi">
+            <div class="label">Utilities (Yes)</div>
+            <div class="val mono" id="kpiUtilities">0</div>
+          </div>
         </div>
-      </div>
 
-      <div class="col-12 col-md-3">
-        <div class="kpi p-3">
-          <div class="muted small">Target for discussion</div>
-          <div class="num mono" id="kpiTarget">0</div>
-          <div class="muted small mt-2"><i class="bi bi-chat-dots me-1"></i>Recommended follow-up</div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-3">
-        <div class="kpi p-3">
-          <div class="muted small">R&amp;D opportunities</div>
-          <div class="num mono" id="kpiRD">0</div>
-          <div class="muted small mt-2"><i class="bi bi-lightbulb me-1"></i>Potential claims</div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-3">
-        <div class="kpi p-3">
-          <div class="muted small">Potential IHT risk</div>
-          <div class="num mono" id="kpiIHT">0</div>
-          <div class="muted small mt-2"><i class="bi bi-exclamation-triangle me-1"></i>Medium/High flags</div>
+        <div class="col-6 col-lg-3">
+          <div class="kpi">
+            <div class="label">Potential IHT risk (Yes)</div>
+            <div class="val mono" id="kpiIHT">0</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Grid/Table -->
-    <div class="table-wrap">
-      <div class="p-3 border-bottom" style="border-color: rgba(255,255,255,.10) !important;">
-        <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-start align-items-md-center">
-          <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span class="targets-pill"><i class="bi bi-table me-1"></i> Client Grid</span>
-            <span class="muted small">Sorted by Rank (composite score)</span>
-          </div>
-        </div>
+    <!-- Table -->
+    <div class="glass p-3">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Client Name</th>
+              <th>Reporting Month Used</th>
+              <th>Suitability Score</th>
+              <th>Opportunity Score</th>
+              <th>Readiness Score</th>
+              <th>Target For Discussion?</th>
+              <th>R&amp;D Opportunity?</th>
+              <th>Utilities</th>
+              <th>Potential IHT Risk?</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
       </div>
-
-      <!-- NOTE: no table-responsive wrapper to avoid horizontal scroll -->
-      <table class="table table-hover align-middle mb-0">
-        <colgroup>
-          <col class="rank">
-          <col class="name">
-          <col class="month">
-          <col class="score">
-          <col class="score">
-          <col class="score">
-          <col class="flag">
-          <col class="flag">
-          <col class="risk">
-        </colgroup>
-
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Client Name</th>
-            <th>Reporting Month Used</th>
-            <th>Suitability Score</th>
-            <th>Opportunity Score</th>
-            <th>Readiness Score</th>
-            <th>Target For Discussion?</th>
-            <th>R&amp;D Opportunity?</th>
-            <th>Potential IHT Risk?</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
     </div>
 
   </div>
 
   <script>
-    // -----------------------
-    // Demo Data (hand-made)
-    // -----------------------
-    const demo = {
-      companies: [
-        {
-          id: "naylor",
-          name: "Naylor Accountancy",
-          clients: [
-            { name: "Xero Demo Data",            reportingMonth: "10/31/2025", revenueK: 900,  margin: 0.24, digital: 0.75, engagement: 0.62, complexity: 0.55, payroll: true,  vat: true,  rndSignals: 0.20, ihtSignals: 0.12 },
-            { name: "Beacon Retail Ltd",         reportingMonth: "10/31/2025", revenueK: 1750, margin: 0.18, digital: 0.55, engagement: 0.48, complexity: 0.72, payroll: true,  vat: true,  rndSignals: 0.10, ihtSignals: 0.28 },
-            { name: "Oakridge Property Group",   reportingMonth: "09/30/2025", revenueK: 3200, margin: 0.31, digital: 0.64, engagement: 0.58, complexity: 0.66, payroll: false, vat: true,  rndSignals: 0.08, ihtSignals: 0.62 },
-            { name: "Smith & Co Services",       reportingMonth: "08/31/2025", revenueK: 620,  margin: 0.42, digital: 0.82, engagement: 0.74, complexity: 0.40, payroll: true,  vat: false, rndSignals: 0.34, ihtSignals: 0.18 },
-            { name: "Nova Manufacturing",        reportingMonth: "10/31/2025", revenueK: 5100, margin: 0.14, digital: 0.46, engagement: 0.44, complexity: 0.86, payroll: true,  vat: true,  rndSignals: 0.58, ihtSignals: 0.22 },
-            { name: "Harbor Digital Studio",     reportingMonth: "09/30/2025", revenueK: 980,  margin: 0.36, digital: 0.92, engagement: 0.80, complexity: 0.52, payroll: false, vat: true,  rndSignals: 0.66, ihtSignals: 0.09 },
-          ]
-        },
-        {
-          id: "aster",
-          name: "Aster Tax & Advisory",
-          clients: [
-            { name: "Greenfield Farms",          reportingMonth: "10/31/2025", revenueK: 2100, margin: 0.20, digital: 0.40, engagement: 0.55, complexity: 0.68, payroll: true,  vat: true,  rndSignals: 0.05, ihtSignals: 0.35 },
-            { name: "Pulse Health Clinic",       reportingMonth: "09/30/2025", revenueK: 1450, margin: 0.29, digital: 0.71, engagement: 0.66, complexity: 0.58, payroll: true,  vat: false, rndSignals: 0.22, ihtSignals: 0.30 },
-            { name: "Atlas Contractors",         reportingMonth: "08/31/2025", revenueK: 3800, margin: 0.16, digital: 0.52, engagement: 0.41, complexity: 0.78, payroll: true,  vat: true,  rndSignals: 0.12, ihtSignals: 0.44 },
-            { name: "Luna SaaS",                 reportingMonth: "10/31/2025", revenueK: 2700, margin: 0.38, digital: 0.88, engagement: 0.77, complexity: 0.62, payroll: false, vat: true,  rndSignals: 0.72, ihtSignals: 0.11 },
-          ]
-        }
-      ]
-    };
+    // --------------------------------------------
+    // CAAM Report Grid (loads from SP via Django API)
+    // --------------------------------------------
 
-    // -----------------------
-    // Targets (editable)
-    // -----------------------
-    const targetInputs = {
-      suit: document.getElementById("tSuit"),
-      opp: document.getElementById("tOpp"),
-      ready: document.getElementById("tReady"),
-    };
+    const elSearch = document.getElementById("searchInput");
+    const elBody = document.getElementById("tbody");
 
-    const targetLabels = {
-      suit: document.getElementById("tSuitLabel"),
-      opp: document.getElementById("tOppLabel"),
-      ready: document.getElementById("tReadyLabel"),
-    };
+    const elCompanyName = document.getElementById("companyName");
+    const elCompanyIdText = document.getElementById("companyIdText");
 
-    const DEFAULT_TARGETS = { suit: 50, opp: 50, ready: 25 };
 
-    function readTargets(){
-      const suit = clampInt(targetInputs.suit.value, 0, 100);
-      const opp  = clampInt(targetInputs.opp.value, 0, 100);
-      const ready= clampInt(targetInputs.ready.value, 0, 100);
-      return { suit, opp, ready };
+    const kpiTarget = document.getElementById("kpiTarget");
+    const kpiRD = document.getElementById("kpiRD");
+    const kpiUtilities = document.getElementById("kpiUtilities");
+    const kpiIHT = document.getElementById("kpiIHT");
+
+    const elClientNamesList = document.getElementById("clientNamesList");
+
+    function populateClientDatalist(rowsMapped) {
+
+      const names = [...new Set(rowsMapped.map(r => (r.name || "").trim()).filter(Boolean))].sort();
+
+      elClientNamesList.innerHTML = names.map(n => `<option value="${n}"></option>`).join("");
     }
 
-    function applyTargetsToUI(t){
-      targetInputs.suit.value = t.suit;
-      targetInputs.opp.value = t.opp;
-      targetInputs.ready.value = t.ready;
-      targetLabels.suit.textContent = String(t.suit);
-      targetLabels.opp.textContent = String(t.opp);
-      targetLabels.ready.textContent = String(t.ready);
+
+    function getCompanyId() {
+      const qs = new URLSearchParams(window.location.search);
+      const fromQs = qs.get("company_id");
+      if (fromQs && !isNaN(Number(fromQs))) return Number(fromQs);
+
+      const fromData = document.body?.dataset?.companyId;
+      if (fromData && !isNaN(Number(fromData))) return Number(fromData);
+
+      if (typeof window.COMPANY_ID !== "undefined" && !isNaN(Number(window.COMPANY_ID))) {
+        return Number(window.COMPANY_ID);
+      }
+
+      return null;
     }
 
-    function clampInt(v, min, max){
-      const n = Number(v);
-      if (!Number.isFinite(n)) return min;
-      return Math.max(min, Math.min(max, Math.round(n)));
+    function reportUrl(companyId) {
+      return `/companies/${companyId}/ajax/report/`;
     }
 
-    // -----------------------
-    // Scoring (demo logic)
-    // -----------------------
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-    function pct(x){ return Math.round(x * 100); }
-
-    function calcSuitability(c){
-      const score = (
-        0.35 * c.digital +
-        0.30 * c.engagement +
-        0.25 * clamp01((c.margin - 0.10) / 0.35) +
-        0.10 * (1 - c.complexity)
-      );
-      return clamp01(score);
+    function clientSummaryUrl(clientId, companyId) {
+      const base = `/clients/${clientId}/summary/?company_id=${encodeURIComponent(companyId)}`;
+      return `${base}&from=assessment`;
     }
 
-    function calcOpportunity(c){
-      const revenueScale = clamp01((c.revenueK - 300) / 5000);
-      const serviceBoost = (c.payroll ? 0.08 : 0) + (c.vat ? 0.08 : 0);
-      const score = 0.40 * c.complexity + 0.40 * revenueScale + 0.20 * clamp01(c.rndSignals + serviceBoost);
-      return clamp01(score);
+    async function loadReport(companyId) {
+      const res = await fetch(reportUrl(companyId), { method: "GET" });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || "Report API error");
+      return data.rows || [];
     }
 
-    function calcReadiness(c){
-      const score = 0.45 * c.engagement + 0.40 * c.digital + 0.15 * 0.70; // demo "data quality"
-      return clamp01(score);
-    }
-
-    function targetForDiscussion(suit, opp, ready, targets){
-      // 2-out-of-3 rule, using editable targets
-      const hits =
-        (pct(suit)  >= targets.suit) +
-        (pct(opp)   >= targets.opp)  +
-        (pct(ready) >= targets.ready);
-      return hits >= 2;
-    }
-
-    function rndOpportunity(c, opp){
-      return (c.rndSignals >= 0.45) || (opp >= 0.65 && c.complexity >= 0.70);
-    }
-
-    function ihtRisk(c){
-      if (c.ihtSignals >= 0.55) return "High";
-      if (c.ihtSignals >= 0.30) return "Medium";
-      return "Low";
-    }
-
-    function riskBadge(level){
-      if (level === "High")   return `<span class="badge badge-soft-danger rounded-pill px-3 py-2">High</span>`;
-      if (level === "Medium") return `<span class="badge badge-soft-warning rounded-pill px-3 py-2">Medium</span>`;
-      return `<span class="badge badge-soft-success rounded-pill px-3 py-2">Low</span>`;
-    }
-
-    function yesNoBadge(v){
-      return v
+    function yesNoBadge(v) {
+      const s = String(v ?? "").trim().toLowerCase();
+      const isYes = (s === "yes" || s === "true" || s === "1");
+      return isYes
         ? `<span class="badge badge-soft-success rounded-pill px-3 py-2"><i class="bi bi-check2 me-1"></i>Yes</span>`
         : `<span class="badge badge-soft rounded-pill px-3 py-2"><i class="bi bi-dash-lg me-1"></i>No</span>`;
     }
 
-    function scoreCell(label, value01){
-      const value = pct(value01);
+    function riskBadge(level) {
+      const s = String(level ?? "").trim();
+      if (s === "High") return `<span class="badge badge-soft-danger rounded-pill px-3 py-2">High</span>`;
+      if (s === "Medium") return `<span class="badge badge-soft-warning rounded-pill px-3 py-2">Medium</span>`;
+      return `<span class="badge badge-soft-success rounded-pill px-3 py-2">Low</span>`;
+    }
+
+    function scoreCell(label, pctVal) {
+      const value = Math.max(0, Math.min(100, Math.round(Number(pctVal ?? 0))));
       return `
-        <div class="d-flex align-items-center gap-2">
-          <span class="badge score-pill rounded-pill mono">${value}%</span>
-          <div class="flex-grow-1">
-            <div class="progress" role="progressbar" aria-label="${label}" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100">
-              <div class="progress-bar" style="width:${value}%"></div>
-            </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge score-pill rounded-pill mono">${value}%</span>
+        <div class="flex-grow-1">
+          <div class="progress" role="progressbar" aria-label="${label}"
+               aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" style="width:${value}%"></div>
           </div>
         </div>
-      `;
+      </div>
+    `;
     }
 
-    // -----------------------
-    // UI / Rendering
-    // -----------------------
-    const elCompany = document.getElementById("companySelect");
-    const elCompanyTitle = document.getElementById("companyTitle");
-    const elMonthFilter = document.getElementById("monthFilter");
-    const elSearch = document.getElementById("searchInput");
-    const elBody = document.getElementById("tbody");
-
-    const kpiClients = document.getElementById("kpiClients");
-    const kpiTarget = document.getElementById("kpiTarget");
-    const kpiRD = document.getElementById("kpiRD");
-    const kpiIHT = document.getElementById("kpiIHT");
-
-    function uniqueMonths(allClients){
-      return [...new Set(allClients.map(c => c.reportingMonth))].sort();
+    function mapRow(r) {
+      return {
+        clientId: r.client_id,
+        companyId: r.company_id,
+        name: r.client_name ?? r.client ?? r.clientName ?? "-",
+        reportDate: r.reporting_month_label ?? r.reporting_date ?? r.report_date ?? "-",
+        suitabilityPct: r.suitability_score ?? r.suitability ?? 0,
+        opportunityPct: r.opportunity_score ?? r.opportunity ?? 0,
+        readinessPct: r.readiness_score ?? r.readiness ?? 0,
+        tfd: r.target_for_discussion ?? r.target_for_discussion_flag ?? r.tfd,
+        rd: r.rd_opportunity ?? r.rd_flag ?? r.rd,
+        utilities: r.utilities_flag ?? "No",
+        risk: r.iht_risk ?? r.iht ?? r.risk ?? "No",
+        companyName: r.company_name ?? null,
+      };
     }
 
-    function populateCompanies(){
-      elCompany.innerHTML = demo.companies.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
-    }
-
-    function populateMonths(company){
-      const months = uniqueMonths(company.clients);
-      const options = months.map(m => `<option value="${m}">${m}</option>`).join("");
-      elMonthFilter.innerHTML = `<option value="">All</option>` + options;
-    }
-
-    function getCompany(){
-      const id = elCompany.value;
-      return demo.companies.find(c => c.id === id) || demo.companies[0];
-    }
-
-    function computeRows(company, targets){
-      const enriched = company.clients.map(c => {
-        const suitability = calcSuitability(c);
-        const opportunity = calcOpportunity(c);
-        const readiness = calcReadiness(c);
-
-        const tfd = targetForDiscussion(suitability, opportunity, readiness, targets);
-        const rd = rndOpportunity(c, opportunity);
-        const risk = ihtRisk(c);
-
-        const composite = 0.40*suitability + 0.40*opportunity + 0.20*readiness;
-
-        return { ...c, suitability, opportunity, readiness, tfd, rd, risk, composite };
-      });
-
+    function renderTable(rowsMapped) {
       const q = (elSearch.value || "").trim().toLowerCase();
-      const month = elMonthFilter.value;
+      const filtered = rowsMapped.filter(r => !q || String(r.name).toLowerCase().includes(q));
 
-      const filtered = enriched.filter(r => {
-        const okSearch = !q || r.name.toLowerCase().includes(q);
-        const okMonth = !month || r.reportingMonth === month;
-        return okSearch && okMonth;
-      });
+      // KPIs
+      kpiTarget.textContent = filtered.filter(r => String(r.tfd).toLowerCase() === "yes").length;
+      kpiRD.textContent = filtered.filter(r => String(r.rd).toLowerCase() === "yes").length;
+      kpiUtilities.textContent = filtered.filter(r => String(r.utilities).toLowerCase() === "yes").length;
+      kpiIHT.textContent = filtered.filter(r => String(r.ihtRisk).toLowerCase() === "yes").length;
 
-      filtered.sort((a,b) => b.composite - a.composite);
-      return filtered.map((r, idx) => ({ ...r, rank: idx + 1 }));
-    }
 
-    function render(){
-      const company = getCompany();
-      elCompanyTitle.textContent = company.name;
-
-      const previousMonth = elMonthFilter.value;
-      populateMonths(company);
-      if ([...elMonthFilter.options].some(o => o.value === previousMonth)) {
-        elMonthFilter.value = previousMonth;
+      if (!filtered.length) {
+        elBody.innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-5">
+            <div class="fw-semibold mb-2">No results found</div>
+            <div class="muted">Try clearing the search box.</div>
+          </td>
+        </tr>
+      `;
+        return;
       }
 
-      const targets = readTargets();
-      applyTargetsToUI(targets);
+      elBody.innerHTML = filtered.map((r, idx) => `
+      <tr>
+        <td class="mono">
+          <span class="badge bg-dark rounded-pill px-3 py-2 mono">#${idx + 1}</span>
+        </td>
 
-      const rows = computeRows(company, targets);
+        <td>
+          <a class="fw-semibold text-decoration-none"
+            href="${clientSummaryUrl(r.clientId, r.companyId)}">
+            ${r.name}
+          </a>
+   
+        </td>
 
-      kpiClients.textContent = rows.length;
-      kpiTarget.textContent = rows.filter(r => r.tfd).length;
-      kpiRD.textContent = rows.filter(r => r.rd).length;
-      kpiIHT.textContent = rows.filter(r => r.risk !== "Low").length;
+        <td class="mono">${r.reportDate ?? "-"}</td>   
+        <td>${scoreCell("Suitability", r.suitabilityPct)}</td>
+        <td>${scoreCell("Opportunity", r.opportunityPct)}</td>
+        <td>${scoreCell("Readiness", r.readinessPct)}</td>
 
-      elBody.innerHTML = rows.map(r => `
-        <tr>
-          <td class="mono">
-            <span class="badge bg-dark rounded-pill px-3 py-2 mono">#${r.rank}</span>
-          </td>
+        <td>${yesNoBadge(r.tfd)}</td>
+        <td>${yesNoBadge(r.rd)}</td>
+        <td>${yesNoBadge(r.utilities)}</td>
+        <td>${yesNoBadge(r.ihtRisk)}</td>
+      </tr>
+    `).join("");
+    }
 
-          <td>
-            <div class="fw-semibold">${r.name}</div>
-            <div class="muted small">
-              Rev: <span class="mono">${r.revenueK.toLocaleString()}</span>K
-              <span class="mx-1">•</span>
-              Margin: <span class="mono">${Math.round(r.margin*100)}%</span>
-              <span class="mx-1">•</span>
-              Complexity: <span class="mono">${Math.round(r.complexity*100)}%</span>
-            </div>
-          </td>
+    let cachedRows = [];
 
-          <td class="mono">${r.reportingMonth}</td>
+    async function refresh() {
+      const companyId = getCompanyId();
 
-          <td>${scoreCell("Suitability", r.suitability)}</td>
-          <td>${scoreCell("Opportunity", r.opportunity)}</td>
-          <td>${scoreCell("Readiness", r.readiness)}</td>
-
-          <td>${yesNoBadge(r.tfd)}</td>
-          <td>${yesNoBadge(r.rd)}</td>
-          <td>${riskBadge(r.risk)}</td>
-        </tr>
-      `).join("");
-
-      if (!rows.length){
+      if (!companyId) {
         elBody.innerHTML = `
-          <tr>
-            <td colspan="9" class="text-center py-5">
-              <div class="fw-semibold mb-2">No results found</div>
-              <div class="muted">Try changing filters or clearing the search box.</div>
-            </td>
-          </tr>
-        `;
+        <tr>
+          <td colspan="8" class="text-danger">
+            company_id not provided. Use <span class="mono">?company_id=123</span>
+            (or set <span class="mono">data-company-id</span> on body, or <span class="mono">window.COMPANY_ID</span>).
+          </td>
+        </tr>
+      `;
+        return;
+      }
+
+      elBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
+
+      try {
+        const rows = await loadReport(companyId);
+        cachedRows = rows.map(mapRow);
+
+        populateClientDatalist(cachedRows);
+        renderTable(cachedRows);
+
+        if (cachedRows.length) {
+          elCompanyName.textContent = cachedRows[0].companyName || "-";
+        } else {
+          elCompanyName.textContent = "-";
+        }
+        elCompanyIdText.textContent = String(companyId);
+
+
+
+        renderTable(cachedRows);
+      } catch (e) {
+        elBody.innerHTML = `<tr><td colspan="8" class="text-danger">${e.message}</td></tr>`;
       }
     }
 
     // Events
     document.getElementById("btnReset").addEventListener("click", () => {
       elSearch.value = "";
-      elMonthFilter.value = "";
-      render();
+      renderTable(cachedRows);
     });
 
-    document.getElementById("btnFakeExport").addEventListener("click", () => {
-      alert("Export hook can be implemented (CSV/Excel) in the next step.");
-    });
+    elSearch.addEventListener("input", () => renderTable(cachedRows));
 
-    document.getElementById("btnApplyTargets").addEventListener("click", () => {
-      render();
-    });
 
-    document.getElementById("btnResetTargets").addEventListener("click", () => {
-      applyTargetsToUI(DEFAULT_TARGETS);
-      render();
-    });
+    refresh();
+  </script>
 
-    elCompany.addEventListener("change", () => {
-      elMonthFilter.value = "";
-      elSearch.value = "";
-      render();
-    });
 
-    elMonthFilter.addEventListener("change", render);
-    elSearch.addEventListener("input", render);
 
-    // Init
-    populateCompanies();
-    elCompany.value = demo.companies[0].id;
-    applyTargetsToUI(DEFAULT_TARGETS);
-    render();
+  <!-- ========== Settings Modal (MINIMAL) ========== -->
+  <div class="modal fade caam-modal" id="companyConfigurationModal" tabindex="-1"
+    aria-labelledby="opportunityCriteriaLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+
+        <form method="post" action="">
+          {% csrf_token %}
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="opportunityCriteriaLabel">Setting</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body caam-modal__body">
+
+            <!-- OUTER TABS -->
+            <ul class="nav nav-tabs caam-tabs mb-2" role="tablist">
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="outer-suitability-tab" data-bs-toggle="tab"
+                  data-bs-target="#outer-suitability" type="button" role="tab" aria-controls="outer-suitability"
+                  aria-selected="true">
+                  Suitability
+                </button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-opportunity-tab" data-bs-toggle="tab"
+                  data-bs-target="#outer-opportunity" type="button" role="tab" aria-controls="outer-opportunity"
+                  aria-selected="false">
+                  Opportunity
+                </button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-iht-tab" data-bs-toggle="tab" data-bs-target="#outer-iht"
+                  type="button" role="tab" aria-controls="outer-iht" aria-selected="false">
+                  IHT
+                </button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-readiness-tab" data-bs-toggle="tab" data-bs-target="#outer-readiness"
+                  type="button" role="tab" aria-controls="outer-readiness" aria-selected="false">
+                  Readiness
+                </button>
+              </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+              <!-- ===================== SUITABILITY (Enable only) ===================== -->
+              <div class="tab-pane fade show active" id="outer-suitability" role="tabpanel"
+                aria-labelledby="outer-suitability-tab">
+
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle caam-table caam-table--yn">
+                    <thead>
+                      <tr>
+                        <th>Enable</th>
+                        <th>Field</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for row in suitability_settings.rows %}
+                      <tr>
+                        <td>
+                          <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
+                            class="form-select form-select-sm caam-select-yn">
+                            <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
+                          </select>
+                        </td>
+
+                        <td>{{ row.label }}</td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="2" class="text-muted text-center py-2">
+                          No suitability rows found.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+              <!-- ===================== OPPORTUNITY ===================== -->
+              <div class="tab-pane fade" id="outer-opportunity" role="tabpanel" aria-labelledby="outer-opportunity-tab">
+
+                <!-- Shared controls -->
+                <div class="row g-2 mb-2 caam-controls">
+
+                  <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted">Time period</label>
+                    <select name="{{ perf_settings.period.name }}" id="{{ perf_settings.period.id }}"
+                      class="form-select form-select-sm">
+                      <option value="12" {% if perf_settings.period.is_12 %}selected{% endif %}>Last 12 months</option>
+                      <option value="6" {% if perf_settings.period.is_6 %}selected{% endif %}>Last 6 months</option>
+                      <option value="3" {% if perf_settings.period.is_3 %}selected{% endif %}>Last 3 months</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted">Multiple</label>
+                    <input type="number" class="form-control form-control-sm" name="{{ perf_settings.multiple.name }}"
+                      id="{{ perf_settings.multiple.id }}" step="1" min="0" max="99"
+                      value="{{ perf_settings.multiple.value|default_if_none:'' }}">
+                  </div>
+
+                </div>
+
+                <!-- INNER TABS -->
+                <ul class="nav nav-tabs caam-tabs caam-tabs--inner mb-2" role="tablist">
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="inner-perf-tab" data-bs-toggle="tab"
+                      data-bs-target="#inner-perf" type="button" role="tab" aria-controls="inner-perf"
+                      aria-selected="true">
+                      Performance
+                    </button>
+                  </li>
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="inner-wc-tab" data-bs-toggle="tab" data-bs-target="#inner-wc"
+                      type="button" role="tab" aria-controls="inner-wc" aria-selected="false">
+                      Working Capital
+                    </button>
+                  </li>
+
+                </ul>
+
+                <div class="tab-content">
+
+                  <!-- ========= Performance ========= -->
+                  <div class="tab-pane fade show active" id="inner-perf" role="tabpanel"
+                    aria-labelledby="inner-perf-tab">
+
+                    <div class="table-responsive">
+                      <table class="table table-sm align-middle caam-table caam-table--rule">
+                        <thead>
+                          <tr>
+                            <th>Enable</th>
+                            <th>Criterion</th>
+                            <th>Dir</th>
+                            <th>Threshold</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for r in perf_settings.group1 %}
+                          <tr>
+                            <td>
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm caam-select-yn">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <td>{{ r.label }}</td>
+
+                            <td>
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+                            </td>
+
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
+                                  class="form-control form-control-sm"
+                                  value="{{ r.threshold.value|default_if_none:'' }}">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+
+                          {% for r in perf_settings.group2 %}
+                          <tr>
+                            <td>
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm caam-select-yn">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <td>{{ r.label }}</td>
+
+                            <td>
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+                            </td>
+
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
+                                  class="form-control form-control-sm"
+                                  value="{{ r.threshold.value|default_if_none:'' }}">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+
+                          {% for r in perf_settings.group3 %}
+                          <tr>
+                            <td>
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm caam-select-yn">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <td>{{ r.label }}</td>
+
+                            <td>
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+                            </td>
+
+                            <td>
+                              <div class="input-group input-group-sm">
+                                <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
+                                  class="form-control form-control-sm"
+                                  value="{{ r.threshold.value|default_if_none:'' }}">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
+                    </div>
+
+                  </div>
+
+                  <!-- ========= Working Capital ========= -->
+                  <div class="tab-pane fade" id="inner-wc" role="tabpanel" aria-labelledby="inner-wc-tab">
+
+                    <div class="table-responsive">
+                      <table class="table table-sm align-middle caam-table caam-table--rule">
+                        <thead>
+                          <tr>
+                            <th>Enable</th>
+                            <th>Criterion</th>
+                            <th>Dir</th>
+                            <th>Threshold</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for r in working_capital_settings.rows %}
+                          <tr>
+                            <td>
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm caam-select-yn">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <td>{{ r.label }}</td>
+
+                            <td>
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+                            </td>
+
+                            <td>
+                              <input id="{{ r.var.id }}" name="{{ r.var.name }}" type="number" step="0.01"
+                                class="form-control form-control-sm" value="{{ r.var.value|default_if_none:'' }}">
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- ===================== IHT ===================== -->
+              <div class="tab-pane fade" id="outer-iht" role="tabpanel" aria-labelledby="outer-iht-tab">
+
+                <div class="row g-2">
+                  <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted">Enable</label>
+                    <select name="{{ iht_settings.enabled_name }}" id="iht_enable"
+                      class="form-select form-select-sm caam-select-yn">
+                      <option value="Yes" {% if iht_settings.enabled_is_yes %}selected{% endif %}>Yes</option>
+                      <option value="No" {% if iht_settings.enabled_is_no %}selected{% endif %}>No</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 col-md-8">
+                    <label class="form-label small text-muted">Threshold</label>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text">£</span>
+                      <input type="number" name="{{ iht_settings.threshold_name }}" id="iht_valuation_threshold"
+                        class="form-control form-control-sm" step="10000" min="0"
+                        value="{{ iht_settings.threshold|default_if_none:'' }}">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-text mt-2">
+                  IHT calculation fields (EBITDA, Multiple, Result) are hidden in this view.
+                </div>
+
+              </div>
+
+              <!-- ===================== READINESS (Enable only) ===================== -->
+              <div class="tab-pane fade" id="outer-readiness" role="tabpanel" aria-labelledby="outer-readiness-tab">
+
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle caam-table caam-table--yn">
+                    <thead>
+                      <tr>
+                        <th>Enable</th>
+                        <th>Field</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for row in readiness_settings.rows %}
+                      <tr>
+                        <td>
+                          <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
+                            class="form-select form-select-sm caam-select-yn">
+                            <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
+                          </select>
+                        </td>
+
+                        <td>{{ row.label }}</td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="2" class="text-muted text-center py-2">
+                          No readiness rows found.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+
+                  </table>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="btnSaveCriteria" class="btn btn-success btn-sm">
+              Save
+            </button>
+            <button type="button" id="btnResetToDefaults" class="btn btn-outline-warning btn-sm">
+              Reset to defaults
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm" id="btnViewDefaults">
+              View defaults
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.CAAM_ENDPOINTS = window.CAAM_ENDPOINTS || {};
+    window.CAAM_ENDPOINTS.save_config =
+      "{% url 'caam:ajax_save_config' client_id=0 %}";
+
+    window.CAAM_PAGE = window.CAAM_PAGE || {};
+    window.CAAM_PAGE.companyId = Number("{{ company_id }}");
+    window.CAAM_PAGE.version = 0;
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'vfd_pro/js/caam_report.js' %}" defer></script>
+
+
+  <!-- Confirm Modal -->
+  <div class="modal fade" id="confirmApplyAllModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Apply changes to all clients?</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p class="mb-2">
+            You’re about to update the CAAM configuration at <strong>company level</strong>.
+          </p>
+          <p class="mb-2">
+            These changes will be applied to <strong>all clients</strong> under this company
+            (existing settings will be updated; missing settings will be created).
+          </p>
+          <p class="mb-0 text-warning">
+            This action may take a moment depending on the number of clients.
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="btnConfirmApplyAll" class="btn btn-success btn-sm">
+            Yes, apply to all clients
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing Modal -->
+  <div class="modal fade" id="processingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Processing…</h5>
+        </div>
+
+        <div class="modal-body d-flex align-items-center gap-3">
+          <div class="spinner-border" role="status" aria-hidden="true"></div>
+
+          <div>
+            <div class="fw-semibold">Saving configuration</div>
+            <div class="text-white-50">
+              Applying changes across all clients. Please wait — this may take a moment.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Reset Modal-->
+  <div class="modal fade" id="confirmResetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset company settings to default?</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <p class="mb-2">
+            This will delete all existing client-level configs for this company and re-apply the system defaults.
+          </p>
+          <p class="mb-0 text-warning">
+            It will also recalculate reports for all clients (may take some time).
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="btnConfirmReset" class="btn btn-warning btn-sm">
+            Yes, reset to defaults
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  {{ defaults_modal|json_script:"caam-defaults-modal" }}
+
+  <script>
+    window.CAAM_DEFAULTS_MODAL = JSON.parse(
+      document.getElementById("caam-defaults-modal").textContent
+    );
+  </script>
+
+  <script>
+    (function () {
+      const btnSave = document.getElementById("btnSaveCriteria");
+      if (!btnSave) return;
+
+      const confirmEl = document.getElementById("confirmApplyAllModal");
+      const processingEl = document.getElementById("processingModal");
+
+      const confirmModal = confirmEl ? new bootstrap.Modal(confirmEl) : null;
+      const processingModal = processingEl ? new bootstrap.Modal(processingEl) : null;
+
+      const btnConfirm = document.getElementById("btnConfirmApplyAll");
+
+      // Helper: detect company-level save based on endpoint containing /0/ or clientId=0 in URL
+      function isCompanyLevelSave() {
+        const url = window.CAAM_ENDPOINTS && window.CAAM_ENDPOINTS.save_config;
+        return url && /\/0\/?$/.test(url);
+      }
+
+      // Intercept save click
+      btnSave.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // Company-level => confirm; Client-level => save directly
+        if (isCompanyLevelSave() && confirmModal) {
+          confirmModal.show();
+        } else {
+          await runSave();
+        }
+      });
+
+      if (btnConfirm) {
+        btnConfirm.addEventListener("click", async () => {
+          confirmModal && confirmModal.hide();
+          await runSave();
+        });
+      }
+
+      async function runSave() {
+        // show processing
+        processingModal && processingModal.show();
+
+        try {
+          // saveConfig is your existing function
+          await saveConfig();
+        } finally {
+          // hide processing no matter what (saveConfig itself shows alert on errors)
+          processingModal && processingModal.hide();
+        }
+      }
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const modalEl = document.getElementById("companyConfigurationModal");
+      if (!modalEl) return;
+
+      const btnView = document.getElementById("btnViewDefaults");
+      const btnSave = document.getElementById("btnSaveCriteria");
+      const btnReset = document.getElementById("btnResetToDefaults");
+      if (!btnView || !btnSave || !btnReset) return;
+
+      const titleEl = modalEl.querySelector(".modal-title");
+      const oldTitle = titleEl ? titleEl.textContent : "Setting";
+
+
+      const footer = modalEl.querySelector(".modal-footer");
+      const btnBack = document.createElement("button");
+      btnBack.type = "button";
+      btnBack.className = "btn btn-outline-primary btn-sm d-none btn-back";
+      btnBack.id = "btnBackFromDefaults";
+      btnBack.textContent = "Back";
+      footer.appendChild(btnBack);
+
+
+      const snapshot = new Map(); // name -> value
+
+      function setAllDisabled(disabled) {
+        const body = modalEl.querySelector(".modal-body");
+        if (!body) return;
+        body.querySelectorAll("input, select, textarea").forEach(el => {
+          el.disabled = !!disabled;
+        });
+      }
+
+
+      function findDefaultValueByName(defaultsModal, fieldName) {
+        if (!defaultsModal || !fieldName) return undefined;
+
+
+        const sRows = (defaultsModal.suitability_settings && defaultsModal.suitability_settings.rows) || [];
+        for (const r of sRows) {
+          if (r.enabled_name === fieldName) return r.enabled; // "Yes"/"No"
+        }
+
+        const rRows = (defaultsModal.readiness_settings && defaultsModal.readiness_settings.rows) || [];
+        for (const r of rRows) {
+          if (r.enabled_name === fieldName) return r.enabled; // "Yes"/"No"
+        }
+
+        // 2) IHT: enabled_name/threshold_name + multiple_name
+        const iht = defaultsModal.iht_settings || {};
+        if (iht.enabled_name === fieldName) return iht.enabled;
+        if (iht.threshold_name === fieldName) return iht.threshold;
+        if (iht.multiple_name === fieldName) return iht.multiple;
+
+        // 3) Performance: period/multiple 
+        const perf = defaultsModal.perf_settings || {};
+        if (perf.period && perf.period.name === fieldName) return perf.period.value;
+        if (perf.multiple && perf.multiple.name === fieldName) return perf.multiple.value;
+
+        // 4) Performance groups: group1/group2/group3 => enable/sign/threshold
+        const groups = []
+          .concat(perf.group1 || [])
+          .concat(perf.group2 || [])
+          .concat(perf.group3 || []);
+
+        for (const g of groups) {
+          if (g.enable && g.enable.name === fieldName) return g.enable.value;
+          if (g.sign && g.sign.name === fieldName) return g.sign.value;
+          if (g.threshold && g.threshold.name === fieldName) return g.threshold.value;
+        }
+
+        // 5) Working capital rows => enable/sign/var
+        const wcRows = (defaultsModal.working_capital_settings && defaultsModal.working_capital_settings.rows) || [];
+        for (const r of wcRows) {
+          if (r.enable && r.enable.name === fieldName) return r.enable.value;
+          if (r.sign && r.sign.name === fieldName) return r.sign.value;
+          if (r.var && r.var.name === fieldName) return r.var.value;
+        }
+
+        return undefined;
+      }
+
+      function applyDefaults(defaultsModal) {
+        const body = modalEl.querySelector(".modal-body");
+        const controls = body.querySelectorAll("input[name], select[name], textarea[name]");
+
+        controls.forEach(el => {
+          const name = el.getAttribute("name");
+          if (!name) return;
+
+          const defVal = findDefaultValueByName(defaultsModal, name);
+          if (typeof defVal === "undefined") return;
+
+          // set value
+          el.value = (defVal === null || typeof defVal === "undefined") ? "" : String(defVal);
+        });
+      }
+
+      function snapshotCompanyValues() {
+        const body = modalEl.querySelector(".modal-body");
+        body.querySelectorAll("input[name], select[name], textarea[name]").forEach(el => {
+          snapshot.set(el.name, el.value);
+        });
+      }
+
+      function restoreCompanyValues() {
+        const body = modalEl.querySelector(".modal-body");
+        body.querySelectorAll("input[name], select[name], textarea[name]").forEach(el => {
+          if (snapshot.has(el.name)) el.value = snapshot.get(el.name);
+        });
+      }
+
+      function enterDefaultsMode() {
+        const defaultsModal = window.CAAM_DEFAULTS_MODAL;
+        if (!defaultsModal) {
+          alert("Defaults not loaded.");
+          return;
+        }
+
+        snapshotCompanyValues();
+        applyDefaults(defaultsModal);
+
+        setAllDisabled(true);
+
+        btnSave.classList.add("d-none");
+        btnReset.classList.add("d-none");
+        btnView.classList.add("d-none");
+        btnBack.classList.remove("d-none");
+
+        if (titleEl) titleEl.textContent = "Default settings (read-only)";
+      }
+
+      function exitDefaultsMode() {
+        restoreCompanyValues();
+        setAllDisabled(false);
+
+        btnSave.classList.remove("d-none");
+        btnReset.classList.remove("d-none");
+        btnView.classList.remove("d-none");
+        btnBack.classList.add("d-none");
+
+        if (titleEl) titleEl.textContent = oldTitle;
+      }
+
+      btnView.addEventListener("click", enterDefaultsMode);
+      btnBack.addEventListener("click", exitDefaultsMode);
+
+
+      modalEl.addEventListener("hidden.bs.modal", () => {
+        if (!btnBack.classList.contains("d-none")) exitDefaultsMode();
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const btnReset = document.getElementById("btnResetToDefaults");
+      const confirmEl = document.getElementById("confirmResetModal");
+      const processingEl = document.getElementById("processingModal");
+      const btnConfirmReset = document.getElementById("btnConfirmReset");
+
+      if (!btnReset || !confirmEl || !processingEl || !btnConfirmReset || !window.bootstrap) return;
+
+      const confirmModal = new bootstrap.Modal(confirmEl);
+      const processingModal = new bootstrap.Modal(processingEl);
+
+      btnReset.addEventListener("click", () => confirmModal.show());
+
+      btnConfirmReset.addEventListener("click", async () => {
+        confirmModal.hide();
+        processingModal.show();
+        try {
+          await window.saveConfig({ resetFlag: 1 });
+        } finally {
+          processingModal.hide();
+        }
+      });
+    })();
+  </script>
+
+  <script>
+
+    window.addEventListener("pageshow", function (e) {
+      if (e.persisted) {
+        window.location.reload();
+      }
+    });
+  </script>
+
+
 </body>
+
 </html>

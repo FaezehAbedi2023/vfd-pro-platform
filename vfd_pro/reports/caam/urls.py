@@ -1,5 +1,5 @@
 from django.urls import path
-from vfd_pro.reports.caam.views import client_summary
+from vfd_pro.reports.caam.views import client_summary, client_assessment
 
 from vfd_pro.reports.caam.api import (
     ajax_revenue_criteria,
@@ -13,13 +13,23 @@ from vfd_pro.reports.caam.api import (
     ajax_debtordays_criteria,
     ajax_creditordays_criteria,
     ajax_stockdays_criteria,
+    ajax_caam_report,
+    ajax_save_config,
 )
 
 app_name = "caam"
 
 urlpatterns = [
-    # path("reports/portfolio/", portfolio_view, name="portfolio"),
-    # path("download-vfd/", download_vfd_report, name="download_vfd"),
+    path(
+        "companies/<int:company_id>/ajax/report/",
+        ajax_caam_report,
+        name="ajax_caam_report",
+    ),
+    path(
+        "companies/<int:company_id>/assessment/",
+        client_assessment,
+        name="client_assessment",
+    ),
     path("clients/<int:client_id>/summary/", client_summary, name="client_summary"),
     path(
         "clients/<int:client_id>/ajax/revenue/",
@@ -71,5 +81,8 @@ urlpatterns = [
         "clients/<int:client_id>/ajax/stockdays/",
         ajax_stockdays_criteria,
         name="ajax_stockdays_criteria",
+    ),
+    path(
+        "ajax/save-config/<int:client_id>/", ajax_save_config, name="ajax_save_config"
     ),
 ]

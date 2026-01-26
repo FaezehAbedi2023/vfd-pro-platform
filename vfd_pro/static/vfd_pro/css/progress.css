@@ -1,0 +1,43 @@
+/* =========================
+   Time period progress bar
+   ========================= */
+
+/* default hidden */
+#periodProgress {
+    display: none;
+    width: 100%;
+}
+
+/* show when loading */
+#periodProgress.is-loading {
+    display: block;
+}
+
+/* track */
+#periodProgress .pp-track {
+    height: 5px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.12);
+    width: 100%;
+}
+
+/* moving bar (indeterminate) */
+#periodProgress .pp-bar {
+    height: 100%;
+    width: 38%;
+    border-radius: 999px;
+    background: rgba(25, 135, 84, 0.85);
+    animation: pp-indeterminate 0.9s infinite ease-in-out;
+    will-change: transform;
+}
+
+@keyframes pp-indeterminate {
+    0% {
+        transform: translateX(-140%);
+    }
+
+    100% {
+        transform: translateX(320%);
+    }
+}
