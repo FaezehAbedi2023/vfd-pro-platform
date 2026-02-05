@@ -326,10 +326,37 @@
       width: 85vw;
     }
 
+    @media (max-width: 576px) {
+      #opportunityCriteriaModal .modal-dialog {
+        width: 95vw;
+        max-width: 95vw;
+        margin: 0.5rem auto;
+      }
+    }
+
     #opportunityCriteriaModal .modal-body {
       max-height: calc(100vh - 180px);
       overflow-y: auto;
     }
+
+    @media (max-width: 576px) {
+      #opportunityCriteriaModal [style*="min-width:220px"] {
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+    }
+
+    @media (max-width: 576px) {
+      #opportunityCriteriaModal table {
+        font-size: 12px;
+      }
+
+      #opportunityCriteriaModal th,
+      #opportunityCriteriaModal td {
+        padding: 6px 8px;
+      }
+    }
+
 
     @media (max-width: 768px) {
       .chart-wrapper {
@@ -507,6 +534,22 @@
 
     }
 
+    @media (max-width: 576px) {
+      .criteria-target-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+
+      .criteria-target-row label {
+        white-space: normal;
+      }
+
+      .criteria-target-row input {
+        width: 100%;
+      }
+    }
+
 
     .kpi-card.kpi-donut {
       display: flex;
@@ -564,6 +607,256 @@
       border-color: #fb7185 !important;
       color: #9f1239 !important;
     }
+
+    /* =====================================================
+   KPI STRIP LAYOUT
+   ===================================================== */
+
+    /* پایه */
+    .kpi-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ---------------------------------------------
+   MOBILE: <= 767.98px  (2 بالا + readiness تمام عرض)
+   --------------------------------------------- */
+    @media (max-width: 767.98px) {
+
+      /* Donut KPI cards: two columns */
+      .kpi-strip .kpi-card.kpi-donut {
+        flex: 0 0 calc(50% - 12px);
+        max-width: calc(50% - 12px);
+        min-width: 0;
+      }
+
+      /* Readiness donut spans full width */
+      .kpi-strip .kpi-card.kpi-donut.kpi-readiness {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+
+      /* Flag KPI cards: two columns */
+      .kpi-strip .kpi-box {
+        flex: 0 0 calc(50% - 12px);
+        max-width: calc(50% - 12px);
+        min-width: 0;
+      }
+
+      /* Allow titles to wrap */
+      .kpi-strip .kpi-card.kpi-donut .kpi-title,
+      .kpi-strip .kpi-box .kpi-title {
+        white-space: normal;
+        text-align: center;
+      }
+    }
+
+    /* ---------------------------------------------
+   TABLET: 768px تا 991.98px (هر 3 دونات کنار هم)
+   --------------------------------------------- */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+
+      .kpi-strip .kpi-card.kpi-donut {
+        flex: 0 0 calc(33.333% - 12px);
+        max-width: calc(33.333% - 12px);
+        min-width: 0;
+      }
+
+      /* readiness هم مثل بقیه 1/3 */
+      .kpi-strip .kpi-card.kpi-donut.kpi-readiness {
+        flex: 0 0 calc(33.333% - 12px);
+        max-width: calc(33.333% - 12px);
+      }
+
+      /* Flag KPI cards: two columns (می‌تونی همینو نگه داری) */
+      .kpi-strip .kpi-box {
+        flex: 0 0 calc(50% - 12px);
+        max-width: calc(50% - 12px);
+        min-width: 0;
+      }
+
+      .kpi-strip .kpi-card.kpi-donut .kpi-title,
+      .kpi-strip .kpi-box .kpi-title {
+        white-space: normal;
+        text-align: center;
+      }
+    }
+
+    /* ---------------------------------------------
+   Very small screens: single column
+   --------------------------------------------- */
+    @media (max-width: 360px) {
+
+      .kpi-strip .kpi-card.kpi-donut,
+      .kpi-strip .kpi-box {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+
+    /* ---------------------------------------------
+   Donut canvas scaling (فقط یک نسخه نگه دار!)
+   --------------------------------------------- */
+    .kpi-donut-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .kpi-donut-wrap canvas {
+      width: 100% !important;
+      max-width: 110px;
+      height: auto !important;
+    }
+
+
+    /* =========================================
+   DESKTOP + TABLET: center Status/Flag icons
+   ========================================= */
+
+    /* Center the whole Status cell content */
+    #opportunityCriteriaModal .table-card td[data-label="Status"],
+    #opportunityCriteriaModal .table-card td[data-label="Flag"] {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    /* Make the icon truly centered inside the cell */
+    #opportunityCriteriaModal .table-card td[data-label="Status"]>span,
+    #opportunityCriteriaModal .table-card td[data-label="Flag"]>span,
+    #opportunityCriteriaModal .table-card td[data-label="Status"]>.check-yes,
+    #opportunityCriteriaModal .table-card td[data-label="Status"]>.check-no,
+    #opportunityCriteriaModal .table-card td[data-label="Flag"]>.check-yes,
+    #opportunityCriteriaModal .table-card td[data-label="Flag"]>.check-no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      /* key: fill cell width so centering is real */
+    }
+
+    /* =====================================================
+   Mobile card-style tables (Performance groups) 576px  991.98px
+   ===================================================== */
+    @media (max-width: 576px) {
+
+      /* Hide table headers */
+      #opportunityCriteriaModal .table-card thead {
+        display: none;
+      }
+
+      /* Make tbody block so rows can become cards */
+      #opportunityCriteriaModal .table-card tbody {
+        display: block;
+      }
+
+      /* Each <tr> becomes a card */
+      #opportunityCriteriaModal .table-card tbody tr {
+        display: block;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        background: #fff;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+      }
+
+      /* Each <td> = grid row: label | value */
+      #opportunityCriteriaModal .table-card tbody td {
+        display: grid;
+        grid-template-columns: 38% 1fr;
+        align-items: center;
+        column-gap: 12px;
+
+        padding: 6px 0;
+        border: none !important;
+        text-align: left !important;
+        line-height: 1.25;
+      }
+
+      /* Cancel Bootstrap helpers */
+      #opportunityCriteriaModal .table-card tbody td.text-center,
+      #opportunityCriteriaModal .table-card tbody td.text-end {
+        text-align: left !important;
+      }
+
+      /* Label (left column) */
+      #opportunityCriteriaModal .table-card tbody td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 12px;
+        color: #6b7280;
+        white-space: normal;
+      }
+
+      /* Value column */
+      #opportunityCriteriaModal .table-card tbody td>* {
+        min-width: 0;
+      }
+
+      /* Inputs & selects */
+      #opportunityCriteriaModal .table-card tbody td .form-control,
+      #opportunityCriteriaModal .table-card tbody td .form-select {
+        width: 100%;
+        max-width: 180px;
+        font-size: 12px;
+      }
+
+      /* Input-group (Threshold etc.) */
+      #opportunityCriteriaModal .table-card tbody td .input-group {
+        width: 100%;
+        max-width: 180px;
+        display: flex;
+        flex-wrap: nowrap;
+      }
+
+      #opportunityCriteriaModal .table-card tbody td .input-group .form-control {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      #opportunityCriteriaModal .table-card tbody td .input-group-text {
+        flex: 0 0 auto;
+        min-width: 44px;
+        justify-content: center;
+      }
+
+      /* ===============================
+     STATUS CELL (✔ / ✖)
+     =============================== */
+
+      /* Center icon in VALUE column only */
+      #opportunityCriteriaModal .table-card tbody td[data-label="Status"]>span {
+        justify-self: center;
+        /* horizontal center in column 2 */
+        align-self: center;
+        /* vertical center */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+
+      #opportunityCriteriaModal .table-card tbody td[data-label="Status"]>span,
+      #opportunityCriteriaModal .table-card tbody td[data-label="Flag"]>span,
+      #opportunityCriteriaModal .table-card tbody td[data-label="Status"]>.check-yes,
+      #opportunityCriteriaModal .table-card tbody td[data-label="Status"]>.check-no,
+      #opportunityCriteriaModal .table-card tbody td[data-label="Flag"]>.check-yes,
+      #opportunityCriteriaModal .table-card tbody td[data-label="Flag"]>.check-no {
+        width: auto;
+        /* override desktop rule */
+        justify-self: center;
+        /* center inside grid value column */
+      }
+    }
+
+
+
+    /* =====================================================
+   End Mobile card-style tables (Performance groups)
+   ===================================================== */
   </style>
 </head>
 
@@ -637,24 +930,25 @@
         <div class="kpi-title">Potential IHT Risk</div>
         <div class="kpi-value" id="val-iht">{% if iht_flag %}{{ iht_flag }}{% else %}No{% endif %}</div>
       </div>
+    </div>
+    <!-- 1) SUITABILITY ROW -->
+    <div class="row g-4 mb-4">
 
-      <!-- 1) SUITABILITY ROW -->
-      <div class="row g-4 mb-4">
-
-        <div class="col-md-2">
-          <div class="analysis-panel">
-            <div class="analysis-panel-header">Suitability Analysis</div>
-            <div class="analysis-panel-body">
-              Can we get the data we need to produce meaningful reporting / models?
-            </div>
+      <div class="col-md-2">
+        <div class="analysis-panel">
+          <div class="analysis-panel-header">Suitability Analysis</div>
+          <div class="analysis-panel-body">
+            Can we get the data we need to produce meaningful reporting / models?
           </div>
         </div>
+      </div>
 
-        <div class="col-md-8">
-          <div class="card card-kpi">
-            <div class="card-body card-body-clean">
+      <div class="col-md-8">
+        <div class="card card-kpi">
+          <div class="card-body card-body-clean">
 
-              <!-- TOP MATRIX -->
+            <!-- TOP MATRIX -->
+            <div class="table-responsive">
               <table class="table text-center matrix-table mb-3">
                 <thead>
                   <tr>
@@ -677,11 +971,12 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
 
 
-              <!-- BOTTOM MATRIX -->
+            <!-- BOTTOM MATRIX -->
 
-
+            <div class="table-responsive">
               <table class="table text-center matrix-table mb-3 mb-0">
                 <thead>
                   <tr>
@@ -704,175 +999,177 @@
                   </tr>
                 </tbody>
               </table>
-
-
             </div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-2">
+        <div class="score-card">
+          <div class="score-label">Suitability Score</div>
+          <div class="score-helper">Fit with our offering and approach</div>
+          <div class="badge-score badge-suitability">
+            {% if suitability_score is not None %}{{ suitability_score }}%{% else %}N/A{% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2) OPPORTUNITY ROW -->
+    <div class="row g-4 mb-4">
+
+      <div class="col-md-2">
+        <div class="analysis-panel">
+          <div class="analysis-panel-header">Opportunity Analysis</div>
+          <div class="analysis-panel-body">
+            Is there anything in the recent performance data that indicates a
+            significant risk or opportunity around profit or working capital?
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+
+        <!-- Main KPI card -->
+        <!-- ================= PERFORMANCE KPI ================= -->
+
+        <div class="card card-kpi mb-4">
+          <div class="card-header-gradient">
+            <div>
+              <h5 class="mb-0">Performance – Last 12 Months</h5>
+              <div class="card-header-subtitle">Key profitability and margin metrics</div>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <table class="table table-sm kpi-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="text-end">TY</th>
+                  <th class="text-end">LY</th>
+                  <th class="text-end">Var</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for r in performance_kpi.rows %}
+                <tr>
+                  <td class="kpi-label">{{ r.label }}</td>
+
+                  <td class="text-end">
+                    {% if r.ty is not None %}{{ r.ty }}{% else %}-{% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    {% if r.ly is not None %}{{ r.ly }}{% else %}-{% endif %}
+                  </td>
+
+                  <td class="text-end {{ r.var_class }}">
+                    {% if r.var is not None %}
+                    {{ r.var|floatformat:1 }}{{ r.var_suffix }}
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
           </div>
         </div>
 
 
-        <div class="col-md-2">
-          <div class="score-card">
-            <div class="score-label">Suitability Score</div>
-            <div class="score-helper">Fit with our offering and approach</div>
-            <div class="badge-score badge-suitability">
-              {% if suitability_score is not None %}{{ suitability_score }}%{% else %}N/A{% endif %}
+        <!-- Working capital card -->
+
+        <!-- ================= WORKING CAPITAL KPI ================= -->
+        <div class="card card-kpi">
+          <div class="card-header-gradient"
+            style="background:linear-gradient(90deg,var(--accent-blue-dark),var(--accent-blue-light));">
+            <div>
+              <h5 class="mb-0">Working Capital</h5>
+              <div class="card-header-subtitle">Liquidity and cash cycle indicators</div>
             </div>
           </div>
+
+          <div class="card-body p-0">
+            <table class="table table-sm kpi-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="text-end">TY</th>
+                  <th class="text-end">LY</th>
+                  <th class="text-end">Var</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for r in working_capital_kpi.rows %}
+                <tr>
+                  <td class="kpi-label">{{ r.label }}</td>
+
+                  <td class="text-end">
+                    {% if r.ty is not None %}{{ r.ty }}{% else %}-{% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    {% if r.ly is not None %}{{ r.ly }}{% else %}-{% endif %}
+                  </td>
+
+                  <td class="text-end {{ r.var_class }}">
+                    {% if r.var is not None %}
+                    {{ r.var|floatformat:1 }}{{ r.var_suffix }}
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+          </div>
         </div>
+
 
       </div>
 
-      <!-- 2) OPPORTUNITY ROW -->
-      <div class="row g-4 mb-4">
-
-        <div class="col-md-2">
-          <div class="analysis-panel">
-            <div class="analysis-panel-header">Opportunity Analysis</div>
-            <div class="analysis-panel-body">
-              Is there anything in the recent performance data that indicates a
-              significant risk or opportunity around profit or working capital?
-            </div>
+      <div class="col-md-2">
+        <div class="score-card position-relative">
+          <div class="score-label">Opportunity Score</div>
+          <div class="score-helper">Relative size of value at stake</div>
+          <div class="badge-score badge-opportunity">
+            {{ opportunity_score }}%
           </div>
         </div>
-
-        <div class="col-md-8">
-
-          <!-- Main KPI card -->
-          <!-- ================= PERFORMANCE KPI ================= -->
-
-          <div class="card card-kpi mb-4">
-            <div class="card-header-gradient">
-              <div>
-                <h5 class="mb-0">Performance – Last 12 Months</h5>
-                <div class="card-header-subtitle">Key profitability and margin metrics</div>
-              </div>
-            </div>
-
-            <div class="card-body p-0">
-              <table class="table table-sm kpi-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th class="text-end">TY</th>
-                    <th class="text-end">LY</th>
-                    <th class="text-end">Var</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {% for r in performance_kpi.rows %}
-                  <tr>
-                    <td class="kpi-label">{{ r.label }}</td>
-
-                    <td class="text-end">
-                      {% if r.ty is not None %}{{ r.ty }}{% else %}-{% endif %}
-                    </td>
-
-                    <td class="text-end">
-                      {% if r.ly is not None %}{{ r.ly }}{% else %}-{% endif %}
-                    </td>
-
-                    <td class="text-end {{ r.var_class }}">
-                      {% if r.var is not None %}
-                      {{ r.var|floatformat:1 }}{{ r.var_suffix }}
-                      {% else %}
-                      -
-                      {% endif %}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-
-              </table>
-            </div>
-          </div>
-
-
-          <!-- Working capital card -->
-
-          <!-- ================= WORKING CAPITAL KPI ================= -->
-          <div class="card card-kpi">
-            <div class="card-header-gradient"
-              style="background:linear-gradient(90deg,var(--accent-blue-dark),var(--accent-blue-light));">
-              <div>
-                <h5 class="mb-0">Working Capital</h5>
-                <div class="card-header-subtitle">Liquidity and cash cycle indicators</div>
-              </div>
-            </div>
-
-            <div class="card-body p-0">
-              <table class="table table-sm kpi-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th class="text-end">TY</th>
-                    <th class="text-end">LY</th>
-                    <th class="text-end">Var</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {% for r in working_capital_kpi.rows %}
-                  <tr>
-                    <td class="kpi-label">{{ r.label }}</td>
-
-                    <td class="text-end">
-                      {% if r.ty is not None %}{{ r.ty }}{% else %}-{% endif %}
-                    </td>
-
-                    <td class="text-end">
-                      {% if r.ly is not None %}{{ r.ly }}{% else %}-{% endif %}
-                    </td>
-
-                    <td class="text-end {{ r.var_class }}">
-                      {% if r.var is not None %}
-                      {{ r.var|floatformat:1 }}{{ r.var_suffix }}
-                      {% else %}
-                      -
-                      {% endif %}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-
-              </table>
-            </div>
-          </div>
-
-
-        </div>
-
-        <div class="col-md-2">
-          <div class="score-card position-relative">
-            <div class="score-label">Opportunity Score</div>
-            <div class="score-helper">Relative size of value at stake</div>
-            <div class="badge-score badge-opportunity">
-              {{ opportunity_score }}%
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      <!-- 3) READINESS ROW -->
-      <div class="row g-4 mb-4">
+    </div>
 
-        <div class="col-md-2">
-          <div class="analysis-panel">
-            <div class="analysis-panel-header">Readiness Analysis</div>
-            <div class="analysis-panel-body">
-              Based on their current position, is the client practically in a
-              position to engage and follow through on recommendations?
-            </div>
+    <!-- 3) READINESS ROW -->
+    <div class="row g-4 mb-4">
+
+      <div class="col-md-2">
+        <div class="analysis-panel">
+          <div class="analysis-panel-header">Readiness Analysis</div>
+          <div class="analysis-panel-body">
+            Based on their current position, is the client practically in a
+            position to engage and follow through on recommendations?
           </div>
         </div>
+      </div>
 
-        <div class="col-md-8">
-          <div class="card card-kpi">
-            <div class="card-body card-body-clean">
+      <div class="col-md-8">
+        <div class="card card-kpi">
+          <div class="card-body card-body-clean">
 
-              <!-- TOP ROW -->
+            <!-- TOP ROW -->
+            <div class="table-responsive">
               <table class="table text-center matrix-table mb-3">
                 <thead>
                   <tr>
@@ -895,8 +1192,10 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
 
-              <!-- BOTTOM ROW -->
+            <!-- BOTTOM ROW -->
+            <div class="table-responsive">
               <table class="table text-center matrix-table mt-3 mb-0">
                 <thead>
                   <tr>
@@ -919,881 +1218,881 @@
                   </tr>
                 </tbody>
               </table>
-
             </div>
-          </div>
-        </div>
 
-        <div class="col-md-2">
-          <div class="score-card mb-0">
-            <div class="score-label">Readiness Score</div>
-            <div class="score-helper">Ability and appetite to execute</div>
-            <div class="badge-score badge-readiness">
-              {% if readiness_score is not None %}{{ readiness_score }}%{% else %}N/A{% endif %}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-      <!-- SALES TREND -->
-      <h4 class="section-heading">Sales Trend (Last 12 Months)</h4>
-      <div class="card chart-card mb-5">
-        <div class="card-body">
-          <div class="chart-wrapper">
-            <canvas id="salesChart"></canvas>
           </div>
         </div>
       </div>
 
+      <div class="col-md-2">
+        <div class="score-card mb-0">
+          <div class="score-label">Readiness Score</div>
+          <div class="score-helper">Ability and appetite to execute</div>
+          <div class="badge-score badge-readiness">
+            {% if readiness_score is not None %}{{ readiness_score }}%{% else %}N/A{% endif %}
+          </div>
+        </div>
+      </div>
 
-    </div> <!-- end .page-container -->
-
-
-    <!-- ========== Opportunity Criteria Modal ========== -->
-    <div class="modal fade" id="opportunityCriteriaModal" tabindex="-1" aria-labelledby="opportunityCriteriaLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-          <!-- <form method="post" action=""> -->
-          <form method="post" action="{% url 'caam:client_summary' client_id=client_id %}">
-
-            {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="opportunityCriteriaLabel">Setting</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body">
-
-              <!-- Tabs -->
-              <!-- OUTER TABS -->
-              <ul class="nav nav-tabs mb-3" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="outer-suitability-tab" data-bs-toggle="tab"
-                    data-bs-target="#outer-suitability" type="button" role="tab" aria-controls="outer-suitability"
-                    aria-selected="true">
-                    Suitability
-                  </button>
-                </li>
-
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="outer-opportunity-tab" data-bs-toggle="tab"
-                    data-bs-target="#outer-opportunity" type="button" role="tab" aria-controls="outer-opportunity"
-                    aria-selected="false">
-                    Opportunity
-                  </button>
-                </li>
-
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="outer-iht-tab" data-bs-toggle="tab" data-bs-target="#outer-iht"
-                    type="button" role="tab" aria-controls="outer-iht" aria-selected="false">
-                    IHT
-                  </button>
-                </li>
-
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="outer-readiness-tab" data-bs-toggle="tab"
-                    data-bs-target="#outer-readiness" type="button" role="tab" aria-controls="outer-readiness"
-                    aria-selected="false">
-                    Readiness
-                  </button>
-                </li>
+    </div>
 
 
-              </ul>
+    <!-- SALES TREND -->
+    <h4 class="section-heading">Sales Trend (Last 12 Months)</h4>
+    <div class="card chart-card mb-5">
+      <div class="card-body">
+        <div class="chart-wrapper">
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+    </div>
 
 
-              <div class="tab-content">
+  </div> <!-- end .page-container -->
 
-                <!-- ===================== SUITABILITY TAB (NEW) ===================== -->
-                <!-- OUTER PANE: SUITABILITY -->
-                <div class="tab-pane fade show active" id="outer-suitability" role="tabpanel"
-                  aria-labelledby="outer-suitability-tab">
 
-                  <!-- Target (Suitability) -->
-                  <div class="criteria-target-row">
-                    <label for="target_suitability" class="form-label small text-muted">
-                      Target for Suitability (%)
-                    </label>
+  <!-- ========== Opportunity Criteria Modal ========== -->
+  <div class="modal fade" id="opportunityCriteriaModal" tabindex="-1" aria-labelledby="opportunityCriteriaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <!-- <form method="post" action=""> -->
+        <form method="post" action="{% url 'caam:client_summary' client_id=client_id %}">
 
-                    <input type="number" class="form-control form-control-sm" id="target_suitability"
-                      name="suitability_target_percent" min="0" max="100" step="1"
-                      value="{{ suitability_settings.target_percent|default_if_none:'' }}">
-                  </div>
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="opportunityCriteriaLabel">Setting</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
 
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th style="width:110px;">Enable</th>
-                          <th>Field</th>
-                          <th style="width:160px;">Value</th>
-                          <th style="width:90px;" class="text-center">Status</th>
-                        </tr>
-                      </thead>
+          <div class="modal-body">
 
-                      <tbody>
-                        {% for row in suitability_settings.rows %}
-                        <tr>
+            <!-- Tabs -->
+            <!-- OUTER TABS -->
+            <ul class="nav nav-tabs mb-3" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="outer-suitability-tab" data-bs-toggle="tab"
+                  data-bs-target="#outer-suitability" type="button" role="tab" aria-controls="outer-suitability"
+                  aria-selected="true">
+                  Suitability
+                </button>
+              </li>
 
-                          <td>
-                            <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
-                              class="form-select form-select-sm">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-opportunity-tab" data-bs-toggle="tab"
+                  data-bs-target="#outer-opportunity" type="button" role="tab" aria-controls="outer-opportunity"
+                  aria-selected="false">
+                  Opportunity
+                </button>
+              </li>
 
-                              <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-iht-tab" data-bs-toggle="tab" data-bs-target="#outer-iht"
+                  type="button" role="tab" aria-controls="outer-iht" aria-selected="false">
+                  IHT
+                </button>
+              </li>
 
-                            </select>
-                          </td>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="outer-readiness-tab" data-bs-toggle="tab" data-bs-target="#outer-readiness"
+                  type="button" role="tab" aria-controls="outer-readiness" aria-selected="false">
+                  Readiness
+                </button>
+              </li>
 
-                          <td>{{ row.label }}</td>
 
-                          <td>
-                            <input type="text" class="form-control form-control-sm"
-                              value="{{ row.value|default_if_none:'' }}" disabled>
-                          </td>
+            </ul>
 
-                          <td class="text-center">
-                            {% if row.status %}
-                            <span class="check-yes">✔</span>
-                            {% else %}
-                            <span class="check-no">✖</span>
-                            {% endif %}
-                          </td>
 
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="4" class="text-muted text-center py-3">
-                            No suitability rows found.
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
+            <div class="tab-content">
 
-                    </table>
-                  </div>
+              <!-- ===================== SUITABILITY TAB (NEW) ===================== -->
+              <!-- OUTER PANE: SUITABILITY -->
+              <div class="tab-pane fade show active" id="outer-suitability" role="tabpanel"
+                aria-labelledby="outer-suitability-tab">
 
+                <!-- Target (Suitability) -->
+                <div class="criteria-target-row">
+                  <label for="target_suitability" class="form-label small text-muted">
+                    Target for Suitability (%)
+                  </label>
+
+                  <input type="number" class="form-control form-control-sm" id="target_suitability"
+                    name="suitability_target_percent" min="0" max="100" step="1"
+                    value="{{ suitability_settings.target_percent|default_if_none:'' }}">
                 </div>
 
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle table-card">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width:110px;">Enable</th>
+                        <th>Field</th>
+                        <th style="width:160px;">Value</th>
+                        <th style="width:90px;" class="text-center">Status</th>
+                      </tr>
+                    </thead>
 
+                    <tbody>
+                      {% for row in suitability_settings.rows %}
+                      <tr>
 
-                <!-- OUTER PANE: OPPORTUNITY -->
-                <div class="tab-pane fade" id="outer-opportunity" role="tabpanel"
-                  aria-labelledby="outer-opportunity-tab">
-
-                  <!-- Target (OPPORTUNITY) -->
-                  <div class="criteria-target-row">
-                    <label for="target_opportunity" class="form-label small text-muted">
-                      Target for Opportunity (%)
-                    </label>
-                    <input type="number" class="form-control form-control-sm" id="target_opportunity"
-                      name="opp_target_percent" min="0" max="100" step="1" value="{{ cfg.opp_target_percent }}">
-                  </div>
-
-                  <!-- INNER TABS (ONLY INSIDE OPPORTUNITY) -->
-                  <ul class="nav nav-tabs mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link active" id="inner-perf-tab" data-bs-toggle="tab"
-                        data-bs-target="#inner-perf" type="button" role="tab" aria-controls="inner-perf"
-                        aria-selected="true">
-                        Performance
-                      </button>
-                    </li>
-
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="inner-wc-tab" data-bs-toggle="tab" data-bs-target="#inner-wc"
-                        type="button" role="tab" aria-controls="inner-wc" aria-selected="false">
-                        Working Capital
-                      </button>
-                    </li>
-                  </ul>
-
-                  <div class="tab-content">
-
-
-                    <!-- ===================== PERFORMANCE TAB ===================== -->
-                    <div class="tab-pane fade show active" id="inner-perf" role="tabpanel"
-                      aria-labelledby="inner-perf-tab">
-
-                      <!-- Global Time Period (Only Performance) -->
-                      <div class="d-flex align-items-end justify-content-between mb-3">
-                        <div class="fw-semibold">Performance Settings</div>
-
-                        <div style="min-width:220px;">
-                          <label class="form-label mb-1 small text-muted">Time period</label>
-                          <select id="{{ perf_settings.period.id }}" name="{{ perf_settings.period.name }}"
+                        <td data-label="Enable">
+                          <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
                             class="form-select form-select-sm">
-                            <option value="12" {% if perf_settings.period.is_12 %}selected{% endif %}>Last 12 months
-                            </option>
-                            <option value="6" {% if perf_settings.period.is_6 %}selected{% endif %}>Last 6 months
-                            </option>
-                            <option value="3" {% if perf_settings.period.is_3 %}selected{% endif %}>Last 3 months
-                            </option>
+                            <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
                           </select>
+                        </td>
 
-                          <div id="periodProgress" class="mt-1">
-                            <div class="pp-track">
-                              <div class="pp-bar"></div>
-                            </div>
-                          </div>
+                        <td data-label="Field">
+                          {{ row.label }}
+                        </td>
 
-
-                        </div>
-                      </div>
-
-                      <!-- Group 1: Revenue / GM / Overheads -->
-                      <div class="table-responsive mb-4">
-                        <table class="table table-sm align-middle">
-                          <thead class="table-light">
-                            <tr>
-                              <th rowspan="2" style="width:80px;">Enable</th>
-                              <th rowspan="2">Criterion</th>
-                              <th colspan="2" class="text-center">Rule</th>
-                              <th colspan="6" class="text-center">Actuals</th>
-                            </tr>
-                            <tr>
-                              <th style="width:80px;">Dir</th>
-                              <th style="width:110px;">Threshold</th>
-                              <th style="width:110px;">Last 12 months</th>
-                              <th style="width:110px;">Last 6 months</th>
-                              <th style="width:110px;">Last 3 months</th>
-                              <th style="width:90px;" class="text-center">Flag</th>
-                              <th style="width:130px;">Profit Impact</th>
-                              <th style="width:140px;">
-                                <div class="d-flex flex-column gap-1">
-                                  <span>Valuation Impact</span>
-                                  <div class="input-group input-group-sm">
-                                    <input id="{{ perf_settings.multiple.id }}" name="{{ perf_settings.multiple.name }}"
-                                      type="number" class="form-control" step="1" min="0" max="9"
-                                      value="{{ perf_settings.multiple.value|default_if_none:'' }}">
-                                  </div>
-                                </div>
-                              </th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {% for r in perf_settings.group1 %}
-                            <tr data-perf-key="{{ r.key }}">
-
-                              <!-- Enable -->
-                              <td>
-                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
-                                </select>
-                              </td>
-
-                              <!-- Criterion -->
-                              <td>{{ r.label }}</td>
-
-                              <!-- Dir -->
-                              <td>
-                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
-                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
-                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
-                                </select>
-
-                              </td>
-
-                              <!-- Threshold -->
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number"
-                                    step="0.01" class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-                              <!-- Actuals -->
-                              <td>
-                                <input id="{{ r.actual.last12.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.last12.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.last6.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.last6.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.last3.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.last3.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Flag (single span for AJAX update) -->
-                              <td class="text-center">
-                                <span id="{{ r.flag.id }}"
-                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
-                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
-                                </span>
-                              </td>
-
-                              <!-- Profit Impact -->
-                              <td>
-                                <input id="{{ r.profit_impact.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.profit_impact.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Valuation Impact -->
-                              <td>
-                                <input id="{{ r.val_impact.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.val_impact.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                            </tr>
-                            {% endfor %}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <!-- Group 2: EBITDA -->
-                      <div class="table-responsive mb-4">
-                        <table class="table table-sm align-middle">
-                          <thead class="table-light">
-                            <tr>
-                              <th rowspan="2" style="width:80px;">Enable</th>
-                              <th rowspan="2">Criterion</th>
-                              <th colspan="2" class="text-center">Rule</th>
-                              <th colspan="7" class="text-center">Actuals</th>
-                            </tr>
-                            <tr>
-                              <th style="width:80px;">Dir</th>
-                              <th style="width:110px;">Threshold</th>
-                              <th style="width:110px;">EBITDA TY</th>
-                              <th style="width:110px;">EBITDA LY</th>
-                              <th style="width:90px;">Var %</th>
-                              <th style="width:110px;">Var £</th>
-                              <th style="width:90px;" class="text-center">Flag</th>
-                              <th style="width:130px;">EBITDA Impact</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {% for r in perf_settings.group2 %}
-                            <tr data-perf-key="{{ r.key }}">
-
-                              <!-- Enable -->
-                              <td>
-                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
-                                </select>
-                              </td>
-
-                              <!-- Criterion -->
-                              <td>{{ r.label }}</td>
-
-                              <!-- Dir -->
-                              <td>
-                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
-                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
-                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
-                                </select>
-
-                              </td>
-
-                              <!-- Threshold -->
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number"
-                                    step="0.01" class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-                              <!-- Actuals -->
-                              <td>
-                                <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.varp.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.varp.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.varv.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.varv.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Flag -->
-                              <td class="text-center">
-                                <span id="{{ r.flag.id }}"
-                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
-                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
-                                </span>
-                              </td>
-
-                              <!-- Impact -->
-                              <td>
-                                <input id="{{ r.impact.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.impact.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                            </tr>
-                            {% endfor %}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <!-- Group 3: New Customers / Retention -->
-                      <div class="table-responsive">
-                        <table class="table table-sm align-middle">
-                          <thead class="table-light">
-                            <tr>
-                              <th rowspan="2" style="width:80px;">Enable</th>
-                              <th rowspan="2">Criterion</th>
-                              <th colspan="2" class="text-center">Rule</th>
-                              <th colspan="4" class="text-center">Actuals</th>
-                            </tr>
-                            <tr>
-                              <th style="width:80px;">Dir</th>
-                              <th style="width:110px;">Threshold</th>
-                              <th style="width:110px;">TY</th>
-                              <th style="width:110px;">LY</th>
-                              <th style="width:90px;">Var %</th>
-                              <th style="width:90px;" class="text-center">Flag</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {% for r in perf_settings.group3 %}
-                            <tr data-perf-key="{{ r.key }}">
-
-                              <!-- Enable -->
-                              <td>
-                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
-                                </select>
-                              </td>
-
-                              <!-- Criterion -->
-                              <td>{{ r.label }}</td>
-
-                              <!-- Dir -->
-                              <td>
-                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
-                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
-                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
-                                </select>
-
-                              </td>
-
-                              <!-- Threshold -->
-                              <td>
-                                <div class="input-group input-group-sm">
-                                  <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number"
-                                    step="0.01" class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
-                                  <span class="input-group-text">%</span>
-                                </div>
-                              </td>
-
-                              <!-- Actuals -->
-                              <td>
-                                <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
-                              </td>
-                              <td>
-                                <input id="{{ r.actual.varp.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.varp.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Flag -->
-                              <td class="text-center">
-                                <span id="{{ r.flag.id }}"
-                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
-                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
-                                </span>
-                              </td>
-
-                            </tr>
-                            {% endfor %}
-                          </tbody>
-                        </table>
-                      </div>
-
-                    </div>
+                        <td data-label="Value">
+                          <input type="text" class="form-control form-control-sm"
+                            value="{{ row.value|default_if_none:'' }}" disabled>
+                        </td>
 
 
-                    <!-- /#inner-perf -->
+                        <td data-label="Status">
+                          {% if row.status %}
+                          <span class="check-yes">✔</span>
+                          {% else %}
+                          <span class="check-no">✖</span>
+                          {% endif %}
+                        </td>
 
-                    <!-- ===================== WORKING CAPITAL TAB ===================== -->
-                    <div class="tab-pane fade" id="inner-wc" role="tabpanel" aria-labelledby="inner-wc-tab">
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4" class="text-muted text-center py-3">
+                          No suitability rows found.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
 
-                      <div class="table-responsive">
-                        <table class="table table-sm align-middle">
-                          <thead class="table-light">
-                            <tr>
-                              <th rowspan="2" style="width:80px;">Enable</th>
-                              <th rowspan="2">Criterion</th>
-                              <th colspan="3" class="text-center">Rule</th>
-                              <th colspan="5" class="text-center">Actuals</th>
-                            </tr>
-                            <tr>
-                              <th style="width:80px;">Dir</th>
-                              <th style="width:110px;">Var</th>
-                              <th style="width:110px;">TY</th>
-                              <th style="width:110px;">LY</th>
-                              <th style="width:90px;">Var %</th>
-                              <th style="width:90px;">Var</th>
-                              <th style="width:90px;" class="text-center">Flag</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {% for r in working_capital_settings.rows %}
-                            <tr data-wc-key="{{ r.key }}">
-
-                              <!-- Enable -->
-                              <td>
-                                <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
-                                  <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
-                                </select>
-                              </td>
-
-                              <!-- Criterion -->
-                              <td>{{ r.label }}</td>
-
-                              <!-- Dir -->
-                              <td>
-                                <select id="{{ r.sign.id }}" name="{{ r.sign.name }}"
-                                  class="form-select form-select-sm">
-                                  <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
-                                  <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
-                                  <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
-                                </select>
-                              </td>
-
-                              <!-- Var -->
-                              <td>
-                                <input id="{{ r.var.id }}" name="{{ r.var.name }}" type="number" step="0.01"
-                                  class="form-control form-control-sm" value="{{ r.var.value|default_if_none:'' }}">
-                              </td>
-
-                              <!-- Actuals: TY -->
-                              <td>
-                                <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Actuals: LY -->
-                              <td>
-                                <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Actuals: Var % -->
-                              <td>
-                                <input id="{{ r.actual.var_pct.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.var_pct.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Actuals: Var value -->
-                              <td>
-                                <input id="{{ r.actual.var_val.id }}" type="text" class="form-control form-control-sm"
-                                  value="{{ r.actual.var_val.value|default_if_none:'' }}" disabled>
-                              </td>
-
-                              <!-- Flag (single span, AJAX-ready) -->
-                              <td class="text-center">
-                                <span id="{{ r.flag.id }}"
-                                  class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
-                                  {% if r.flag.status %}✔{% else %}✖{% endif %}
-                                </span>
-                              </td>
-
-                            </tr>
-                            {% endfor %}
-                          </tbody>
-
-                        </table>
-                      </div>
-
-                    </div>
-
-                    <!-- /#inner-wc -->
-
-                  </div>
-                  <!-- /.tab-content -->
-
+                  </table>
                 </div>
-
-
-
-                <!-- OUTER PANE: IHT -->
-                <div class="tab-pane fade" id="outer-iht" role="tabpanel" aria-labelledby="outer-iht-tab">
-
-                  <div class="d-flex align-items-end justify-content-between mb-3">
-                    <div class="fw-semibold">IHT Settings</div>
-                    <div class="small text-muted">
-                      Flag if (EBITDA TY × Multiple) ≥ Threshold
-                    </div>
-                  </div>
-
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th style="width:110px;">Enable</th>
-                          <th>Metric</th>
-                          <th style="width:220px;">Value</th>
-                          <th style="width:140px;">Result</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <!-- Enable (from config) -->
-                          <td>
-                            <select name="{{ iht_settings.enabled_name }}" id="iht_enable"
-                              class="form-select form-select-sm">
-                              <option value="Yes" {% if iht_settings.enabled_is_yes %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if iht_settings.enabled_is_no %}selected{% endif %}>No</option>
-                            </select>
-                          </td>
-
-                          <!-- Metric -->
-                          <td>EBITDA (TY)</td>
-
-                          <!-- Value (from report: opp_EBITDA_TY_12m) -->
-                          <td>
-                            <input type="text" id="iht_ebitda_ty" class="form-control form-control-sm"
-                              value="{{ iht_settings.ebitda_ty|default_if_none:'' }}" disabled>
-                          </td>
-
-                          <!-- Result -->
-                          <td class="text-muted small">Used in calculation</td>
-                        </tr>
-
-                        <tr>
-                          <td></td>
-                          <td>Multiple</td>
-                          <td>
-                            <!-- from config (same as Opportunity), read-only -->
-                            <input type="number" id="iht_multiple" name="{{ iht_settings.multiple_name }}"
-                              class="form-control form-control-sm"
-                              value="{{ iht_settings.multiple|default_if_none:'' }}" disabled>
-                            <div class="form-text">Uses the same Multiple as Opportunity (read-only).</div>
-                          </td>
-                          <td></td>
-                        </tr>
-
-                        <tr>
-                          <td></td>
-                          <td>Valuation Threshold</td>
-                          <td>
-                            <div class="input-group input-group-sm">
-                              <span class="input-group-text">£</span>
-                              <input type="number" name="{{ iht_settings.threshold_name }}" id="iht_valuation_threshold"
-                                class="form-control" step="10000" min="0"
-                                value="{{ iht_settings.threshold|default_if_none:'' }}">
-                            </div>
-                          </td>
-                          <td></td>
-                        </tr>
-
-                        <tr>
-                          <td></td>
-                          <td>Estimated Business Value</td>
-                          <td>
-                            <!-- initial from report/table, later JS can update -->
-                            <input type="text" id="iht_est_valuation" class="form-control form-control-sm"
-                              value="{{ iht_settings.estimated_business_value|default_if_none:'' }}" disabled>
-                          </td>
-
-                          <td class="text-center">
-                            <!-- single span (no two spans), later JS can update -->
-                            <span id="iht_risk_icon"
-                              class="{% if iht_settings.risk_flag %}check-yes{% else %}check-no{% endif %}">
-                              {% if iht_settings.risk_flag %}✔{% else %}✖{% endif %}
-                            </span>
-                          </td>
-                        </tr>
-
-                      </tbody>
-                    </table>
-                  </div>
-
-                </div>
-
-
-
-
-                <!-- OUTER PANE: Readiness -->
-
-                <div class="tab-pane fade" id="outer-readiness" role="tabpanel" aria-labelledby="outer-readiness-tab">
-
-                  <!-- Target (Readiness) -->
-                  <div class="criteria-target-row">
-                    <label for="readiness_target_percent" class="form-label small text-muted">
-                      Target for Readiness (%)
-                    </label>
-                    <input type="number" class="form-control form-control-sm" id="readiness_target_percent"
-                      name="readiness_target_percent" min="0" max="100" step="1"
-                      value="{{ readiness_settings.target_percent|default_if_none:'' }}">
-                  </div>
-
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th style="width:110px;">Enable</th>
-                          <th>Field</th>
-                          <th style="width:140px;" class="text-end">TY</th>
-                          <th style="width:140px;" class="text-end">LY</th>
-                          <th style="width:140px;" class="text-end">Vs</th>
-                          <th style="width:220px;" class="text-center">Status</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {% for row in readiness_settings.rows %}
-                        <tr>
-                          <td style="width:110px;">
-                            <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
-                              class="form-select form-select-sm">
-                              <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
-                              <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
-                            </select>
-                          </td>
-
-                          <td>{{ row.label }}</td>
-
-                          <td style="width:160px;">
-                            <input type="text" class="form-control form-control-sm text-end"
-                              value="{{ row.ty|default_if_none:'' }}" disabled>
-                          </td>
-
-                          <td style="width:160px;">
-                            <input type="text" class="form-control form-control-sm text-end"
-                              value="{{ row.ly|default_if_none:'' }}" disabled>
-                          </td>
-
-                          <td style="width:160px;">
-                            <input type="text" class="form-control form-control-sm text-end"
-                              value="{{ row.vs|default_if_none:'' }}" disabled>
-                          </td>
-
-                          <td style="width:90px;" class="text-center">
-                            {% if row.status %}
-                            <span class="check-yes">✔</span>
-                            {% else %}
-                            <span class="check-no">✖</span>
-                            {% endif %}
-                          </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="6" class="text-muted text-center py-3">
-                            No readiness rows found.
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-
-                    </table>
-                  </div>
-
-                </div>
-
 
 
               </div>
-            </div>
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-              <!-- <button type="submit" class="btn btn-success btn-sm">Save criteria</button> -->
-              <button id="btnSummarySaveCriteria" type="button" class="btn btn-success">
-                Save criteria
-              </button>
+
+
+              <!-- OUTER PANE: OPPORTUNITY -->
+              <div class="tab-pane fade" id="outer-opportunity" role="tabpanel" aria-labelledby="outer-opportunity-tab">
+
+                <!-- Target (OPPORTUNITY) -->
+                <div class="criteria-target-row">
+                  <label for="target_opportunity" class="form-label small text-muted">
+                    Target for Opportunity (%)
+                  </label>
+                  <input type="number" class="form-control form-control-sm" id="target_opportunity"
+                    name="opp_target_percent" min="0" max="100" step="1" value="{{ cfg.opp_target_percent  }}">
+                </div>
+
+                <!-- INNER TABS (ONLY INSIDE OPPORTUNITY) -->
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="inner-perf-tab" data-bs-toggle="tab"
+                      data-bs-target="#inner-perf" type="button" role="tab" aria-controls="inner-perf"
+                      aria-selected="true">
+                      Performance
+                    </button>
+                  </li>
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="inner-wc-tab" data-bs-toggle="tab" data-bs-target="#inner-wc"
+                      type="button" role="tab" aria-controls="inner-wc" aria-selected="false">
+                      Working Capital
+                    </button>
+                  </li>
+                </ul>
+
+                <div class="tab-content">
+
+
+                  <!-- ===================== PERFORMANCE TAB ===================== -->
+                  <div class="tab-pane fade show active" id="inner-perf" role="tabpanel"
+                    aria-labelledby="inner-perf-tab">
+
+                    <!-- Global Time Period (Only Performance) -->
+                    <div class="d-flex align-items-end justify-content-between mb-3">
+                      <div class="fw-semibold">Performance Settings</div>
+
+                      <div style="min-width:220px;">
+                        <label class="form-label mb-1 small text-muted">Time period</label>
+                        <select id="{{ perf_settings.period.id }}" name="{{ perf_settings.period.name }}"
+                          class="form-select form-select-sm">
+                          <option value="12" {% if perf_settings.period.is_12 %}selected{% endif %}>Last 12 months
+                          </option>
+                          <option value="6" {% if perf_settings.period.is_6 %}selected{% endif %}>Last 6 months
+                          </option>
+                          <option value="3" {% if perf_settings.period.is_3 %}selected{% endif %}>Last 3 months
+                          </option>
+                        </select>
+
+                        <div id="periodProgress" class="mt-1">
+                          <div class="pp-track">
+                            <div class="pp-bar"></div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+
+                    <!-- Group 1: Revenue / GM / Overheads -->
+                    <div class="table-responsive mb-4">
+                      <table class="table table-sm align-middle table-card">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="2" class="text-center">Rule</th>
+                            <th colspan="6" class="text-center">Actuals</th>
+                          </tr>
+                          <tr>
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Threshold</th>
+                            <th style="width:110px;">Last 12 months</th>
+                            <th style="width:110px;">Last 6 months</th>
+                            <th style="width:110px;">Last 3 months</th>
+                            <th style="width:90px;" class="text-center">Flag</th>
+                            <th style="width:130px;">Profit Impact</th>
+                            <th style="width:140px;">
+                              <div class="d-flex flex-column gap-1">
+                                <span>Valuation Impact</span>
+                                <div class="input-group input-group-sm">
+                                  <input id="{{ perf_settings.multiple.id }}" name="{{ perf_settings.multiple.name }}"
+                                    type="number" class="form-control" step="1" min="0" max="9"
+                                    value="{{ perf_settings.multiple.value|default_if_none:'' }}">
+                                </div>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for r in perf_settings.group1 %}
+                          <tr data-perf-key="{{ r.key }}">
+
+                            <!-- Enable -->
+                            <td data-label="Enable">
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <!-- Criterion -->
+                            <td data-label="Criterion">{{ r.label }}</td>
+
+                            <!-- Dir -->
+                            <td data-label="Dir">
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+
+                            </td>
+
+                            <!-- Threshold -->
+                            <td data-label="Threshold">
+                              <div class="input-group input-group-sm">
+                                <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
+                                  class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
+
+                            <!-- Actuals -->
+                            <td data-label="Last 12 months">
+                              <input id="{{ r.actual.last12.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.last12.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="Last 6 months">
+                              <input id="{{ r.actual.last6.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.last6.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="Last 3 months">
+                              <input id="{{ r.actual.last3.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.last3.value|default_if_none:'' }}" disabled>
+                            </td>
+
+
+                            <td data-label="Status">
+                              <span id="{{ r.flag.id }}"
+                                class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                {% if r.flag.status %}✔{% else %}✖{% endif %}
+                              </span>
+                            </td>
+
+                            <!-- Profit Impact -->
+                            <td data-label="Profit Impact">
+                              <input id="{{ r.profit_impact.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.profit_impact.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Valuation Impact -->
+                            <td data-label="Valuation Impact">
+                              <input id="{{ r.val_impact.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.val_impact.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- Group 2: EBITDA -->
+                    <div class="table-responsive mb-4">
+                      <table class="table table-sm align-middle table-card">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="2" class="text-center">Rule</th>
+                            <th colspan="7" class="text-center">Actuals</th>
+                          </tr>
+                          <tr>
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Threshold</th>
+                            <th style="width:110px;">EBITDA TY</th>
+                            <th style="width:110px;">EBITDA LY</th>
+                            <th style="width:90px;">Var %</th>
+                            <th style="width:110px;">Var £</th>
+                            <th style="width:90px;" class="text-center">Flag</th>
+                            <th style="width:130px;">EBITDA Impact</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for r in perf_settings.group2 %}
+                          <tr data-perf-key="{{ r.key }}">
+
+                            <!-- Enable -->
+                            <td data-label="Enable">
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <!-- Criterion -->
+                            <td data-label="Criterion">{{ r.label }}</td>
+
+                            <!-- Dir -->
+                            <td data-label="Dir">
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+
+                            </td>
+
+                            <!-- Threshold -->
+                            <td data-label="Threshold">
+                              <div class="input-group input-group-sm">
+                                <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
+                                  class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
+
+                            <!-- Actuals -->
+                            <td data-label="EBITDA TY">
+                              <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="EBITDA LY">
+                              <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="Variance %">
+                              <input id="{{ r.actual.varp.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.varp.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="Variance £">
+                              <input id="{{ r.actual.varv.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.varv.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Flag -->
+                            <td data-label="Status">
+                              <span id="{{ r.flag.id }}"
+                                class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                {% if r.flag.status %}✔{% else %}✖{% endif %}
+                              </span>
+                            </td>
+
+                            <!-- Impact -->
+                            <td data-label="EBITDA Impact">
+                              <input id="{{ r.impact.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.impact.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- Group 3: New Customers / Retention -->
+                    <div class="table-responsive">
+                      <table class="table table-sm align-middle table-card">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="2" class="text-center">Rule</th>
+                            <th colspan="4" class="text-center">Actuals</th>
+                          </tr>
+                          <tr>
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Threshold</th>
+                            <th style="width:110px;">TY</th>
+                            <th style="width:110px;">LY</th>
+                            <th style="width:90px;">Var %</th>
+                            <th style="width:90px;" class="text-center">Flag</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for r in perf_settings.group3 %}
+                          <tr data-perf-key="{{ r.key }}">
+
+                            <!-- Enable -->
+                            <td data-label="Enable">
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <!-- Criterion -->
+                            <td data-label="Criterion">{{ r.label }}</td>
+
+                            <!-- Dir -->
+                            <td data-label="Dir">
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+
+                            </td>
+
+                            <!-- Threshold -->
+                            <td data-label="Threshold">
+                              <div class="input-group input-group-sm">
+                                <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
+                                  class="form-control" value="{{ r.threshold.value|default_if_none:'' }}">
+                                <span class="input-group-text">%</span>
+                              </div>
+                            </td>
+
+                            <!-- Actuals -->
+                            <td data-label="TY">
+                              <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="LY">
+                              <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
+                            </td>
+                            <td data-label="Variance %">
+                              <input id="{{ r.actual.varp.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.varp.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Flag -->
+                            <td data-label="Status">
+                              <span id="{{ r.flag.id }}"
+                                class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                {% if r.flag.status %}✔{% else %}✖{% endif %}
+                              </span>
+                            </td>
+
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+
+
+                  <!-- /#inner-perf -->
+
+                  <!-- ===================== WORKING CAPITAL TAB ===================== -->
+                  <div class="tab-pane fade" id="inner-wc" role="tabpanel" aria-labelledby="inner-wc-tab">
+
+                    <div class="table-responsive">
+                      <table class="table table-sm align-middle table-card">
+                        <thead class="table-light">
+                          <tr>
+                            <th rowspan="2" style="width:80px;">Enable</th>
+                            <th rowspan="2">Criterion</th>
+                            <th colspan="3" class="text-center">Rule</th>
+                            <th colspan="5" class="text-center">Actuals</th>
+                          </tr>
+                          <tr>
+                            <th style="width:80px;">Dir</th>
+                            <th style="width:110px;">Var (Rule)</th>
+                            <th style="width:110px;">TY</th>
+                            <th style="width:110px;">LY</th>
+                            <th style="width:90px;">Var %</th>
+                            <th style="width:90px;">Var (Actual)</th>
+                            <th style="width:90px;" class="text-center">Flag</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for r in working_capital_settings.rows %}
+                          <tr data-wc-key="{{ r.key }}">
+
+                            <!-- Enable -->
+                            <td data-label="Enable">
+                              <select id="{{ r.enable.id }}" name="{{ r.enable.name }}"
+                                class="form-select form-select-sm">
+                                <option value="Yes" {% if r.enable.is_yes %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if r.enable.is_no %}selected{% endif %}>No</option>
+                              </select>
+                            </td>
+
+                            <!-- Criterion -->
+                            <td data-label="Criterion">{{ r.label }}</td>
+
+                            <!-- Dir -->
+                            <td data-label="Dir">
+                              <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
+                                <option value="+/-" {% if r.sign.is_pm %}selected{% endif %}>+/-</option>
+                                <option value="+" {% if r.sign.is_plus %}selected{% endif %}>+</option>
+                                <option value="-" {% if r.sign.is_minus %}selected{% endif %}>-</option>
+                              </select>
+                            </td>
+
+                            <!-- Var -->
+                            <td data-label="Var (Rule)">
+                              <input id="{{ r.var.id }}" name="{{ r.var.name }}" type="number" step="0.01"
+                                class="form-control form-control-sm" value="{{ r.var.value|default_if_none:'' }}">
+                            </td>
+
+                            <!-- Actuals: TY -->
+                            <td data-label="TY">
+                              <input id="{{ r.actual.ty.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.ty.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Actuals: LY -->
+                            <td data-label="LY">
+                              <input id="{{ r.actual.ly.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.ly.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Actuals: Var % -->
+                            <td data-label="Var %">
+                              <input id="{{ r.actual.var_pct.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.var_pct.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Actuals: Var value -->
+                            <td data-label="Var (Actual)">
+                              <input id="{{ r.actual.var_val.id }}" type="text" class="form-control form-control-sm"
+                                value="{{ r.actual.var_val.value|default_if_none:'' }}" disabled>
+                            </td>
+
+                            <!-- Flag (single span, AJAX-ready) -->
+                            <td data-label="Status">
+                              <span id="{{ r.flag.id }}"
+                                class="{% if r.flag.status %}check-yes{% else %}check-no{% endif %}">
+                                {% if r.flag.status %}✔{% else %}✖{% endif %}
+                              </span>
+                            </td>
+
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
+                    </div>
+
+                  </div>
+
+
+
+                </div>
+
+
+              </div>
+
+
+
+              <!-- OUTER PANE: IHT -->
+              <div class="tab-pane fade" id="outer-iht" role="tabpanel" aria-labelledby="outer-iht-tab">
+
+                <div class="d-flex align-items-end justify-content-between mb-3">
+                  <div class="fw-semibold">IHT Settings</div>
+                  <div class="small text-muted">
+                    Flag if (EBITDA TY × Multiple) ≥ Threshold
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle table-card">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width:110px;">Enable</th>
+                        <th>Metric</th>
+                        <th style="width:220px;">Value</th>
+
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <!-- Enable (from config) -->
+                        <td data-label="Enable">
+                          <select name="{{ iht_settings.enabled_name }}" id="iht_enable"
+                            class="form-select form-select-sm">
+                            <option value="Yes" {% if iht_settings.enabled_is_yes %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if iht_settings.enabled_is_no %}selected{% endif %}>No</option>
+                          </select>
+                        </td>
+
+                        <!-- Metric -->
+                        <td data-label="Metric">EBITDA (TY)</td>
+
+                        <!-- Value (from report: opp_EBITDA_TY_12m) -->
+                        <td data-label="Value">
+                          <input type="text" id="iht_ebitda_ty" class="form-control form-control-sm"
+                            value="{{ iht_settings.ebitda_ty|default_if_none:'' }}" disabled>
+                        </td>
+
+
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td data-label="Metric">Multiple</td>
+                        <td data-label="Value">
+                          <!-- from config (same as Opportunity), read-only -->
+                          <input type="number" id="iht_multiple" name="{{ iht_settings.multiple_name }}"
+                            class="form-control form-control-sm" value="{{ iht_settings.multiple|default_if_none:'' }}"
+                            disabled>
+                          <div class="form-text">Uses the same Multiple as Opportunity (read-only).</div>
+                        </td>
+                        <td></td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td data-label="Metric">Valuation Threshold</td>
+                        <td data-label="Value">
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text">£</span>
+                            <input type="number" name="{{ iht_settings.threshold_name }}" id="iht_valuation_threshold"
+                              class="form-control" step="10000" min="0"
+                              value="{{ iht_settings.threshold|default_if_none:'' }}">
+                          </div>
+                        </td>
+                        <td data-label="Result"></td>
+                      </tr>
+
+                      <tr>
+                        <td data-label="Enable"></td>
+                        <td data-label="Metric">Estimated Business Value</td>
+                        <td data-label="Value">
+                          <!-- initial from report/table, later JS can update -->
+                          <input type="text" id="iht_est_valuation" class="form-control form-control-sm"
+                            value="{{ iht_settings.estimated_business_value|default_if_none:'' }}" disabled>
+                        </td>
+
+                        <td data-label="Result">
+                          <!-- single span (no two spans), later JS can update -->
+                          <span id="iht_risk_icon"
+                            class="{% if iht_settings.risk_flag %}check-yes{% else %}check-no{% endif %}">
+                            {% if iht_settings.risk_flag %}✔{% else %}✖{% endif %}
+                          </span>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+
+
+
+              <!-- OUTER PANE: Readiness -->
+
+              <div class="tab-pane fade" id="outer-readiness" role="tabpanel" aria-labelledby="outer-readiness-tab">
+
+                <!-- Target (Readiness) -->
+                <div class="criteria-target-row">
+                  <label for="readiness_target_percent" class="form-label small text-muted">
+                    Target for Readiness (%)
+                  </label>
+                  <input type="number" class="form-control form-control-sm" id="readiness_target_percent"
+                    name="readiness_target_percent" min="0" max="100" step="1"
+                    value="{{ readiness_settings.target_percent|default_if_none:'' }}">
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle table-card">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width:110px;">Enable</th>
+                        <th>Field</th>
+                        <th style="width:140px;" class="text-end">TY</th>
+                        <th style="width:140px;" class="text-end">LY</th>
+                        <th style="width:140px;" class="text-end">Vs</th>
+                        <th style="width:220px;" class="text-center">Status</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for row in readiness_settings.rows %}
+                      <tr>
+
+                        <td data-label="Enable">
+                          <select name="{{ row.enabled_name }}" id="id_{{ row.enabled_name }}"
+                            class="form-select form-select-sm">
+                            <option value="Yes" {% if row.enabled_is_yes %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if row.enabled_is_no %}selected{% endif %}>No</option>
+                          </select>
+                        </td>
+
+                        <td data-label="Field">{{ row.label }}</td>
+
+                        <td data-label="TY">
+                          <input type="text" class="form-control form-control-sm"
+                            value="{{ row.ty|default_if_none:'' }}" disabled>
+                        </td>
+
+                        <td data-label="LY">
+                          <input type="text" class="form-control form-control-sm"
+                            value="{{ row.ly|default_if_none:'' }}" disabled>
+                        </td>
+
+                        <td data-label="Vs">
+                          <input type="text" class="form-control form-control-sm"
+                            value="{{ row.vs|default_if_none:'' }}" disabled>
+                        </td>
+
+                        <!-- IMPORTANT: remove text-center here (mobile card layout will handle it) -->
+                        <td data-label="Status">
+                          {% if row.status %}
+                          <span class="check-yes">✔</span>
+                          {% else %}
+                          <span class="check-no">✖</span>
+                          {% endif %}
+                        </td>
+
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="6" class="text-muted text-center py-3">
+                          No readiness rows found.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+
+
+                  </table>
+                </div>
+
+              </div>
+
+
 
             </div>
-          </form>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <!-- <button type="submit" class="btn btn-success btn-sm">Save criteria</button> -->
+            <button id="btnSummarySaveCriteria" type="button" class="btn btn-success">
+              Save criteria
+            </button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% load static %}
+  <script>
+    window.CAAM_URLS = {
+      revenueUrl: "{% url 'caam:ajax_revenue_criteria' client_id=client_id %}",
+      gmUrl: "{% url 'caam:ajax_gm_criteria' client_id=client_id %}",
+      overheadUrl: "{% url 'caam:ajax_oh_val_criteria' client_id=client_id %}",
+      overheadPctUrl: "{% url 'caam:ajax_oh_pct_criteria' client_id=client_id %}",
+      ebitdaUrl: "{% url 'caam:ajax_ebitda_criteria' client_id=client_id %}",
+      newcustUrl: "{% url 'caam:ajax_newcust_criteria' client_id=client_id %}",
+      retentionUrl: "{% url 'caam:ajax_retention_criteria' client_id=client_id %}",
+      cashUrl: "{% url 'caam:ajax_cash_criteria' client_id=client_id %}",
+      debtorUrl: "{% url 'caam:ajax_debtordays_criteria' client_id=client_id %}",
+      creditorUrl: "{% url 'caam:ajax_creditordays_criteria' client_id=client_id %}",
+      stockUrl: "{% url 'caam:ajax_stockdays_criteria' client_id=client_id %}",
+    };
+
+    window.CAAM_PAGE = {
+      suitability: Number("{{ suitability_score|default_if_none:0 }}"),
+      opportunity: Number("{{ opportunity_score|default_if_none:0 }}"),
+      readiness: Number("{{ readiness_score|default_if_none:0 }}"),
+      targetSuitability: Number("{{ target_suitability|default_if_none:50 }}"),
+      targetOpportunity: Number("{{ target_opportunity|default_if_none:50 }}"),
+      targetReadiness: Number("{{ target_readiness|default_if_none:50 }}"),
+    };
+    window.CAAM_ENDPOINTS = window.CAAM_ENDPOINTS || {};
+    window.CAAM_ENDPOINTS.save_config =
+      "{% url 'caam:ajax_save_config' client_id=client_id %}";
+
+    window.CAAM_PAGE = window.CAAM_PAGE || {};
+    window.CAAM_PAGE.companyId = Number("{{ company_id }}");
+    window.CAAM_PAGE.version = 0;
+  </script>
+
+
+  <script src="{% static 'vfd_pro/js/progress.js' %}"></script>
+
+  <script src="{% static 'vfd_pro/js/caam_report.js' %}" defer></script>
+
+  {{ sales_trend|json_script:"sales-data" }}
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="modal fade" id="summarySavingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Processing...</h5>
+        </div>
+        <div class="modal-body d-flex align-items-center gap-3">
+          <div class="spinner-border" role="status" aria-hidden="true"></div>
+          <div>
+            <div><strong>Saving criteria</strong></div>
+            <div class="text-muted">Please wait — saving your criteria.</div>
+          </div>
         </div>
       </div>
     </div>
-
-    {% load static %}
-    <script>
-      window.CAAM_URLS = {
-        revenueUrl: "{% url 'caam:ajax_revenue_criteria' client_id=client_id %}",
-        gmUrl: "{% url 'caam:ajax_gm_criteria' client_id=client_id %}",
-        overheadUrl: "{% url 'caam:ajax_oh_val_criteria' client_id=client_id %}",
-        overheadPctUrl: "{% url 'caam:ajax_oh_pct_criteria' client_id=client_id %}",
-        ebitdaUrl: "{% url 'caam:ajax_ebitda_criteria' client_id=client_id %}",
-        newcustUrl: "{% url 'caam:ajax_newcust_criteria' client_id=client_id %}",
-        retentionUrl: "{% url 'caam:ajax_retention_criteria' client_id=client_id %}",
-        cashUrl: "{% url 'caam:ajax_cash_criteria' client_id=client_id %}",
-        debtorUrl: "{% url 'caam:ajax_debtordays_criteria' client_id=client_id %}",
-        creditorUrl: "{% url 'caam:ajax_creditordays_criteria' client_id=client_id %}",
-        stockUrl: "{% url 'caam:ajax_stockdays_criteria' client_id=client_id %}",
-      };
-
-      window.CAAM_PAGE = {
-        suitability: Number("{{ suitability_score|default_if_none:0 }}"),
-        opportunity: Number("{{ opportunity_score|default_if_none:0 }}"),
-        readiness: Number("{{ readiness_score|default_if_none:0 }}"),
-        targetSuitability: Number("{{ target_suitability|default_if_none:50 }}"),
-        targetOpportunity: Number("{{ target_opportunity|default_if_none:50 }}"),
-        targetReadiness: Number("{{ target_readiness|default_if_none:50 }}"),
-      };
-      window.CAAM_ENDPOINTS = window.CAAM_ENDPOINTS || {};
-      window.CAAM_ENDPOINTS.save_config =
-        "{% url 'caam:ajax_save_config' client_id=client_id %}";
-
-      window.CAAM_PAGE = window.CAAM_PAGE || {};
-      window.CAAM_PAGE.companyId = Number("{{ company_id }}");
-      window.CAAM_PAGE.version = 0;
-    </script>
-
-
-    <script src="{% static 'vfd_pro/js/progress.js' %}"></script>
-
-    <script src="{% static 'vfd_pro/js/caam_report.js' %}" defer></script>
-
-    {{ sales_trend|json_script:"sales-data" }}
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <div class="modal fade" id="summarySavingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-      data-bs-keyboard="false">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Processing...</h5>
-          </div>
-          <div class="modal-body d-flex align-items-center gap-3">
-            <div class="spinner-border" role="status" aria-hidden="true"></div>
-            <div>
-              <div><strong>Saving criteria</strong></div>
-              <div class="text-muted">Please wait — saving your criteria.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
 
 
 

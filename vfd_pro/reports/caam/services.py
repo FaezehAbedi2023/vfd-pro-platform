@@ -17,32 +17,32 @@ def get_suitability(caam_row: dict) -> dict:
     top = [
         {
             "key": "24m_history",
-            "label": "24M History",
+            "label": "24 Months History",
             "is_yes": _is_yes(caam_row.get("suit_is_24_month_history")),
         },
         {
             "key": "gt2_sales",
-            "label": ">2 Sales",
+            "label": "More Than 2 Sales Nominals",
             "is_yes": _is_yes(caam_row.get("suit_has_more_than_2_sales_nominals")),
         },
         {
             "key": "gt2_cos",
-            "label": ">2 COS",
+            "label": "More Than 2 COS Nominals",
             "is_yes": _is_yes(caam_row.get("suit_has_more_than_2_cos_nominals")),
         },
         {
             "key": "gt10_oh",
-            "label": ">10 Overheads",
+            "label": "More Than 10 Overhead Nominals",
             "is_yes": _is_yes(caam_row.get("suit_has_more_than_10_overhead_nominals")),
         },
         {
             "key": "gt20_cust",
-            "label": ">20 Customers",
+            "label": "More Than 20 Customers",
             "is_yes": _is_yes(caam_row.get("suit_has_more_than_20_customers")),
         },
         {
             "key": "gt20_supp",
-            "label": ">20 Suppliersxxxxxxxxxxxxxx",
+            "label": "More Than 20 Suppliers",
             "is_yes": _is_yes(caam_row.get("suit_has_more_than_20_suppliers")),
         },
     ]
@@ -50,27 +50,27 @@ def get_suitability(caam_row: dict) -> dict:
     bottom = [
         {
             "key": "debtors",
-            "label": "Debtors Calc",
+            "label": "Debtor Days Calculated",
             "is_yes": _is_yes(caam_row.get("suit_debtor_days_calculated")),
         },
         {
             "key": "creditors",
-            "label": "Creditors Calc",
+            "label": "Creditor Days Calculated",
             "is_yes": _is_yes(caam_row.get("suit_creditor_days_calculated")),
         },
         {
             "key": "stock",
-            "label": "Stock Calc",
+            "label": "Stock Days Calculated",
             "is_yes": _is_yes(caam_row.get("suit_stock_days_calculated")),
         },
         {
             "key": "cash",
-            "label": "Cash Visiblexxxxxxxxxxxxxxx",
+            "label": "Cash Balance Visible",
             "is_yes": _is_yes(caam_row.get("suit_flg_cash_balance_visible")),
         },
         {
             "key": "consistent_cost",
-            "label": "Consistent Cost",
+            "label": "Consistent Cost Base",
             "is_yes": _is_yes(caam_row.get("suit_consistent_cost_base")),
         },
     ]
@@ -100,6 +100,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "24m_history",
             "label": "24 Months History",
+            "enabled_name": "suitability_24_months_history_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -116,6 +117,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "gt2_sales",
             "label": "More Than 2 Sales Nominals",
+            "enabled_name": "suitability_more_than_2_sales_nominals_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -132,6 +134,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "gt2_cos",
             "label": "More Than 2 COS Nominals",
+            "enabled_name": "suitability_more_than_2_cos_nominals_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -148,6 +151,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "gt10_oh",
             "label": "More Than 10 Overhead Nominals",
+            "enabled_name": "suitability_more_than_10_overhead_nominals_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -164,6 +168,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "gt20_cust",
             "label": "More Than 20 Customers",
+            "enabled_name": "suitability_more_than_20_customers_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -180,6 +185,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "gt20_supp",
             "label": "More Than 20 Suppliers",
+            "enabled_name": "suitability_more_than_20_suppliers_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -196,6 +202,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "debtors",
             "label": "Debtor Days Calculated",
+            "enabled_name": "suitability_debtor_days_calculated_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -211,6 +218,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "creditors",
             "label": "Creditor Days Calculated",
+            "enabled_name": "suitability_creditor_days_calculated_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -226,6 +234,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "stock",
             "label": "Stock Days Calculated",
+            "enabled_name": "suitability_stock_days_calculated_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -241,6 +250,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "cash",
             "label": "Cash Balance Visible",
+            "enabled_name": "suitability_cash_balance_visible_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -256,6 +266,7 @@ def get_suitability_settings(caam_row: dict, cfg: dict) -> dict:
         {
             "key": "gt_ccb",
             "label": "Consistent Cost Base",
+            "enabled_name": "suitability_consistent_cost_base_enable",
             "enabled": enabled_val,
             "enabled_is_yes": enabled_is_yes,
             "enabled_is_no": enabled_is_no,
@@ -275,22 +286,22 @@ def get_readiness(caam_row: dict) -> dict:
     top = [
         {
             "key": "ebitda_pos",
-            "label": "EBITDA +",
+            "label": "Is The Client's EBITDA Positive?",
             "status": _is_yes(caam_row.get("read_is_ebitda_positive")),
         },
         {
             "key": "ebitda_gt_ly",
-            "label": "EBITDA > LY",
+            "label": "Is The EBITDA More Than Last Year?",
             "status": _is_yes(caam_row.get("read_is_ebitda_more_than_ly")),
         },
         {
             "key": "div_12m",
-            "label": "Dividend (12m)",
+            "label": "Have They Paid A Dividend In The Last 12 Months?",
             "status": _is_yes(caam_row.get("read_has_dividend_last_12m")),
         },
         {
             "key": "div_ge_ly",
-            "label": "Dividend ≥ LY",
+            "label": "Is The Dividend At Least Equal To Last Year?",
             "status": _is_yes(caam_row.get("read_is_dividend_at_least_equal_ly")),
         },
     ]
@@ -298,17 +309,17 @@ def get_readiness(caam_row: dict) -> dict:
     bottom = [
         {
             "key": "cash_pos",
-            "label": "Cash +",
+            "label": "Is The Cash Balance Positive?",
             "status": _is_yes(caam_row.get("read_is_cash_balance_positive")),
         },
         {
             "key": "cash_gt_ly",
-            "label": "Cash > LY",
+            "label": "Is The Cash Balance More Than Last Year?",
             "status": _is_yes(caam_row.get("read_is_cash_more_than_ly")),
         },
         {
             "key": "sales_improving",
-            "label": "Sales Improving",
+            "label": "Are Sales Improving?",
             "status": _is_yes(caam_row.get("read_are_sales_improving")),
         },
     ]
@@ -481,17 +492,17 @@ def get_performance_kpi(caam_row: dict) -> dict:
         {
             "key": "revenue",
             "label": "Revenue",
-            "ty": caam_row.get("KPI_revenue_TY"),
-            "ly": caam_row.get("KPI_revenue_LY"),
-            "var": caam_row.get("KPI_rev_var"),
+            "ty": _fmt_num(caam_row.get("KPI_revenue_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_revenue_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_rev_var"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_rev_var")),
         },
         {
             "key": "gm_pct",
             "label": "Gross Margin %",
-            "ty": caam_row.get("KPI_gross_margin_pct_TY"),
-            "ly": caam_row.get("KPI_gross_margin_pct_LY"),
+            "ty": fmt_percent(caam_row.get("KPI_gross_margin_pct_TY"), 1),
+            "ly": fmt_percent(caam_row.get("KPI_gross_margin_pct_LY"), 1),
             "var": caam_row.get("KPI_gross_margin_vs_LY_pct"),
             "var_suffix": "%",
             "var_class": _sign_class(caam_row.get("KPI_gross_margin_vs_LY_pct")),
@@ -499,26 +510,26 @@ def get_performance_kpi(caam_row: dict) -> dict:
         {
             "key": "overheads",
             "label": "Overheads",
-            "ty": caam_row.get("KPI_overheads_TY"),
-            "ly": caam_row.get("KPI_overheads_LY"),
-            "var": caam_row.get("KPI_ovh_var"),
+            "ty": _fmt_num(caam_row.get("KPI_overheads_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_overheads_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_ovh_var"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_ovh_var")),
         },
         {
             "key": "ebitda",
             "label": "EBITDA",
-            "ty": caam_row.get("KPI_ebitda_TY"),
-            "ly": caam_row.get("KPI_ebitda_LY"),
-            "var": caam_row.get("KPI_ebitda_vs_LY_value"),
+            "ty": _fmt_num(caam_row.get("KPI_ebitda_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_ebitda_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_ebitda_vs_LY_value"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_ebitda_vs_LY_value")),
         },
         {
             "key": "ebitda_pct",
             "label": "EBITDA %",
-            "ty": caam_row.get("KPI_ebitda_pct_TY"),
-            "ly": caam_row.get("KPI_ebitda_pct_LY"),
+            "ty": fmt_percent(caam_row.get("KPI_ebitda_pct_TY"), 1),
+            "ly": fmt_percent(caam_row.get("KPI_ebitda_pct_LY"), 1),
             "var": caam_row.get("KPI_ebitda_pct_vs_LY"),
             "var_suffix": "%",
             "var_class": _sign_class(caam_row.get("KPI_ebitda_pct_vs_LY")),
@@ -546,45 +557,45 @@ def get_working_capital_kpi(caam_row: dict) -> dict:
         {
             "key": "cash_position",
             "label": "Cash Position",
-            "ty": caam_row.get("KPI_cash_position_TY"),
-            "ly": caam_row.get("KPI_cash_position_LY"),
-            "var": caam_row.get("KPI_cash_position_vs_LY"),
+            "ty": _fmt_num(caam_row.get("KPI_cash_position_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_cash_position_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_cash_position_vs_LY"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_cash_position_vs_LY")),
         },
         {
             "key": "debtor_days",
             "label": "Debtor Days",
-            "ty": caam_row.get("KPI_debtor_days_TY"),
-            "ly": caam_row.get("KPI_debtor_days_LY"),
-            "var": caam_row.get("KPI_debtor_days_vs_LY"),
+            "ty": _fmt_num(caam_row.get("KPI_debtor_days_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_debtor_days_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_debtor_days_vs_LY"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_debtor_days_vs_LY")),
         },
         {
             "key": "creditor_days",
             "label": "Creditor Days",
-            "ty": caam_row.get("KPI_creditor_days_TY"),
-            "ly": caam_row.get("KPI_creditor_days_LY"),
-            "var": caam_row.get("KPI_creditor_days_vs_LY"),
+            "ty": _fmt_num(caam_row.get("KPI_creditor_days_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_creditor_days_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_creditor_days_vs_LY"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_creditor_days_vs_LY")),
         },
         {
             "key": "stock_days",
             "label": "Stock Days",
-            "ty": caam_row.get("KPI_stock_days_TY"),
-            "ly": caam_row.get("KPI_stock_days_LY"),
-            "var": caam_row.get("KPI_stock_days_vs_LY"),
+            "ty": _fmt_num(caam_row.get("KPI_stock_days_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_stock_days_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_stock_days_vs_LY"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_stock_days_vs_LY")),
         },
         {
             "key": "dividend",
             "label": "Dividend",
-            "ty": caam_row.get("KPI_dividend_TY"),
-            "ly": caam_row.get("KPI_dividend_LY"),
-            "var": caam_row.get("KPI_div_var"),
+            "ty": _fmt_num(caam_row.get("KPI_dividend_TY"), 1),
+            "ly": _fmt_num(caam_row.get("KPI_dividend_LY"), 1),
+            "var": _fmt_num(caam_row.get("KPI_div_var"), 1),
             "var_suffix": "",
             "var_class": _sign_class(caam_row.get("KPI_div_var")),
         },
@@ -621,6 +632,7 @@ def get_iht_settings(caam_row: dict, cfg: dict) -> dict:
 
 
 def get_performance_settings(cfg: dict, caam_row: dict, p_period_str: str) -> dict:
+    target = cfg.get("opp_target_percent")
 
     def _yesno_vm(cfg: dict, cfg_key: str) -> dict:
 
@@ -1065,6 +1077,7 @@ def get_performance_settings(cfg: dict, caam_row: dict, p_period_str: str) -> di
 
     return {
         "period": _period_vm(cfg, p_period_str),
+        "target_percent": target,
         "multiple": {
             "id": "opp_multiple",
             "name": "opp_multiple",

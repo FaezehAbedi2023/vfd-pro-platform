@@ -11,28 +11,37 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
+  <!-- Inter (same as Login) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="{% static 'vfd_pro/css/caam.css' %}">
 
   <style>
     :root {
-      --bg: #0b0f17;
-      --panel: rgba(255, 255, 255, 0.06);
-      --panel2: rgba(255, 255, 255, 0.08);
-      --stroke: rgba(255, 255, 255, 0.12);
-      --text: rgba(255, 255, 255, 0.92);
-      --muted: rgba(255, 255, 255, 0.65);
-      --shadow: 0 16px 44px rgba(0, 0, 0, 0.45);
+      --brand-1: #1f3c88;
+      --brand-2: #3a6cf4;
+      --border: #e1e5eb;
+      --muted: #6c757d;
+      --bg1: #eef2f7;
+      --bg2: #ffffff;
+      --shadow: 0 20px 45px rgba(16, 24, 40, .10);
       --radius: 18px;
+      --text: #101828;
     }
 
     html,
     body {
       height: 100%;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(110, 90, 255, 0.25), transparent 60%),
-        radial-gradient(900px 520px at 90% 15%, rgba(0, 212, 255, 0.20), transparent 55%),
-        radial-gradient(1000px 700px at 40% 90%, rgba(255, 122, 86, 0.15), transparent 60%),
-        var(--bg);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
       color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 10%, #e9f0ff 0%, transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, #eaf7ff 0%, transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
     }
 
     .wrap {
@@ -41,23 +50,35 @@
       padding: 28px 18px 52px;
     }
 
-    .glass {
-      background: var(--panel);
-      border: 1px solid var(--stroke);
+    /* Keep original class names but restyle them to match Login */
+    .glass,
+    .glass-2 {
+      border: 0;
       border-radius: var(--radius);
+      background: #fff;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
     }
 
-    .glass-2 {
-      background: var(--panel2);
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
-      backdrop-filter: blur(10px);
+    .glass::before,
+    .glass-2::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, rgba(31, 60, 136, .18), rgba(58, 108, 244, .14));
+      filter: blur(18px);
+      z-index: 0;
+    }
+
+    .glass>*,
+    .glass-2>* {
+      position: relative;
+      z-index: 1;
     }
 
     .muted {
-      color: var(--muted);
+      color: var(--muted) !important;
     }
 
     .mono {
@@ -67,60 +88,154 @@
 
     .page-title {
       letter-spacing: .2px;
-      font-weight: 700;
-      font-size: 26px;
+      font-weight: 800;
+      font-size: 24px;
       margin: 0;
+      color: var(--brand-1);
     }
 
     .sub {
-      margin: 0;
+      margin: 6px 0 0 0;
       color: var(--muted);
       font-size: 14px;
     }
 
+    /* KPI cards */
     .kpi {
       padding: 14px 14px;
       border-radius: 16px;
-      border: 1px solid var(--stroke);
-      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.75);
     }
 
     .kpi .label {
       color: var(--muted);
       font-size: 12px;
+      font-weight: 600;
     }
 
     .kpi .val {
       font-size: 22px;
       font-weight: 800;
       letter-spacing: .2px;
+      color: #0b1220;
+    }
+
+    /* Inputs (match login inputs) */
+    .form-control,
+    .form-select,
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"] {
+      border-radius: 12px !important;
+      border: 1px solid var(--border) !important;
+      min-height: 44px;
+      padding: 10px 12px;
+      background: #fff;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus,
+    input:focus {
+      outline: none;
+      border-color: rgba(58, 108, 244, .75) !important;
+      box-shadow: 0 0 0 .18rem rgba(58, 108, 244, .18) !important;
+    }
+
+    .input-group-text {
+      border-radius: 12px !important;
+      border: 1px solid var(--border) !important;
+      background: #f7f9fc;
+      color: #344054;
+    }
+
+    /* Buttons */
+    .btn-login {
+      height: 48px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 0;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      box-shadow: 0 12px 25px rgba(58, 108, 244, .22);
+      transition: transform .08s ease, filter .15s ease;
+      color: #fff !important;
+    }
+
+    .btn-login:hover {
+      filter: brightness(.98);
+    }
+
+    .btn-login:active {
+      transform: translateY(1px);
     }
 
     .btn-ghost {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--stroke);
-      color: var(--text);
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(58, 108, 244, .30);
+      background: rgba(58, 108, 244, .06);
+      color: var(--brand-1);
     }
 
     .btn-ghost:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(58, 108, 244, .10);
+      border-color: rgba(58, 108, 244, .45);
+      color: var(--brand-1);
     }
 
+    /* Configuration button -> match theme */
+    .config-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid rgba(58, 108, 244, .35);
+      background: rgba(58, 108, 244, .08);
+      color: var(--brand-1);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .08s ease, filter .15s ease, background .15s ease, border-color .15s ease;
+      box-shadow: 0 8px 18px rgba(58, 108, 244, .10);
+    }
+
+    .config-btn:hover {
+      background: rgba(58, 108, 244, .12);
+      border-color: rgba(58, 108, 244, .50);
+    }
+
+    .config-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Table */
     .table thead th {
-      color: rgba(255, 255, 255, 0.85);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      background: #f7f9fc;
+      border-bottom: 1px solid var(--border) !important;
     }
 
     .table td,
     .table th {
-      border-top: 1px solid rgba(255, 255, 255, 0.10);
+      border-top: 1px solid #eef2f7 !important;
       vertical-align: middle;
+      color: #101828;
+    }
+
+    .table tbody tr:hover td {
+      background: rgba(58, 108, 244, .04);
     }
 
     .progress {
       height: 10px;
-      background: rgba(255, 255, 255, 0.10);
+      background: #eef2f7;
       border-radius: 999px;
     }
 
@@ -129,27 +244,38 @@
     }
 
     .score-pill {
-      background: rgba(255, 255, 255, 0.10);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: rgba(255, 255, 255, 0.9);
+      background: rgba(58, 108, 244, .08);
+      border: 1px solid rgba(58, 108, 244, .18);
+      color: var(--brand-1);
+      font-weight: 800;
     }
 
     .badge-soft-success {
-      background: rgba(25, 135, 84, 0.18);
-      color: rgba(212, 255, 233, 0.95);
-      border: 1px solid rgba(25, 135, 84, 0.28);
+      background: rgba(25, 135, 84, 0.10);
+      color: #146c43;
+      border: 1px solid rgba(25, 135, 84, 0.18);
+      font-weight: 700;
     }
 
     .badge-soft-warning {
-      background: rgba(255, 193, 7, 0.18);
-      color: rgba(255, 244, 214, 0.95);
-      border: 1px solid rgba(255, 193, 7, 0.28);
+      background: rgba(255, 193, 7, 0.14);
+      color: #8a6a00;
+      border: 1px solid rgba(255, 193, 7, 0.22);
+      font-weight: 700;
     }
 
     .badge-soft-danger {
-      background: rgba(220, 53, 69, 0.18);
-      color: rgba(255, 222, 227, 0.95);
-      border: 1px solid rgba(220, 53, 69, 0.28);
+      background: rgba(220, 53, 69, 0.10);
+      color: #b42318;
+      border: 1px solid rgba(220, 53, 69, 0.18);
+      font-weight: 700;
+    }
+
+    .badge-soft {
+      background: rgba(16, 24, 40, 0.06);
+      color: #475467;
+      border: 1px solid rgba(16, 24, 40, 0.10);
+      font-weight: 700;
     }
 
     @media (min-width: 992px) {
@@ -167,104 +293,357 @@
 
     .compact-table thead th {
       font-size: 12px;
-      font-weight: 600;
-      opacity: 0.85;
+      font-weight: 700;
+      opacity: 1;
     }
 
-
+    /* Make back buttons consistent with theme */
     #btnBackCriteria,
     #btnBackConfig,
     .btn-back {
       opacity: 1 !important;
       visibility: visible !important;
-      color: #0d6efd !important;
-      border: 1px solid #0d6efd !important;
-      background: #fff !important;
+      color: var(--brand-1) !important;
+      border: 1px solid rgba(58, 108, 244, .35) !important;
+      background: rgba(58, 108, 244, .06) !important;
+      border-radius: 12px !important;
+      font-weight: 700;
     }
 
     #btnBackCriteria:hover,
     #btnBackConfig:hover,
     .btn-back:hover {
-      color: #fff !important;
-      background: #0d6efd !important;
+      background: rgba(58, 108, 244, .10) !important;
+      border-color: rgba(58, 108, 244, .50) !important;
     }
 
-    /* =========================
-   Configuration Button
-   ========================= */
+    /* Modal: light + card look */
+    .modal-content {
+      border: 0;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
 
-    .config-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .modal-content::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, rgba(31, 60, 136, .18), rgba(58, 108, 244, .14));
+      filter: blur(18px);
+      z-index: 0;
+    }
 
-      background: linear-gradient(135deg, #e9fff4, #f6fffb);
-      color: #0f7b5c;
+    .modal-content>* {
+      position: relative;
+      z-index: 1;
+      background: #fff;
+    }
 
-      border: 1px solid #86e3c3;
-      border-radius: 999px;
+    .modal-header,
+    .modal-footer {
+      border-color: #eef2f7;
+    }
 
-      padding: 6px 14px;
-      font-size: 14px;
-      font-weight: 600;
+    /* Override your dark modal utility classes to remain readable in light mode */
+    .bg-dark {
+      background: #fff !important;
+    }
 
+    .text-white {
+      color: #101828 !important;
+    }
+
+    .text-white-50 {
+      color: #667085 !important;
+    }
+
+    .btn-close-white {
+      filter: none !important;
+    }
+
+    th.sortable {
       cursor: pointer;
       user-select: none;
-
-      transition: all 0.2s ease-in-out;
+      white-space: nowrap;
     }
 
-    .config-btn__icon {
-      font-size: 16px;
-      line-height: 1;
+    th.sortable .sort-ind {
+      display: inline-block;
+      width: 14px;
+      opacity: .55;
     }
 
-    .config-btn:hover {
-      background: #0f7b5c;
-      color: #ffffff;
-      border-color: #0f7b5c;
-      transform: translateY(-1px);
+    .grid-filters th {
+      background: #fff !important;
+      border-top: 1px solid #eef2f7 !important;
     }
 
-    .config-btn:hover .config-btn__icon {
-      transform: rotate(90deg);
-      transition: transform 0.25s ease;
+    .grid-filters input,
+    .grid-filters select {
+      min-height: 34px !important;
+      height: 34px !important;
+      padding: 6px 10px !important;
+      border-radius: 10px !important;
     }
 
-    .config-btn:active {
-      transform: scale(0.97);
+    /* Professional blue rounded border */
+    .panel-outline {
+      border: 1px solid rgba(58, 108, 244, .38) !important;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .86);
     }
 
-    .config-btn {
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    .panel-outline .table-responsive {
+      border: 1px solid rgba(58, 108, 244, .18);
+      border-radius: 16px;
+      overflow-x: auto;
+      /* allow horizontal scroll */
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .panel-outline table {
+      min-width: 1200px;
+      /* force overflow so scroll appears */
+    }
+
+    /* Equal-height KPI tiles */
+    .kpi-row>[class*="col-"] {
+      display: flex;
+    }
+
+    .kpi-row .kpi {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 92px;
+      /* adjust if needed */
+    }
+
+    /* -----------------------------
+   Mobile Cards View
+   - Desktop/Tablet: table visible
+   - Mobile: cards visible
+   ----------------------------- */
+
+    .table-view {
+      display: block !important;
+    }
+
+    .card-view {
+      display: none !important;
+    }
+
+
+    .card-grid {
+      display: none;
+    }
+
+    /* Mobile breakpoint */
+    @media (max-width: 767.98px) {
+      .table-view {
+        display: none !important;
+      }
+
+      .card-view {
+        display: block !important;
+      }
+
+      /* 2-up cards on mobile (as requested) */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        align-items: stretch;
+        /* equal height within row */
+      }
+    }
+
+    /* Very small phones => 1-up for readability */
+    @media (max-width: 420px) {
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .caam-card {
+      border: 1px solid rgba(58, 108, 244, .18);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 22px rgba(16, 24, 40, .06);
+      padding: 10px;
+      overflow: hidden;
+
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .caam-card__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .caam-card__name a {
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--brand-1);
+      text-decoration: none;
+      line-height: 1.1;
+    }
+
+    .caam-card__meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .caam-card__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      flex: 1 1 auto;
+    }
+
+    .caam-card__row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .caam-card__label {
+      font-size: 12px;
+      color: #344054;
+      font-weight: 700;
+    }
+
+    .caam-card .progress {
+      height: 8px;
+    }
+
+    .caam-card .score-pill {
+      font-size: 12px;
+    }
+
+    /* Optional: force horizontal scroll for wide table (desktop/tablet) */
+    .table-view .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-view table {
+      min-width: 1200px;
+    }
+
+    /* Mobile filters panel (cards view) */
+    .mobile-filters {
+      border: 1px solid rgba(58, 108, 244, .18);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .86);
+      padding: 10px;
+    }
+
+    .mobile-filters .form-control,
+    .mobile-filters .form-select {
+      height: 36px;
+      min-height: 36px;
+      padding: 6px 10px;
+      border-radius: 10px !important;
+    }
+
+
+    /* Tablet/Desktop guard: never show cards above mobile breakpoint */
+    @media (min-width: 768px) {
+      .table-view {
+        display: block !important;
+      }
+
+      .card-view {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 576px) {
+
+      .config-modal .table td,
+      .config-modal .table th {
+        padding: .35rem .4rem;
+        font-size: 12px;
+        line-height: 1.1;
+        vertical-align: middle;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .config-modal .criterion-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 140px;
+        /* بسته به عرضت */
+      }
+    }
+
+    @media (max-width: 576px) {
+
+      .config-modal .enable-toggle .btn,
+      .config-modal .enable-toggle button {
+        padding: .15rem .45rem;
+        font-size: 12px;
+        border-radius: 999px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .config-modal .threshold-cell .input-group {
+        flex-wrap: nowrap;
+        align-items: center;
+      }
+
+      .config-modal .threshold-cell input {
+        width: 70px;
+        /* یا 60px */
+        padding: .15rem .35rem;
+        font-size: 12px;
+      }
+
+      .config-modal .threshold-cell .input-group-text {
+        padding: .15rem .35rem;
+        font-size: 12px;
+      }
     }
   </style>
-
 </head>
 
 <body data-company-id="{{ company_id|default:'' }}">
   <div class="wrap">
 
     <!-- Header -->
-    <div class="glass p-4 mb-3">
+    <div class="glass panel-outline p-4 mb-3">
       <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-center justify-content-between">
         <div>
           <h1 class="page-title">Client Advisory Assessment</h1>
           <p class="sub mb-0">
             Company: <span id="companyName" class="fw-semibold">-</span>
-            <!-- <span class="muted"> | </span> -->
             Company ID: <span id="companyIdText" class="mono">-</span>
           </p>
-          <!-- NEW: Configuration button in header -->
-          <button type="button" class="config-btn" data-bs-toggle="modal" data-bs-target="#companyConfigurationModal">
+
+          <!-- Configuration button in header -->
+          <button type="button" class="config-btn mt-2" data-bs-toggle="modal"
+            data-bs-target="#companyConfigurationModal">
             <span class="config-btn__icon">⚙</span>
             <span class="config-btn__text">Configuration</span>
           </button>
-
         </div>
 
         <!-- Controls -->
-        <div class="glass p-3 w-100 w-lg-auto">
+        <div class="glass panel-outline p-3 w-100 w-lg-auto">
           <div class="row g-2 align-items-end">
             <!-- Search -->
             <div class="col-12 col-lg-8">
@@ -283,25 +662,25 @@
               </button>
             </div>
           </div>
-
         </div>
       </div>
 
       <!-- KPI row -->
-      <div class="row g-2 mt-3">
-
+      <div class="row g-2 mt-3 kpi-row">
         <div class="col-6 col-lg-3">
           <div class="kpi">
             <div class="label">Target for discussion (Yes)</div>
             <div class="val mono" id="kpiTarget">0</div>
           </div>
         </div>
+
         <div class="col-6 col-lg-3">
           <div class="kpi">
             <div class="label">R&amp;D opportunity (Yes)</div>
             <div class="val mono" id="kpiRD">0</div>
           </div>
         </div>
+
         <div class="col-6 col-lg-3">
           <div class="kpi">
             <div class="label">Utilities (Yes)</div>
@@ -319,10 +698,11 @@
     </div>
 
     <!-- Table -->
-    <div class="glass p-3">
-      <div class="table-responsive">
-        <table class="table table-dark table-hover align-middle mb-0">
-          <thead>
+    <div class="glass panel-outline p-3">
+      <div class="table-view">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <!-- <thead>
             <tr>
               <th>Rank</th>
               <th>Client Name</th>
@@ -335,10 +715,168 @@
               <th>Utilities</th>
               <th>Potential IHT Risk?</th>
             </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
+          </thead> -->
+
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="rank">Rank <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="name">Client Name <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="reportDate">Reporting Month Used <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="suitabilityPct">Suitability Score <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="opportunityPct">Opportunity Score <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="readinessPct">Readiness Score <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="tfd">Target For Discussion? <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="rd">R&D Opportunity? <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="utilities">Utilities <span class="sort-ind"></span></th>
+                <th class="sortable" data-sort="ihtRisk">Potential IHT Risk? <span class="sort-ind"></span></th>
+              </tr>
+
+              <!-- FILTER ROW (جزو Grid) -->
+              <tr class="grid-filters">
+                <th></th>
+
+                <th>
+                  <input id="fName" class="form-control form-control-sm" placeholder="Filter name..." />
+                </th>
+
+                <th>
+                  <select id="fMonth" class="form-select form-select-sm">
+                    <option value="">All months</option>
+                  </select>
+                </th>
+
+                <th>
+                  <input id="fSuitMin" type="number" class="form-control form-control-sm" placeholder="Min %" min="0"
+                    max="100" />
+                </th>
+
+                <th>
+                  <input id="fOppMin" type="number" class="form-control form-control-sm" placeholder="Min %" min="0"
+                    max="100" />
+                </th>
+
+                <th>
+                  <input id="fReadMin" type="number" class="form-control form-control-sm" placeholder="Min %" min="0"
+                    max="100" />
+                </th>
+
+                <th>
+                  <select id="fTFD" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </th>
+
+                <th>
+                  <select id="fRD" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </th>
+
+                <th>
+                  <select id="fUtilities" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </th>
+
+                <th>
+                  <select id="fIHT" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div> <!-- /table-view -->
+
+      <!-- Cards (mobile) -->
+      <div class="card-view">
+
+        <!-- Mobile filters (cards view). Same filter set as the grid header filters. -->
+        <div class="d-md-none mb-2 mobile-filters">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="fw-semibold">Filters</div>
+            <button id="mfToggle" class="btn btn-sm btn-outline-primary rounded-pill" type="button">Show</button>
+          </div>
+
+          <div id="mfBody" style="display:none;">
+            <div class="row g-2">
+              <div class="col-12">
+                <input id="mfName" class="form-control form-control-sm" placeholder="Filter name..." />
+              </div>
+
+              <div class="col-6">
+                <select id="mfMonth" class="form-select form-select-sm">
+                  <option value="">All months</option>
+                </select>
+              </div>
+
+              <div class="col-6">
+                <select id="mfTFD" class="form-select form-select-sm">
+                  <option value="">Target for discussion (All)</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <div class="col-4">
+                <input id="mfSuitMin" type="number" class="form-control form-control-sm" placeholder="Suit ≥ %" min="0"
+                  max="100" />
+              </div>
+              <div class="col-4">
+                <input id="mfOppMin" type="number" class="form-control form-control-sm" placeholder="Opp ≥ %" min="0"
+                  max="100" />
+              </div>
+              <div class="col-4">
+                <input id="mfReadMin" type="number" class="form-control form-control-sm" placeholder="Ready ≥ %" min="0"
+                  max="100" />
+              </div>
+
+              <div class="col-4">
+                <select id="mfRD" class="form-select form-select-sm">
+                  <option value="">R&amp;D (All)</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <div class="col-4">
+                <select id="mfUtilities" class="form-select form-select-sm">
+                  <option value="">Utilities (All)</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <div class="col-4">
+                <select id="mfIHT" class="form-select form-select-sm">
+                  <option value="">IHT risk (All)</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <div class="col-12 d-flex gap-2">
+                <button id="mfClear" class="btn btn-sm btn-outline-secondary w-100" type="button">Clear</button>
+                <button id="mfApply" class="btn btn-sm btn-primary w-100" type="button">Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="cardGrid" class="card-grid"></div>
       </div>
+
     </div>
 
   </div>
@@ -351,9 +889,11 @@
     const elSearch = document.getElementById("searchInput");
     const elBody = document.getElementById("tbody");
 
+    // Card container (mobile)
+    const elCardGrid = document.getElementById("cardGrid");
+
     const elCompanyName = document.getElementById("companyName");
     const elCompanyIdText = document.getElementById("companyIdText");
-
 
     const kpiTarget = document.getElementById("kpiTarget");
     const kpiRD = document.getElementById("kpiRD");
@@ -363,9 +903,7 @@
     const elClientNamesList = document.getElementById("clientNamesList");
 
     function populateClientDatalist(rowsMapped) {
-
       const names = [...new Set(rowsMapped.map(r => (r.name || "").trim()).filter(Boolean))].sort();
-
       elClientNamesList.innerHTML = names.map(n => `<option value="${n}"></option>`).join("");
     }
 
@@ -409,27 +947,85 @@
         : `<span class="badge badge-soft rounded-pill px-3 py-2"><i class="bi bi-dash-lg me-1"></i>No</span>`;
     }
 
-    function riskBadge(level) {
-      const s = String(level ?? "").trim();
-      if (s === "High") return `<span class="badge badge-soft-danger rounded-pill px-3 py-2">High</span>`;
-      if (s === "Medium") return `<span class="badge badge-soft-warning rounded-pill px-3 py-2">Medium</span>`;
-      return `<span class="badge badge-soft-success rounded-pill px-3 py-2">Low</span>`;
-    }
-
     function scoreCell(label, pctVal) {
       const value = Math.max(0, Math.min(100, Math.round(Number(pctVal ?? 0))));
       return `
-      <div class="d-flex align-items-center gap-2">
-        <span class="badge score-pill rounded-pill mono">${value}%</span>
-        <div class="flex-grow-1">
-          <div class="progress" role="progressbar" aria-label="${label}"
-               aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar" style="width:${value}%"></div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge score-pill rounded-pill mono">${value}%</span>
+          <div class="flex-grow-1">
+            <div class="progress" role="progressbar" aria-label="${label}"
+                aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" style="width:${value}%"></div>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
     }
+    function renderCards(sortedRows) {
+      if (!elCardGrid) return;
+
+      if (!sortedRows || !sortedRows.length) {
+        elCardGrid.innerHTML = `
+          <div class="caam-card">
+            <div class="fw-semibold mb-1">No results found</div>
+            <div class="muted">Try clearing filters.</div>
+          </div>
+        `;
+        return;
+      }
+
+      elCardGrid.innerHTML = sortedRows.map((r, idx) => `
+        <div class="caam-card">
+          <div class="caam-card__top">
+            <span class="badge bg-light text-dark border rounded-pill px-3 py-2 mono">#${idx + 1}</span>
+            <span class="mono caam-card__meta">${r.reportDate ?? "-"}</span>
+          </div>
+
+          <div class="caam-card__name mb-1">
+            <a href="${clientSummaryUrl(r.clientId, r.companyId)}">${r.name}</a>
+          </div>
+
+          <div class="caam-card__grid">
+            <div class="caam-card__row">
+              <div class="caam-card__label">Suitability</div>
+              <div>${scoreCell("Suitability", r.suitabilityPct)}</div>
+            </div>
+
+            <div class="caam-card__row">
+              <div class="caam-card__label">Opportunity</div>
+              <div>${scoreCell("Opportunity", r.opportunityPct)}</div>
+            </div>
+
+            <div class="caam-card__row">
+              <div class="caam-card__label">Readiness</div>
+              <div>${scoreCell("Readiness", r.readinessPct)}</div>
+            </div>
+
+            <div class="caam-card__row">
+              <div class="caam-card__label">Target for discussion</div>
+              <div>${yesNoBadge(r.tfd)}</div>
+            </div>
+
+            <div class="caam-card__row">
+              <div class="caam-card__label">R&amp;D opportunity</div>
+              <div>${yesNoBadge(r.rd)}</div>
+            </div>
+
+            <div class="caam-card__row">
+              <div class="caam-card__label">Utilities</div>
+              <div>${yesNoBadge(r.utilities)}</div>
+            </div>
+
+            <div class="caam-card__row">
+              <div class="caam-card__label">Potential IHT risk</div>
+              <div>${yesNoBadge(r.ihtRisk)}</div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+
 
     function mapRow(r) {
       return {
@@ -443,60 +1039,269 @@
         tfd: r.target_for_discussion ?? r.target_for_discussion_flag ?? r.tfd,
         rd: r.rd_opportunity ?? r.rd_flag ?? r.rd,
         utilities: r.utilities_flag ?? "No",
-        risk: r.iht_risk ?? r.iht ?? r.risk ?? "No",
+        // ihtRisk: r.iht_risk ?? r.iht ?? r.risk ?? "No",
+        ihtRisk: r.potential_iht_risk,
         companyName: r.company_name ?? null,
       };
     }
 
+    // function renderTable(rowsMapped) {
+    //   const q = (elSearch.value || "").trim().toLowerCase();
+    //   const filtered = rowsMapped.filter(r => !q || String(r.name).toLowerCase().includes(q));
+
+    //   // KPIs
+    //   kpiTarget.textContent = filtered.filter(r => String(r.tfd).toLowerCase() === "yes").length;
+    //   kpiRD.textContent = filtered.filter(r => String(r.rd).toLowerCase() === "yes").length;
+    //   kpiUtilities.textContent = filtered.filter(r => String(r.utilities).toLowerCase() === "yes").length;
+    //   kpiIHT.textContent = filtered.filter(r => String(r.ihtRisk).toLowerCase() === "yes").length;
+
+    //   if (!filtered.length) {
+    //     elBody.innerHTML = `
+    //       <tr>
+    //         <td colspan="10" class="text-center py-5">
+    //           <div class="fw-semibold mb-2">No results found</div>
+    //           <div class="muted">Try clearing the search box.</div>
+    //         </td>
+    //       </tr>
+    //     `;
+    //     return;
+    //   }
+
+    //   elBody.innerHTML = filtered.map((r, idx) => `
+    //     <tr>
+    //       <td class="mono">
+    //         <span class="badge bg-light text-dark border rounded-pill px-3 py-2 mono">#${idx + 1}</span>
+    //       </td>
+
+    //       <td>
+    //         <a class="fw-semibold text-decoration-none" style="color: var(--brand-1);"
+    //           href="${clientSummaryUrl(r.clientId, r.companyId)}">
+    //           ${r.name}
+    //         </a>
+    //       </td>
+
+    //       <td class="mono">${r.reportDate ?? "-"}</td>
+    //       <td>${scoreCell("Suitability", r.suitabilityPct)}</td>
+    //       <td>${scoreCell("Opportunity", r.opportunityPct)}</td>
+    //       <td>${scoreCell("Readiness", r.readinessPct)}</td>
+
+    //       <td>${yesNoBadge(r.tfd)}</td>
+    //       <td>${yesNoBadge(r.rd)}</td>
+    //       <td>${yesNoBadge(r.utilities)}</td>
+    //       <td>${yesNoBadge(r.ihtRisk)}</td>
+    //     </tr>
+    //   `).join("");
+    // }
+
+    function normalizeYesNo(v) {
+      const s = String(v ?? "").trim().toLowerCase();
+      return (s === "yes" || s === "true" || s === "1") ? "Yes" : "No";
+    }
+
+    function monthKey(reportDateStr) {
+      // انتظار: "Oct 2025" یا شبیه این
+      // اگر فرمت فرق داشت، همینجا تنظیم می‌کنیم
+      const s = String(reportDateStr ?? "").trim();
+      if (!s) return 0;
+
+      const parts = s.split(/\s+/); // ["Oct","2025"]
+      if (parts.length < 2) return 0;
+
+      const m = parts[0].slice(0, 3).toLowerCase();
+      const y = parseInt(parts[1], 10);
+
+      const map = {
+        jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+        jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12
+      };
+
+      const mm = map[m] || 0;
+      if (!y || !mm) return 0;
+      return y * 100 + mm; // مثال: 202510
+    }
+
+    function applyFilters(rows) {
+      const f = gridState.filters;
+
+      const nameQ = (f.name || "").trim().toLowerCase();
+      const month = (f.month || "").trim();
+      const suitMin = f.suitMin === "" ? null : Number(f.suitMin);
+      const oppMin = f.oppMin === "" ? null : Number(f.oppMin);
+      const readMin = f.readMin === "" ? null : Number(f.readMin);
+
+      return rows.filter(r => {
+        if (nameQ && !String(r.name || "").toLowerCase().includes(nameQ)) return false;
+        if (month && String(r.reportDate || "") !== month) return false;
+
+        if (suitMin !== null && Number(r.suitabilityPct || 0) < suitMin) return false;
+        if (oppMin !== null && Number(r.opportunityPct || 0) < oppMin) return false;
+        if (readMin !== null && Number(r.readinessPct || 0) < readMin) return false;
+
+        if (f.tfd && normalizeYesNo(r.tfd) !== f.tfd) return false;
+        if (f.rd && normalizeYesNo(r.rd) !== f.rd) return false;
+        if (f.utilities && normalizeYesNo(r.utilities) !== f.utilities) return false;
+        if (f.iht && normalizeYesNo(r.ihtRisk) !== f.iht) return false;
+
+        return true;
+      });
+    }
+
+    function sortRows(rows) {
+      const { sortKey, sortDir } = gridState;
+      const dir = sortDir === "asc" ? 1 : -1;
+
+      const getVal = (r) => {
+        switch (sortKey) {
+          case "rank": return 0; // بعداً بر اساس index رندر می‌کنیم
+          case "name": return String(r.name || "").toLowerCase();
+          case "reportDate": return monthKey(r.reportDate);
+          case "suitabilityPct": return Number(r.suitabilityPct || 0);
+          case "opportunityPct": return Number(r.opportunityPct || 0);
+          case "readinessPct": return Number(r.readinessPct || 0);
+          case "tfd": return normalizeYesNo(r.tfd);
+          case "rd": return normalizeYesNo(r.rd);
+          case "utilities": return normalizeYesNo(r.utilities);
+          case "ihtRisk": return normalizeYesNo(r.ihtRisk);
+          default: return "";
+        }
+      };
+
+      // Rank را بعد از sort به صورت index می‌گذاریم، پس اینجا مهم نیست
+      const sorted = [...rows].sort((a, b) => {
+        const va = getVal(a);
+        const vb = getVal(b);
+
+        if (typeof va === "number" && typeof vb === "number") return (va - vb) * dir;
+        return String(va).localeCompare(String(vb)) * dir;
+      });
+
+      return sorted;
+    }
+
     function renderTable(rowsMapped) {
-      const q = (elSearch.value || "").trim().toLowerCase();
-      const filtered = rowsMapped.filter(r => !q || String(r.name).toLowerCase().includes(q));
+      // 1) filter
+      const filtered = applyFilters(rowsMapped);
 
-      // KPIs
-      kpiTarget.textContent = filtered.filter(r => String(r.tfd).toLowerCase() === "yes").length;
-      kpiRD.textContent = filtered.filter(r => String(r.rd).toLowerCase() === "yes").length;
-      kpiUtilities.textContent = filtered.filter(r => String(r.utilities).toLowerCase() === "yes").length;
-      kpiIHT.textContent = filtered.filter(r => String(r.ihtRisk).toLowerCase() === "yes").length;
+      // 2) sort
+      const sorted = sortRows(filtered);
 
 
-      if (!filtered.length) {
+      // Render cards (mobile) from the same filtered/sorted dataset
+      renderCards(sorted);
+
+      // KPIs بر اساس filtered (یا اگر دوست داری بر اساس کل داده، بگو)
+      kpiTarget.textContent = filtered.filter(r => normalizeYesNo(r.tfd) === "Yes").length;
+      kpiRD.textContent = filtered.filter(r => normalizeYesNo(r.rd) === "Yes").length;
+      kpiUtilities.textContent = filtered.filter(r => normalizeYesNo(r.utilities) === "Yes").length;
+      kpiIHT.textContent = filtered.filter(r => normalizeYesNo(r.ihtRisk) === "Yes").length;
+
+      if (!sorted.length) {
         elBody.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-center py-5">
-            <div class="fw-semibold mb-2">No results found</div>
-            <div class="muted">Try clearing the search box.</div>
-          </td>
-        </tr>
-      `;
+      <tr>
+        <td colspan="10" class="text-center py-5">
+          <div class="fw-semibold mb-2">No results found</div>
+          <div class="muted">Try clearing filters.</div>
+        </td>
+      </tr>
+    `;
         return;
       }
 
-      elBody.innerHTML = filtered.map((r, idx) => `
-      <tr>
-        <td class="mono">
-          <span class="badge bg-dark rounded-pill px-3 py-2 mono">#${idx + 1}</span>
-        </td>
+      elBody.innerHTML = sorted.map((r, idx) => `
+    <tr>
+      <td class="mono">
+        <span class="badge bg-light text-dark border rounded-pill px-3 py-2 mono">#${idx + 1}</span>
+      </td>
 
-        <td>
-          <a class="fw-semibold text-decoration-none"
-            href="${clientSummaryUrl(r.clientId, r.companyId)}">
-            ${r.name}
-          </a>
-   
-        </td>
+      <td>
+        <a class="fw-semibold text-decoration-none" style="color: var(--brand-1);"
+          href="${clientSummaryUrl(r.clientId, r.companyId)}">
+          ${r.name}
+        </a>
+      </td>
 
-        <td class="mono">${r.reportDate ?? "-"}</td>   
-        <td>${scoreCell("Suitability", r.suitabilityPct)}</td>
-        <td>${scoreCell("Opportunity", r.opportunityPct)}</td>
-        <td>${scoreCell("Readiness", r.readinessPct)}</td>
+      <td class="mono">${r.reportDate ?? "-"}</td>
+      <td>${scoreCell("Suitability", r.suitabilityPct)}</td>
+      <td>${scoreCell("Opportunity", r.opportunityPct)}</td>
+      <td>${scoreCell("Readiness", r.readinessPct)}</td>
 
-        <td>${yesNoBadge(r.tfd)}</td>
-        <td>${yesNoBadge(r.rd)}</td>
-        <td>${yesNoBadge(r.utilities)}</td>
-        <td>${yesNoBadge(r.ihtRisk)}</td>
-      </tr>
-    `).join("");
+      <td>${yesNoBadge(r.tfd)}</td>
+      <td>${yesNoBadge(r.rd)}</td>
+      <td>${yesNoBadge(r.utilities)}</td>
+      <td>${yesNoBadge(r.ihtRisk)}</td>
+    </tr>
+  `).join("");
     }
+
+    const gridState = {
+      sortKey: "rank",
+      sortDir: "asc", // asc | desc
+      filters: {
+        name: "",
+        month: "",
+        suitMin: "",
+        oppMin: "",
+        readMin: "",
+        tfd: "",
+        rd: "",
+        utilities: "",
+        iht: ""
+      }
+    };
+
+    function bindGridFilters() {
+      const byId = (id) => document.getElementById(id);
+
+      const fName = byId("fName");
+      const fMonth = byId("fMonth");
+      const fSuitMin = byId("fSuitMin");
+      const fOppMin = byId("fOppMin");
+      const fReadMin = byId("fReadMin");
+      const fTFD = byId("fTFD");
+      const fRD = byId("fRD");
+      const fUtilities = byId("fUtilities");
+      const fIHT = byId("fIHT");
+
+      const apply = () => renderTable(cachedRows);
+
+      if (fName) fName.addEventListener("input", () => { gridState.filters.name = fName.value; apply(); });
+      if (fMonth) fMonth.addEventListener("change", () => { gridState.filters.month = fMonth.value; apply(); });
+
+      if (fSuitMin) fSuitMin.addEventListener("input", () => { gridState.filters.suitMin = fSuitMin.value; apply(); });
+      if (fOppMin) fOppMin.addEventListener("input", () => { gridState.filters.oppMin = fOppMin.value; apply(); });
+      if (fReadMin) fReadMin.addEventListener("input", () => { gridState.filters.readMin = fReadMin.value; apply(); });
+
+      if (fTFD) fTFD.addEventListener("change", () => { gridState.filters.tfd = fTFD.value; apply(); });
+      if (fRD) fRD.addEventListener("change", () => { gridState.filters.rd = fRD.value; apply(); });
+      if (fUtilities) fUtilities.addEventListener("change", () => { gridState.filters.utilities = fUtilities.value; apply(); });
+      if (fIHT) fIHT.addEventListener("change", () => { gridState.filters.iht = fIHT.value; apply(); });
+    }
+
+    // function bindSorting() {
+    //   document.querySelectorAll("th.sortable").forEach(th => {
+    //     th.addEventListener("click", () => {
+    //       const key = th.dataset.sort;
+    //       if (!key) return;
+
+    //       if (gridState.sortKey === key) {
+    //         gridState.sortDir = (gridState.sortDir === "asc") ? "desc" : "asc";
+    //       } else {
+    //         gridState.sortKey = key;
+    //         gridState.sortDir = "asc";
+    //       }
+    //       renderTable(cachedRows);
+    //       updateSortIndicators();
+    //     });
+    //   });
+    // }
+
+    // function updateSortIndicators() {
+    //   document.querySelectorAll("th.sortable .sort-ind").forEach(el => el.textContent = "");
+    //   const active = document.querySelector(`th.sortable[data-sort="${gridState.sortKey}"] .sort-ind`);
+    //   if (active) active.textContent = (gridState.sortDir === "asc") ? "▲" : "▼";
+    // }
+
+
 
     let cachedRows = [];
 
@@ -505,56 +1310,184 @@
 
       if (!companyId) {
         elBody.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-danger">
-            company_id not provided. Use <span class="mono">?company_id=123</span>
-            (or set <span class="mono">data-company-id</span> on body, or <span class="mono">window.COMPANY_ID</span>).
-          </td>
-        </tr>
-      `;
+          <tr>
+            <td colspan="10" class="text-danger">
+              company_id not provided. Use <span class="mono">?company_id=123</span>
+              (or set <span class="mono">data-company-id</span> on body, or <span class="mono">window.COMPANY_ID</span>).
+            </td>
+          </tr>
+        `;
         return;
       }
 
-      elBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
+      elBody.innerHTML = `<tr><td colspan="10">Loading...</td></tr>`;
 
       try {
         const rows = await loadReport(companyId);
         cachedRows = rows.map(mapRow);
-
+        initMonthFilterOptions(cachedRows);
+        // Sync month options into mobile filters (cards view)
+        if (typeof mfSyncMonthOptions === "function") mfSyncMonthOptions();
         populateClientDatalist(cachedRows);
         renderTable(cachedRows);
+        bindGridFilters();
+        // bindSorting();
+        // updateSortIndicators();
 
-        if (cachedRows.length) {
-          elCompanyName.textContent = cachedRows[0].companyName || "-";
-        } else {
-          elCompanyName.textContent = "-";
-        }
+
+        elCompanyName.textContent = cachedRows.length ? (cachedRows[0].companyName || "-") : "-";
         elCompanyIdText.textContent = String(companyId);
-
-
-
-        renderTable(cachedRows);
       } catch (e) {
-        elBody.innerHTML = `<tr><td colspan="8" class="text-danger">${e.message}</td></tr>`;
+        elBody.innerHTML = `<tr><td colspan="10" class="text-danger">${e.message}</td></tr>`;
       }
     }
 
     // Events
+    // document.getElementById("btnReset").addEventListener("click", () => {
+    //   elSearch.value = "";
+    //   renderTable(cachedRows);
+    // });
+
     document.getElementById("btnReset").addEventListener("click", () => {
+      // clear top search
       elSearch.value = "";
+
+      // clear grid filters state
+      gridState.filters = {
+        name: "", month: "", suitMin: "", oppMin: "", readMin: "",
+        tfd: "", rd: "", utilities: "", iht: ""
+      };
+
+      // clear UI inputs (if present)
+      ["fName", "fMonth", "fSuitMin", "fOppMin", "fReadMin", "fTFD", "fRD", "fUtilities", "fIHT", "searchInput", "mfName", "mfMonth", "mfSuitMin", "mfOppMin", "mfReadMin", "mfTFD", "mfRD", "mfUtilities", "mfIHT"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+      const topSearch = document.getElementById("searchInput");
+      if (topSearch) topSearch.value = "";
+
+
       renderTable(cachedRows);
     });
 
-    elSearch.addEventListener("input", () => renderTable(cachedRows));
+    elSearch.addEventListener("input", () => {
+      // Keep top search aligned with grid filters
+      gridState.filters.name = elSearch.value || "";
+      const fName = document.getElementById("fName");
+      if (fName && fName.value !== elSearch.value) fName.value = elSearch.value;
+      const mfName = document.getElementById("mfName");
+      if (mfName && mfName.value !== elSearch.value) mfName.value = elSearch.value;
+      renderTable(cachedRows);
+    });
+
+    // Mobile filters (cards view) - keep the same filtering logic (gridState + renderTable).
+    const mf = {
+      toggle: document.getElementById("mfToggle"),
+      body: document.getElementById("mfBody"),
+      apply: document.getElementById("mfApply"),
+      clear: document.getElementById("mfClear"),
+      name: document.getElementById("mfName"),
+      month: document.getElementById("mfMonth"),
+      suitMin: document.getElementById("mfSuitMin"),
+      oppMin: document.getElementById("mfOppMin"),
+      readMin: document.getElementById("mfReadMin"),
+      tfd: document.getElementById("mfTFD"),
+      rd: document.getElementById("mfRD"),
+      utilities: document.getElementById("mfUtilities"),
+      iht: document.getElementById("mfIHT"),
+    };
+
+    function mfSyncMonthOptions() {
+      const src = document.getElementById("fMonth");
+      if (src && mf.month) mf.month.innerHTML = src.innerHTML;
+    }
+
+    function mfSyncFromState() {
+      const s = gridState.filters;
+      const set = (el, v) => { if (el) el.value = String(v ?? ""); };
+
+      set(mf.name, s.name);
+      set(mf.month, s.month);
+      set(mf.suitMin, s.suitMin);
+      set(mf.oppMin, s.oppMin);
+      set(mf.readMin, s.readMin);
+      set(mf.tfd, s.tfd);
+      set(mf.rd, s.rd);
+      set(mf.utilities, s.utilities);
+      set(mf.iht, s.iht);
+    }
+
+    function mfApplyToState() {
+      gridState.filters.name = mf.name?.value || "";
+      gridState.filters.month = mf.month?.value || "";
+      gridState.filters.suitMin = mf.suitMin?.value || "";
+      gridState.filters.oppMin = mf.oppMin?.value || "";
+      gridState.filters.readMin = mf.readMin?.value || "";
+      gridState.filters.tfd = mf.tfd?.value || "";
+      gridState.filters.rd = mf.rd?.value || "";
+      gridState.filters.utilities = mf.utilities?.value || "";
+      gridState.filters.iht = mf.iht?.value || "";
+
+      // Keep desktop header filter inputs in sync (if they exist)
+      const fName = document.getElementById("fName");
+      if (fName && fName.value !== gridState.filters.name) fName.value = gridState.filters.name;
+
+      const elSearch = document.getElementById("searchInput");
+      if (elSearch && elSearch.value !== gridState.filters.name) elSearch.value = gridState.filters.name;
+    }
+
+    if (mf.toggle && mf.body) {
+      mf.toggle.addEventListener("click", () => {
+        const isOpen = mf.body.style.display !== "none";
+        mf.body.style.display = isOpen ? "none" : "block";
+        mf.toggle.textContent = isOpen ? "Show" : "Hide";
+      });
+    }
+
+    if (mf.apply) {
+      mf.apply.addEventListener("click", () => {
+        mfApplyToState();
+        renderTable(cachedRows);
+      });
+    }
+
+    if (mf.clear) {
+      mf.clear.addEventListener("click", () => {
+        if (mf.name) mf.name.value = "";
+        if (mf.month) mf.month.value = "";
+        if (mf.suitMin) mf.suitMin.value = "";
+        if (mf.oppMin) mf.oppMin.value = "";
+        if (mf.readMin) mf.readMin.value = "";
+        if (mf.tfd) mf.tfd.value = "";
+        if (mf.rd) mf.rd.value = "";
+        if (mf.utilities) mf.utilities.value = "";
+        if (mf.iht) mf.iht.value = "";
+        mfApplyToState();
+        renderTable(cachedRows);
+      });
+    }
+
+    // Instant filtering on mobile (typing/selecting should filter immediately)
+    ["input", "change"].forEach((evt) => {
+      [mf.name, mf.month, mf.suitMin, mf.oppMin, mf.readMin, mf.tfd, mf.rd, mf.utilities, mf.iht]
+        .filter(Boolean)
+        .forEach((el) => el.addEventListener(evt, () => {
+          mfApplyToState();
+          renderTable(cachedRows);
+        }));
+    });
+
+    // Init month options + initial sync once data is loaded (we call this after initMonthFilterOptions runs too)
+    mfSyncMonthOptions();
+    mfSyncFromState();
+
 
 
     refresh();
   </script>
 
-
-
   <!-- ========== Settings Modal (MINIMAL) ========== -->
-  <div class="modal fade caam-modal" id="companyConfigurationModal" tabindex="-1"
+  <div class="modal fade caam-modal config-modal" id="companyConfigurationModal" tabindex="-1"
     aria-labelledby="opportunityCriteriaLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -611,6 +1544,16 @@
               <div class="tab-pane fade show active" id="outer-suitability" role="tabpanel"
                 aria-labelledby="outer-suitability-tab">
 
+                <!-- Target (Suitability) -->
+                <div class="row g-2 mb-2">
+                  <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted">Suitability target %</label>
+                    <input type="number" min="0" max="100" step="1" name="suitability_target_percent"
+                      id="target_suitability" class="form-control form-control-sm"
+                      value="{{ suitability_settings.target_percent|default_if_none:'' }}">
+                  </div>
+                </div>
+
                 <div class="table-responsive">
                   <table class="table table-sm align-middle caam-table caam-table--yn">
                     <thead>
@@ -648,6 +1591,16 @@
 
               <!-- ===================== OPPORTUNITY ===================== -->
               <div class="tab-pane fade" id="outer-opportunity" role="tabpanel" aria-labelledby="outer-opportunity-tab">
+
+                <div class="row g-2 mb-2">
+                  <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted">Opportunity target %</label>
+                    <input type="number" min="0" max="100" step="1" name="opp_target_percent" id="target_opportunity"
+                      class="form-control form-control-sm"
+                      value="{{ perf_settings.target_percent|default_if_none:'' }}">
+
+                  </div>
+                </div>
 
                 <!-- Shared controls -->
                 <div class="row g-2 mb-2 caam-controls">
@@ -719,7 +1672,7 @@
                               </select>
                             </td>
 
-                            <td>{{ r.label }}</td>
+                            <td class="criterion-cell">{{ r.label }}</td>
 
                             <td>
                               <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
@@ -729,7 +1682,7 @@
                               </select>
                             </td>
 
-                            <td>
+                            <td class="threshold-cell">
                               <div class="input-group input-group-sm">
                                 <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
                                   class="form-control form-control-sm"
@@ -750,7 +1703,7 @@
                               </select>
                             </td>
 
-                            <td>{{ r.label }}</td>
+                            <td class="criterion-cell">{{ r.label }}</td>
 
                             <td>
                               <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
@@ -760,7 +1713,7 @@
                               </select>
                             </td>
 
-                            <td>
+                            <td class="threshold-cell">
                               <div class="input-group input-group-sm">
                                 <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
                                   class="form-control form-control-sm"
@@ -781,7 +1734,7 @@
                               </select>
                             </td>
 
-                            <td>{{ r.label }}</td>
+                            <td class="criterion-cell">{{ r.label }}</td>
 
                             <td>
                               <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
@@ -791,7 +1744,7 @@
                               </select>
                             </td>
 
-                            <td>
+                            <td class="threshold-cell">
                               <div class="input-group input-group-sm">
                                 <input id="{{ r.threshold.id }}" name="{{ r.threshold.name }}" type="number" step="0.01"
                                   class="form-control form-control-sm"
@@ -833,7 +1786,7 @@
                               </select>
                             </td>
 
-                            <td>{{ r.label }}</td>
+                            <td class="criterion-cell">{{ r.label }}</td>
 
                             <td>
                               <select id="{{ r.sign.id }}" name="{{ r.sign.name }}" class="form-select form-select-sm">
@@ -892,6 +1845,17 @@
 
               <!-- ===================== READINESS (Enable only) ===================== -->
               <div class="tab-pane fade" id="outer-readiness" role="tabpanel" aria-labelledby="outer-readiness-tab">
+                <div class="row g-2 mb-2">
+                  <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted">Readiness target %</label>
+                    <input type="number" min="0" max="100" step="1" name="readiness_target_percent"
+                      id="target_readiness" class="form-control form-control-sm"
+                      value="{{ readiness_settings.target_percent|default_if_none:'' }}">
+
+                  </div>
+                </div>
+
+
 
                 <div class="table-responsive">
                   <table class="table table-sm align-middle caam-table caam-table--yn">
@@ -934,7 +1898,7 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-            <button type="button" id="btnSaveCriteria" class="btn btn-success btn-sm">
+            <button type="button" id="btnSaveCriteria" class="btn btn-login btn-sm px-3">
               Save
             </button>
             <button type="button" id="btnResetToDefaults" class="btn btn-outline-warning btn-sm">
@@ -943,7 +1907,6 @@
             <button type="button" class="btn btn-outline-info btn-sm" id="btnViewDefaults">
               View defaults
             </button>
-
           </div>
 
         </form>
@@ -965,14 +1928,13 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{% static 'vfd_pro/js/caam_report.js' %}" defer></script>
 
-
   <!-- Confirm Modal -->
   <div class="modal fade" id="confirmApplyAllModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-white">
+      <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Apply changes to all clients?</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -989,8 +1951,8 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" id="btnConfirmApplyAll" class="btn btn-success btn-sm">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="btnConfirmApplyAll" class="btn btn-login btn-sm px-3">
             Yes, apply to all clients
           </button>
         </div>
@@ -1002,7 +1964,7 @@
   <div class="modal fade" id="processingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
     data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-white">
+      <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Processing…</h5>
         </div>
@@ -1021,13 +1983,13 @@
     </div>
   </div>
 
-  <!--Reset Modal-->
+  <!-- Reset Modal -->
   <div class="modal fade" id="confirmResetModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-white">
+      <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Reset company settings to default?</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
         <div class="modal-body">
@@ -1040,15 +2002,14 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" id="btnConfirmReset" class="btn btn-warning btn-sm">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="btnConfirmReset" class="btn btn-outline-warning btn-sm">
             Yes, reset to defaults
           </button>
         </div>
       </div>
     </div>
   </div>
-
 
   {{ defaults_modal|json_script:"caam-defaults-modal" }}
 
@@ -1071,17 +2032,14 @@
 
       const btnConfirm = document.getElementById("btnConfirmApplyAll");
 
-      // Helper: detect company-level save based on endpoint containing /0/ or clientId=0 in URL
       function isCompanyLevelSave() {
         const url = window.CAAM_ENDPOINTS && window.CAAM_ENDPOINTS.save_config;
         return url && /\/0\/?$/.test(url);
       }
 
-      // Intercept save click
       btnSave.addEventListener("click", async (e) => {
         e.preventDefault();
 
-        // Company-level => confirm; Client-level => save directly
         if (isCompanyLevelSave() && confirmModal) {
           confirmModal.show();
         } else {
@@ -1097,14 +2055,11 @@
       }
 
       async function runSave() {
-        // show processing
         processingModal && processingModal.show();
 
         try {
-          // saveConfig is your existing function
           await saveConfig();
         } finally {
-          // hide processing no matter what (saveConfig itself shows alert on errors)
           processingModal && processingModal.hide();
         }
       }
@@ -1124,7 +2079,6 @@
       const titleEl = modalEl.querySelector(".modal-title");
       const oldTitle = titleEl ? titleEl.textContent : "Setting";
 
-
       const footer = modalEl.querySelector(".modal-footer");
       const btnBack = document.createElement("button");
       btnBack.type = "button";
@@ -1133,8 +2087,7 @@
       btnBack.textContent = "Back";
       footer.appendChild(btnBack);
 
-
-      const snapshot = new Map(); // name -> value
+      const snapshot = new Map();
 
       function setAllDisabled(disabled) {
         const body = modalEl.querySelector(".modal-body");
@@ -1144,33 +2097,39 @@
         });
       }
 
-
       function findDefaultValueByName(defaultsModal, fieldName) {
         if (!defaultsModal || !fieldName) return undefined;
 
+        // ✅ targets (these were missing)
+        if (fieldName === "suitability_target_percent") {
+          return defaultsModal?.suitability_settings?.target_percent;
+        }
+        if (fieldName === "opp_target_percent") {
+          return defaultsModal?.perf_settings?.target_percent;
+        }
+        if (fieldName === "readiness_target_percent") {
+          return defaultsModal?.readiness_settings?.target_percent;
+        }
 
         const sRows = (defaultsModal.suitability_settings && defaultsModal.suitability_settings.rows) || [];
         for (const r of sRows) {
-          if (r.enabled_name === fieldName) return r.enabled; // "Yes"/"No"
+          if (r.enabled_name === fieldName) return r.enabled;
         }
 
         const rRows = (defaultsModal.readiness_settings && defaultsModal.readiness_settings.rows) || [];
         for (const r of rRows) {
-          if (r.enabled_name === fieldName) return r.enabled; // "Yes"/"No"
+          if (r.enabled_name === fieldName) return r.enabled;
         }
 
-        // 2) IHT: enabled_name/threshold_name + multiple_name
         const iht = defaultsModal.iht_settings || {};
         if (iht.enabled_name === fieldName) return iht.enabled;
         if (iht.threshold_name === fieldName) return iht.threshold;
         if (iht.multiple_name === fieldName) return iht.multiple;
 
-        // 3) Performance: period/multiple 
         const perf = defaultsModal.perf_settings || {};
         if (perf.period && perf.period.name === fieldName) return perf.period.value;
         if (perf.multiple && perf.multiple.name === fieldName) return perf.multiple.value;
 
-        // 4) Performance groups: group1/group2/group3 => enable/sign/threshold
         const groups = []
           .concat(perf.group1 || [])
           .concat(perf.group2 || [])
@@ -1182,7 +2141,6 @@
           if (g.threshold && g.threshold.name === fieldName) return g.threshold.value;
         }
 
-        // 5) Working capital rows => enable/sign/var
         const wcRows = (defaultsModal.working_capital_settings && defaultsModal.working_capital_settings.rows) || [];
         for (const r of wcRows) {
           if (r.enable && r.enable.name === fieldName) return r.enable.value;
@@ -1204,7 +2162,6 @@
           const defVal = findDefaultValueByName(defaultsModal, name);
           if (typeof defVal === "undefined") return;
 
-          // set value
           el.value = (defVal === null || typeof defVal === "undefined") ? "" : String(defVal);
         });
       }
@@ -1258,7 +2215,6 @@
       btnView.addEventListener("click", enterDefaultsMode);
       btnBack.addEventListener("click", exitDefaultsMode);
 
-
       modalEl.addEventListener("hidden.bs.modal", () => {
         if (!btnBack.classList.contains("d-none")) exitDefaultsMode();
       });
@@ -1284,6 +2240,11 @@
         processingModal.show();
         try {
           await window.saveConfig({ resetFlag: 1 });
+          // ✅ cache-busting reload
+          const url = new URL(window.location.href);
+          url.searchParams.set("_", Date.now().toString());
+          window.location.replace(url.toString());
+
         } finally {
           processingModal.hide();
         }
@@ -1292,13 +2253,13 @@
   </script>
 
   <script>
-
     window.addEventListener("pageshow", function (e) {
       if (e.persisted) {
         window.location.reload();
       }
     });
   </script>
+
 
 
 </body>

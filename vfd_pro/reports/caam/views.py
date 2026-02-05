@@ -1,5 +1,7 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
 
 from vfd_pro.reports.caam.selectors import (
     _get_caam_report_details,
@@ -21,12 +23,14 @@ from vfd_pro.reports.caam.services import (
 )
 
 
+@login_required
 def client_assessment(request, company_id: int):
     context = build_company_settings_modal_context(company_id)
     context["defaults_modal"] = build_company_settings_modal_context(0)
     return render(request, "caam/client_assessment.html", context)
 
 
+@login_required
 def client_summary(request, client_id: int):
 
     context = {

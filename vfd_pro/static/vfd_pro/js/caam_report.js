@@ -1308,3 +1308,104 @@
 
 
 })();
+
+function initMonthFilterOptions(rowsMapped) {
+    const el = document.getElementById("fMonth");
+    if (!el) return;
+
+    const months = [...new Set(rowsMapped.map(r => r.reportDate).filter(Boolean))];
+
+    months.sort((a, b) => monthKey(b) - monthKey(a)); // جدیدترها بالا
+
+    // keep first option "All months"
+    el.innerHTML = `<option value="">All months</option>` + months.map(m => `<option value="${m}">${m}</option>`).join("");
+}
+
+initMonthFilterOptions(cachedRows);
+
+function bindGridFilters() {
+    const fName = document.getElementById("fName");
+    const fMonth = document.getElementById("fMonth");
+    const fSuitMin = document.getElementById("fSuitMin");
+    const fOppMin = document.getElementById("fOppMin");
+    const fReadMin = document.getElementById("fReadMin");
+    const fTFD = document.getElementById("fTFD");
+    const fRD = document.getElementById("fRD");
+    const fUtilities = document.getElementById("fUtilities");
+    const fIHT = document.getElementById("fIHT");
+
+    const rerender = () => renderTable(cachedRows);
+
+    if (fName) fName.addEventListener("input", (e) => { gridState.filters.name = e.target.value; rerender(); });
+    if (fMonth) fMonth.addEventListener("change", (e) => { gridState.filters.month = e.target.value; rerender(); });
+
+    if (fSuitMin) fSuitMin.addEventListener("input", (e) => { gridState.filters.suitMin = e.target.value; rerender(); });
+    if (fOppMin) fOppMin.addEventListener("input", (e) => { gridState.filters.oppMin = e.target.value; rerender(); });
+    if (fReadMin) fReadMin.addEventListener("input", (e) => { gridState.filters.readMin = e.target.value; rerender(); });
+
+    if (fTFD) fTFD.addEventListener("change", (e) => { gridState.filters.tfd = e.target.value; rerender(); });
+    if (fRD) fRD.addEventListener("change", (e) => { gridState.filters.rd = e.target.value; rerender(); });
+    if (fUtilities) fUtilities.addEventListener("change", (e) => { gridState.filters.utilities = e.target.value; rerender(); });
+    if (fIHT) fIHT.addEventListener("change", (e) => { gridState.filters.iht = e.target.value; rerender(); });
+}
+
+bindGridFilters();
+
+function updateSortIndicators() {
+    document.querySelectorAll("th.sortable").forEach(th => {
+        const key = th.getAttribute("data-sort");
+        const ind = th.querySelector(".sort-ind");
+        if (!ind) return;
+
+        if (key !== gridState.sortKey) {
+            ind.textContent = "";
+            return;
+        }
+        ind.textContent = gridState.sortDir === "asc" ? "▲" : "▼";
+    });
+}
+
+function bindSorting() {
+    document.querySelectorAll("th.sortable").forEach(th => {
+        th.addEventListener("click", () => {
+            // const key = th.getAttribute("data-sort");
+            const key = th.getAttribute("data-sort");
+
+            if (!key) return;
+
+            if (gridState.sortKey === key) {
+                gridState.sortDir = gridState.sortDir === "asc" ? "desc" : "asc";
+            } else {
+                gridState.sortKey = key;
+                gridState.sortDir = "asc";
+            }
+
+            updateSortIndicators();
+            renderTable(cachedRows);
+        });
+    });
+
+    updateSortIndicators();
+}
+
+bindSorting();
+function bindTopSearchToGrid() {
+    const topSearch = document.getElementById("searchInput"); // سرچ بالای صفحه
+    const gridName = document.getElementById("fName");        // فیلتر داخل گرید
+
+    if (!topSearch) return;
+
+    const apply = () => renderTable(cachedRows);
+
+    topSearch.addEventListener("input", () => {
+        const v = topSearch.value || "";
+        gridState.filters.name = v;
+
+        // اگر فیلتر داخل گرید وجود دارد، همزمان همون رو هم پر کن
+        if (gridName) gridName.value = v;
+
+        apply();
+    });
+}
+
+bindTopSearchToGrid();

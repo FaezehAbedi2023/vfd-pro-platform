@@ -5,16 +5,16 @@ from decimal import Decimal
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_GET
-from vfd_pro.common.utils import format_month_year
+from django.contrib.auth.decorators import login_required
 
-from django.http import JsonResponse
+
 from django.views.decorators.http import require_POST
 from django.db import connection
 import json
 
 import logging
 
-from vfd_pro.common.utils import _fmt_num, fmt_percent
+from vfd_pro.common.utils import _fmt_num, fmt_percent, format_month_year
 from .selectors import (
     _call_revenue_profitability_sp,
     _call_gm_profitability_sp,
@@ -33,6 +33,18 @@ from .selectors import (
 sp_logger = logging.getLogger("sp_logger")
 
 
+def ajax_login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse(
+                {"ok": False, "error": "Authentication required"}, status=401
+            )
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+
+@ajax_login_required
 @require_GET
 def ajax_caam_report(request, company_id: int):
     try:
@@ -46,6 +58,7 @@ def ajax_caam_report(request, company_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_revenue_criteria(request, client_id: int):
     print("### ajax_revenue_criteria HIT ###")
@@ -152,6 +165,7 @@ def ajax_revenue_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_gm_criteria(request, client_id: int):
     print("### ajax_gm_criteria HIT ###")
@@ -256,6 +270,7 @@ def ajax_gm_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_oh_val_criteria(request, client_id: int):
 
@@ -353,6 +368,7 @@ def ajax_oh_val_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_oh_pct_criteria(request, client_id: int):
 
@@ -452,6 +468,7 @@ def ajax_oh_pct_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_ebitda_criteria(request, client_id: int):
 
@@ -537,6 +554,7 @@ def ajax_ebitda_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_newcust_criteria(request, client_id: int):
 
@@ -614,6 +632,7 @@ def ajax_newcust_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_retention_criteria(request, client_id: int):
 
@@ -692,6 +711,7 @@ def ajax_retention_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_cash_criteria(request, client_id: int):
     """
@@ -763,6 +783,7 @@ def ajax_cash_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_debtordays_criteria(request, client_id: int):
 
@@ -833,6 +854,7 @@ def ajax_debtordays_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_creditordays_criteria(request, client_id: int):
 
@@ -903,6 +925,7 @@ def ajax_creditordays_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_stockdays_criteria(request, client_id: int):
 
@@ -973,6 +996,7 @@ def ajax_stockdays_criteria(request, client_id: int):
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
 
 
+@ajax_login_required
 @require_POST
 def ajax_save_config(request, client_id: int):
     sp_logger.debug("--------------------------------------------------")
@@ -1008,7 +1032,7 @@ def ajax_save_config(request, client_id: int):
             reset_flag = 0
 
         sp_logger.debug(
-            f"EXTRACTED FIELDS => company_id={company_id}, version={version}, "
+            f"EXTRACTED FIELDS => company_id={company_id}, reset_flag_XXX={reset_flag}, "
             f"config_type={type(config).__name__}"
         )
 
